@@ -299,6 +299,27 @@ void main() {
           memoWith(sampleTranscript(), filePath: audio.path));
       expect(outcome, isA<UploadPermanent>());
     });
+
+    test('plain HTTP is refused for public hosts but allowed for '
+        'loopback/LAN (the local-dev escape hatch)', () async {
+      final audio = await writeAudio(tmp, [1]);
+      Future<UploadOutcome> go(String url) => uploadMemo(
+          service(), UploadConfig(url: url, token: 't'),
+          memoWith(sampleTranscript(), filePath: audio.path));
+
+      expect(await go('http://example.com/diktafon/upload'),
+          isA<UploadPermanent>());
+      expect(await go('http://8.8.8.8/diktafon/upload'),
+          isA<UploadPermanent>());
+      // Loopback / LAN / tailnet shapes pass the gate (no network attempt
+      // is asserted here — the refusal is what costs a database write).
+      expect(isPlainHttpAllowed(Uri.parse('http://127.0.0.1:8378/x')), isTrue);
+      expect(isPlainHttpAllowed(Uri.parse('http://192.168.1.10/x')), isTrue);
+      expect(isPlainHttpAllowed(Uri.parse('http://10.0.0.5/x')), isTrue);
+      expect(isPlainHttpAllowed(Uri.parse('http://100.64.0.1/x')), isTrue);
+      expect(isPlainHttpAllowed(Uri.parse('http://nas.lan/x')), isTrue);
+      expect(isPlainHttpAllowed(Uri.parse('http://example.com/x')), isFalse);
+    });
   });
 
   group('health check', () {

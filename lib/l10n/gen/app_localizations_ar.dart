@@ -333,6 +333,67 @@ class AppLocalizationsAr extends AppLocalizations {
       'خذ كاسيتاتك معك — الصوت والنصوص والملخصات — أو أعدها إلى الجهاز';
 
   @override
+  String get groupUpload => 'الرفع إلى الخادم';
+
+  @override
+  String get uploadToggle => 'الرفع التلقائي';
+
+  @override
+  String get uploadToggleDesc =>
+      'إرسال المذكرات المكتملة إلى خادمك بعد التفريغ';
+
+  @override
+  String get uploadUrlRow => 'عنوان الخادم';
+
+  @override
+  String get uploadUrlDialogTitle => 'عنوان الخادم';
+
+  @override
+  String get uploadUrlHint => 'https://example.com/diktafon/upload';
+
+  @override
+  String get uploadTokenRow => 'رمز الوصول';
+
+  @override
+  String get uploadTokenDialogTitle => 'رمز الوصول';
+
+  @override
+  String get uploadTokenHint => 'سرّ مشترك مُعد على خادمك';
+
+  @override
+  String get uploadNotConfigured => 'غير مُهيأ';
+
+  @override
+  String get uploadWifiOnly => 'عبر Wi-Fi فقط';
+
+  @override
+  String get uploadWifiOnlyDesc => 'الرفع فقط عبر اتصالات غير محدودة';
+
+  @override
+  String get uploadTestConnection => 'اختبار الاتصال';
+
+  @override
+  String get uploadTestConnectionDesc => 'فحص حالة الخادم';
+
+  @override
+  String get uploadTestOk => 'الخادم متاح';
+
+  @override
+  String get uploadTestFailed => 'الخادم غير متاح — تحقق من العنوان والرمز';
+
+  @override
+  String get uploadStateQueued => 'بانتظار الرفع';
+
+  @override
+  String get uploadStateUploading => 'جارٍ الرفع…';
+
+  @override
+  String get uploadStateUploaded => 'تم الرفع';
+
+  @override
+  String get uploadStateFailed => 'فشل الرفع — إعادة المحاولة';
+
+  @override
   String get aboutPrivacy => 'حول التطبيق والخصوصية';
 
   @override

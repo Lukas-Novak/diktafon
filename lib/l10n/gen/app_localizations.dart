@@ -637,6 +637,126 @@ abstract class AppLocalizations {
   /// **'Take your cassettes with you — audio, transcripts and summaries — or bring them back'**
   String get backupExportDesc;
 
+  /// No description provided for @groupUpload.
+  ///
+  /// In en, this message translates to:
+  /// **'Server upload'**
+  String get groupUpload;
+
+  /// No description provided for @uploadToggle.
+  ///
+  /// In en, this message translates to:
+  /// **'Automatic upload'**
+  String get uploadToggle;
+
+  /// No description provided for @uploadToggleDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Send finished memos to your server after transcription'**
+  String get uploadToggleDesc;
+
+  /// No description provided for @uploadUrlRow.
+  ///
+  /// In en, this message translates to:
+  /// **'Server URL'**
+  String get uploadUrlRow;
+
+  /// No description provided for @uploadUrlDialogTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'SERVER URL'**
+  String get uploadUrlDialogTitle;
+
+  /// No description provided for @uploadUrlHint.
+  ///
+  /// In en, this message translates to:
+  /// **'https://example.com/diktafon/upload'**
+  String get uploadUrlHint;
+
+  /// No description provided for @uploadTokenRow.
+  ///
+  /// In en, this message translates to:
+  /// **'Access token'**
+  String get uploadTokenRow;
+
+  /// No description provided for @uploadTokenDialogTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'ACCESS TOKEN'**
+  String get uploadTokenDialogTitle;
+
+  /// No description provided for @uploadTokenHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Shared secret configured on your server'**
+  String get uploadTokenHint;
+
+  /// No description provided for @uploadNotConfigured.
+  ///
+  /// In en, this message translates to:
+  /// **'Not configured'**
+  String get uploadNotConfigured;
+
+  /// No description provided for @uploadWifiOnly.
+  ///
+  /// In en, this message translates to:
+  /// **'Wi-Fi only'**
+  String get uploadWifiOnly;
+
+  /// No description provided for @uploadWifiOnlyDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Upload only on unmetered connections'**
+  String get uploadWifiOnlyDesc;
+
+  /// No description provided for @uploadTestConnection.
+  ///
+  /// In en, this message translates to:
+  /// **'Test connection'**
+  String get uploadTestConnection;
+
+  /// No description provided for @uploadTestConnectionDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Ping the server\'s health endpoint'**
+  String get uploadTestConnectionDesc;
+
+  /// No description provided for @uploadTestOk.
+  ///
+  /// In en, this message translates to:
+  /// **'Server reachable'**
+  String get uploadTestOk;
+
+  /// No description provided for @uploadTestFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Server unreachable — check URL and token'**
+  String get uploadTestFailed;
+
+  /// No description provided for @uploadStateQueued.
+  ///
+  /// In en, this message translates to:
+  /// **'Waiting for upload'**
+  String get uploadStateQueued;
+
+  /// No description provided for @uploadStateUploading.
+  ///
+  /// In en, this message translates to:
+  /// **'Uploading…'**
+  String get uploadStateUploading;
+
+  /// No description provided for @uploadStateUploaded.
+  ///
+  /// In en, this message translates to:
+  /// **'Uploaded'**
+  String get uploadStateUploaded;
+
+  /// No description provided for @uploadStateFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Upload failed — retry'**
+  String get uploadStateFailed;
+
   /// No description provided for @aboutPrivacy.
   ///
   /// In en, this message translates to:

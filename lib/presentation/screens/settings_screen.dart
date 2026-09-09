@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -127,9 +128,145 @@ class SettingsScreen extends ConsumerWidget {
               onTap: () => _about(context),
             ),
           ]),
+          _uploadGroup(context, ref, settings, l10n),
         ],
       )),
     );
+  }
+
+  /// Server upload (opt-in; § upload): the toggle first, the connection
+  /// details only once enabled. The token never appears in plaintext in
+  /// the widget tree — presence only — and never in the Drift settings
+  /// table (that rides OS backups).
+  Widget _uploadGroup(BuildContext context, WidgetRef ref,
+      AppSettings settings, AppLocalizations l10n) {
+    final repo = ref.read(settingsRepositoryProvider);
+    final tokenSet = ref.watch(uploadTokenSetProvider).value ?? false;
+    final rows = <Widget>[
+      SettingsRow(
+        title: l10n.uploadToggle,
+        value: l10n.uploadToggleDesc,
+        trailing: InkToggle(
+          value: settings.uploadEnabled,
+          onChanged: repo.setUploadEnabled,
+        ),
+      ),
+    ];
+    if (settings.uploadEnabled) {
+      rows.addAll([
+        SettingsRow(
+          title: l10n.uploadUrlRow,
+          value: (settings.uploadUrl == null || settings.uploadUrl!.isEmpty)
+              ? l10n.uploadNotConfigured
+              : settings.uploadUrl!,
+          onTap: () => _editUploadUrl(context, ref, settings),
+        ),
+        SettingsRow(
+          title: l10n.uploadTokenRow,
+          value: tokenSet ? '••••••••' : l10n.uploadNotConfigured,
+          onTap: () => _editUploadToken(context, ref),
+        ),
+        SettingsRow(
+          title: l10n.uploadWifiOnly,
+          value: l10n.uploadWifiOnlyDesc,
+          trailing: InkToggle(
+            value: settings.uploadWifiOnly,
+            onChanged: repo.setUploadWifiOnly,
+          ),
+        ),
+        SettingsRow(
+          title: l10n.uploadTestConnection,
+          value: l10n.uploadTestConnectionDesc,
+          onTap: () => _testUploadConnection(context, ref),
+        ),
+      ]);
+    }
+    return SettingsGroup(title: l10n.groupUpload, rows: rows);
+  }
+
+  Future<void> _editUploadUrl(
+      BuildContext context, WidgetRef ref, AppSettings settings) async {
+    final l10n = context.l10n;
+    final result = await showDialog<String>(
+      context: context,
+      builder: (dialogContext) {
+        final controller = TextEditingController(text: settings.uploadUrl);
+        return AlertDialog(
+          title: Text(l10n.uploadUrlDialogTitle),
+          content: TextField(
+            controller: controller,
+            autofocus: true,
+            keyboardType: TextInputType.url,
+            autocorrect: false,
+            decoration: InputDecoration(hintText: l10n.uploadUrlHint),
+            onSubmitted: (v) => Navigator.pop(dialogContext, v),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(dialogContext),
+              child: Text(l10n.cancel),
+            ),
+            TextButton(
+              onPressed: () => Navigator.pop(dialogContext, controller.text),
+              child: Text(l10n.save),
+            ),
+          ],
+        );
+      },
+    );
+    if (result == null) return;
+    await ref.read(settingsRepositoryProvider).setUploadUrl(result);
+    // Parked rows may now be able to run (or were gated on a wrong URL).
+    unawaited(ref.read(jobQueueProvider).drainUploads());
+  }
+
+  Future<void> _editUploadToken(BuildContext context, WidgetRef ref) async {
+    final l10n = context.l10n;
+    final result = await showDialog<String>(
+      context: context,
+      builder: (dialogContext) {
+        final controller = TextEditingController();
+        return AlertDialog(
+          title: Text(l10n.uploadTokenDialogTitle),
+          content: TextField(
+            controller: controller,
+            autofocus: true,
+            obscureText: true,
+            autocorrect: false,
+            enableSuggestions: false,
+            decoration: InputDecoration(hintText: l10n.uploadTokenHint),
+            onSubmitted: (v) => Navigator.pop(dialogContext, v),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(dialogContext),
+              child: Text(l10n.cancel),
+            ),
+            TextButton(
+              onPressed: () => Navigator.pop(dialogContext, controller.text),
+              child: Text(l10n.save),
+            ),
+          ],
+        );
+      },
+    );
+    if (result == null) return;
+    await ref.read(uploadTokenStoreProvider).write(result);
+    ref.invalidate(uploadTokenSetProvider);
+    unawaited(ref.read(jobQueueProvider).drainUploads());
+  }
+
+  Future<void> _testUploadConnection(
+      BuildContext context, WidgetRef ref) async {
+    final l10n = context.l10n;
+    final settings = ref.read(settingsProvider).value ?? const AppSettings();
+    final url = settings.uploadUrl;
+    final ok = url != null &&
+        url.isNotEmpty &&
+        await ref.read(uploadServiceProvider).checkHealth(url);
+    if (!context.mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text(ok ? l10n.uploadTestOk : l10n.uploadTestFailed)));
   }
 
   Future<void> _pickLanguage(

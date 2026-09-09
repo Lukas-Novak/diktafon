@@ -312,6 +312,66 @@ class AppLocalizationsKo extends AppLocalizations {
   String get backupExportDesc => '카세트를 가지고 가세요 — 오디오, 변환 텍스트, 요약 — 또는 다시 가져오세요';
 
   @override
+  String get groupUpload => '서버 업로드';
+
+  @override
+  String get uploadToggle => '자동 업로드';
+
+  @override
+  String get uploadToggleDesc => '전사가 끝난 메모를 내 서버로 보냅니다';
+
+  @override
+  String get uploadUrlRow => '서버 주소';
+
+  @override
+  String get uploadUrlDialogTitle => '서버 주소';
+
+  @override
+  String get uploadUrlHint => 'https://example.com/diktafon/upload';
+
+  @override
+  String get uploadTokenRow => '액세스 토큰';
+
+  @override
+  String get uploadTokenDialogTitle => '액세스 토큰';
+
+  @override
+  String get uploadTokenHint => '서버에 설정된 공유 비밀 키';
+
+  @override
+  String get uploadNotConfigured => '설정되지 않음';
+
+  @override
+  String get uploadWifiOnly => 'Wi-Fi에서만';
+
+  @override
+  String get uploadWifiOnlyDesc => '무제한 연결에서만 업로드';
+
+  @override
+  String get uploadTestConnection => '연결 테스트';
+
+  @override
+  String get uploadTestConnectionDesc => '서버 상태 확인';
+
+  @override
+  String get uploadTestOk => '서버에 연결됨';
+
+  @override
+  String get uploadTestFailed => '서버에 연결할 수 없음 — 주소와 토큰을 확인하세요';
+
+  @override
+  String get uploadStateQueued => '업로드 대기 중';
+
+  @override
+  String get uploadStateUploading => '업로드 중…';
+
+  @override
+  String get uploadStateUploaded => '업로드 완료';
+
+  @override
+  String get uploadStateFailed => '업로드 실패 — 다시 시도';
+
+  @override
   String get aboutPrivacy => '정보 및 개인정보';
 
   @override

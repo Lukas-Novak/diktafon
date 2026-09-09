@@ -3,6 +3,28 @@
 All notable changes to Diktafon are documented in this file. Versions
 correspond to git tags (`v*`); dates are tag dates.
 
+## [Unreleased] — fork: server upload
+
+### Added
+- **Opt-in automatic server upload** (Android) — after a memo's audio is
+  finalized and its on-device transcription completes, the memo (final
+  archival audio, structured local Whisper transcript, metadata manifest)
+  uploads itself to your own server. Off by default; nothing leaves the
+  device until you enable it and set a server URL and access token.
+  - Durable, idempotent delivery: pending uploads survive process death
+    and reboots (WorkManager), requeue on network loss, back off on
+    server errors (429/5xx honoured), and re-send safely after lost
+    responses — the server deduplicates by memo id + audio checksum.
+  - Uploads never delete local recordings or transcripts, never block
+    transcription, and wait for the archival AAC when a transcode is in
+    flight (WAV master only otherwise).
+  - Settings → Server upload: toggle (default off), server URL, access
+    token (kept in the OS secure credential store, not the app database),
+    Wi-Fi-only (default on), connection test. Per-memo status line
+    (waiting / uploading / uploaded / failed — retry).
+  - Plain HTTP is refused for endpoints other than explicit
+    local-development use.
+
 ## [1.0.9] — 2026-07-30
 
 ### Added

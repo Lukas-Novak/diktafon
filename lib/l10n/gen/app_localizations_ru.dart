@@ -335,6 +335,68 @@ class AppLocalizationsRu extends AppLocalizations {
       'Заберите кассеты с собой — звук, расшифровки и сводки — или верните их обратно';
 
   @override
+  String get groupUpload => 'Загрузка на сервер';
+
+  @override
+  String get uploadToggle => 'Автоматическая загрузка';
+
+  @override
+  String get uploadToggleDesc =>
+      'Отправлять готовые заметки на ваш сервер после транскрипции';
+
+  @override
+  String get uploadUrlRow => 'Адрес сервера';
+
+  @override
+  String get uploadUrlDialogTitle => 'АДРЕС СЕРВЕРА';
+
+  @override
+  String get uploadUrlHint => 'https://example.com/diktafon/upload';
+
+  @override
+  String get uploadTokenRow => 'Токен доступа';
+
+  @override
+  String get uploadTokenDialogTitle => 'ТОКЕН ДОСТУПА';
+
+  @override
+  String get uploadTokenHint => 'Общий секрет, настроенный на вашем сервере';
+
+  @override
+  String get uploadNotConfigured => 'Не настроено';
+
+  @override
+  String get uploadWifiOnly => 'Только через Wi-Fi';
+
+  @override
+  String get uploadWifiOnlyDesc =>
+      'Загружать только при безлимитном соединении';
+
+  @override
+  String get uploadTestConnection => 'Проверить соединение';
+
+  @override
+  String get uploadTestConnectionDesc => 'Опросить состояние сервера';
+
+  @override
+  String get uploadTestOk => 'Сервер доступен';
+
+  @override
+  String get uploadTestFailed => 'Сервер недоступен — проверьте адрес и токен';
+
+  @override
+  String get uploadStateQueued => 'Ожидает загрузки';
+
+  @override
+  String get uploadStateUploading => 'Загружается…';
+
+  @override
+  String get uploadStateUploaded => 'Загружено';
+
+  @override
+  String get uploadStateFailed => 'Ошибка загрузки — повторить';
+
+  @override
   String get aboutPrivacy => 'О приложении и приватность';
 
   @override

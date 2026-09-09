@@ -311,6 +311,66 @@ class AppLocalizationsJa extends AppLocalizations {
   String get backupExportDesc => '音声・文字起こし・要約ごとカセットを持ち出したり、戻したりできます';
 
   @override
+  String get groupUpload => 'サーバーアップロード';
+
+  @override
+  String get uploadToggle => '自動アップロード';
+
+  @override
+  String get uploadToggleDesc => '文字起こし後に完成したメモをサーバーへ送信します';
+
+  @override
+  String get uploadUrlRow => 'サーバーURL';
+
+  @override
+  String get uploadUrlDialogTitle => 'サーバーURL';
+
+  @override
+  String get uploadUrlHint => 'https://example.com/diktafon/upload';
+
+  @override
+  String get uploadTokenRow => 'アクセストークン';
+
+  @override
+  String get uploadTokenDialogTitle => 'アクセストークン';
+
+  @override
+  String get uploadTokenHint => 'サーバーに設定した共有シークレット';
+
+  @override
+  String get uploadNotConfigured => '未設定';
+
+  @override
+  String get uploadWifiOnly => 'Wi-Fiのみ';
+
+  @override
+  String get uploadWifiOnlyDesc => '従量制でない接続でのみアップロード';
+
+  @override
+  String get uploadTestConnection => '接続をテスト';
+
+  @override
+  String get uploadTestConnectionDesc => 'サーバーの状態を確認';
+
+  @override
+  String get uploadTestOk => 'サーバーに接続しました';
+
+  @override
+  String get uploadTestFailed => 'サーバーに接続できません — URLとトークンを確認してください';
+
+  @override
+  String get uploadStateQueued => 'アップロード待ち';
+
+  @override
+  String get uploadStateUploading => 'アップロード中…';
+
+  @override
+  String get uploadStateUploaded => 'アップロード済み';
+
+  @override
+  String get uploadStateFailed => 'アップロード失敗 — 再試行';
+
+  @override
   String get aboutPrivacy => 'アプリ情報とプライバシー';
 
   @override

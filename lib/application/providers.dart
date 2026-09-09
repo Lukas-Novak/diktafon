@@ -123,8 +123,10 @@ final uploadTokenStoreProvider =
 final connectivityProbeProvider =
     Provider<ConnectivityProbe>((ref) => ConnectivityProbe());
 
+final uploadServiceProvider = Provider<UploadService>((ref) => UploadService());
+
 final uploadPerformerProvider =
-    Provider<UploadPerformer>((ref) => UploadService());
+    Provider<UploadPerformer>((ref) => ref.read(uploadServiceProvider));
 
 final uploadSchedulerProvider =
     Provider<UploadBackgroundScheduler>((ref) => UploadBackgroundScheduler());

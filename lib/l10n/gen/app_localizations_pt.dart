@@ -329,6 +329,70 @@ class AppLocalizationsPt extends AppLocalizations {
       'Leve suas cassetes com você — áudio, transcrições e resumos — ou traga-as de volta';
 
   @override
+  String get groupUpload => 'Envio ao servidor';
+
+  @override
+  String get uploadToggle => 'Envio automático';
+
+  @override
+  String get uploadToggleDesc =>
+      'Enviar notas concluídas para o seu servidor após a transcrição';
+
+  @override
+  String get uploadUrlRow => 'URL do servidor';
+
+  @override
+  String get uploadUrlDialogTitle => 'URL DO SERVIDOR';
+
+  @override
+  String get uploadUrlHint => 'https://example.com/diktafon/upload';
+
+  @override
+  String get uploadTokenRow => 'Token de acesso';
+
+  @override
+  String get uploadTokenDialogTitle => 'TOKEN DE ACESSO';
+
+  @override
+  String get uploadTokenHint =>
+      'Segredo compartilhado configurado no seu servidor';
+
+  @override
+  String get uploadNotConfigured => 'Não configurado';
+
+  @override
+  String get uploadWifiOnly => 'Somente Wi-Fi';
+
+  @override
+  String get uploadWifiOnlyDesc =>
+      'Enviar apenas em conexões sem limite de dados';
+
+  @override
+  String get uploadTestConnection => 'Testar conexão';
+
+  @override
+  String get uploadTestConnectionDesc => 'Verificar o estado do servidor';
+
+  @override
+  String get uploadTestOk => 'Servidor acessível';
+
+  @override
+  String get uploadTestFailed =>
+      'Servidor inacessível — verifique a URL e o token';
+
+  @override
+  String get uploadStateQueued => 'Aguardando envio';
+
+  @override
+  String get uploadStateUploading => 'Enviando…';
+
+  @override
+  String get uploadStateUploaded => 'Enviado';
+
+  @override
+  String get uploadStateFailed => 'Falha no envio — tentar novamente';
+
+  @override
   String get aboutPrivacy => 'Sobre e privacidade';
 
   @override

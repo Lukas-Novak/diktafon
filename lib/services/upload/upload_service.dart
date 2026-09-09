@@ -133,9 +133,11 @@ class UploadService implements UploadPerformer {
     if (uri == null || !(uri.isScheme('https') || uri.isScheme('http'))) {
       return const UploadPermanent('invalid upload URL');
     }
-    if (uri.isScheme('http')) {
-      // Plain HTTP is a deliberate local-dev escape hatch only.
-      _log('upload: insecure http endpoint for memo ${memo.id}');
+    if (uri.isScheme('http') && !isPlainHttpAllowed(uri)) {
+      // Plain HTTP carries the token unprotected; allowed only for
+      // explicit local-development / LAN targets.
+      return const UploadPermanent(
+          'plain HTTP is only allowed for loopback/LAN endpoints — use HTTPS');
     }
     final transcript = memo.transcript;
     if (transcript == null) {
@@ -336,6 +338,28 @@ Duration? _parseRetryAfter(String? header) {
   if (header == null) return null;
   final seconds = int.tryParse(header.trim());
   return seconds == null ? null : Duration(seconds: seconds);
+}
+
+/// Plain-HTTP escape hatch: only loopback and private/LAN destinations
+/// may receive unencrypted uploads (they never need the public DNS, so
+/// nothing trustworthy-looking slips through). Anything else must use TLS.
+bool isPlainHttpAllowed(Uri uri) {
+  final host = uri.host.toLowerCase();
+  if (host == 'localhost' || host == '::1') return true;
+  if (host.endsWith('.local') || host.endsWith('.lan')) return true;
+  final v4 = RegExp(r'^(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})$')
+      .firstMatch(host);
+  if (v4 != null) {
+    final a = int.parse(v4.group(1)!);
+    final b = int.parse(v4.group(2)!);
+    // 127/8 loopback, 10/8 and 192.168/16 private, 172.16-31/12 private,
+    // 100.64/10 carrier-grade NAT (e.g. tailnets self-hosted by the user).
+    if (a == 127 || a == 10) return true;
+    if (a == 192 && b == 168) return true;
+    if (a == 172 && b >= 16 && b <= 31) return true;
+    if (a == 100 && b >= 64 && b <= 127) return true;
+  }
+  return false;
 }
 
 class _DigestBuffer implements Sink<Digest> {

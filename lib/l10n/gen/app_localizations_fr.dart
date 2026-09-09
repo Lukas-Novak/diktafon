@@ -327,6 +327,69 @@ class AppLocalizationsFr extends AppLocalizations {
       'Emportez vos cassettes — audio, transcriptions et résumés — ou ramenez-les';
 
   @override
+  String get groupUpload => 'Envoi au serveur';
+
+  @override
+  String get uploadToggle => 'Envoi automatique';
+
+  @override
+  String get uploadToggleDesc =>
+      'Envoyer les mémos terminés vers votre serveur après la transcription';
+
+  @override
+  String get uploadUrlRow => 'URL du serveur';
+
+  @override
+  String get uploadUrlDialogTitle => 'URL DU SERVEUR';
+
+  @override
+  String get uploadUrlHint => 'https://example.com/diktafon/upload';
+
+  @override
+  String get uploadTokenRow => 'Jeton d\'accès';
+
+  @override
+  String get uploadTokenDialogTitle => 'JETON D\'ACCÈS';
+
+  @override
+  String get uploadTokenHint => 'Secret partagé configuré sur votre serveur';
+
+  @override
+  String get uploadNotConfigured => 'Non configuré';
+
+  @override
+  String get uploadWifiOnly => 'Wi-Fi uniquement';
+
+  @override
+  String get uploadWifiOnlyDesc =>
+      'Envoyer uniquement en connexion non limitée';
+
+  @override
+  String get uploadTestConnection => 'Tester la connexion';
+
+  @override
+  String get uploadTestConnectionDesc => 'Interroger l\'état du serveur';
+
+  @override
+  String get uploadTestOk => 'Serveur joignable';
+
+  @override
+  String get uploadTestFailed =>
+      'Serveur injoignable — vérifiez l\'URL et le jeton';
+
+  @override
+  String get uploadStateQueued => 'En attente d\'envoi';
+
+  @override
+  String get uploadStateUploading => 'Envoi en cours…';
+
+  @override
+  String get uploadStateUploaded => 'Envoyé';
+
+  @override
+  String get uploadStateFailed => 'Échec de l\'envoi — réessayer';
+
+  @override
   String get aboutPrivacy => 'À propos & confidentialité';
 
   @override

@@ -325,6 +325,68 @@ class AppLocalizationsTr extends AppLocalizations {
       'Kasetlerinizi yanınıza alın — ses, transkriptler ve özetler — ya da geri getirin';
 
   @override
+  String get groupUpload => 'Sunucuya yükleme';
+
+  @override
+  String get uploadToggle => 'Otomatik yükleme';
+
+  @override
+  String get uploadToggleDesc =>
+      'Biten notları transkripsiyon sonrası sunucunuza gönderin';
+
+  @override
+  String get uploadUrlRow => 'Sunucu adresi';
+
+  @override
+  String get uploadUrlDialogTitle => 'SUNUCU ADRESİ';
+
+  @override
+  String get uploadUrlHint => 'https://example.com/diktafon/upload';
+
+  @override
+  String get uploadTokenRow => 'Erişim anahtarı';
+
+  @override
+  String get uploadTokenDialogTitle => 'ERİŞİM ANAHTARI';
+
+  @override
+  String get uploadTokenHint => 'Sunucunuzda tanımlı paylaşılan giz';
+
+  @override
+  String get uploadNotConfigured => 'Yapılandırılmadı';
+
+  @override
+  String get uploadWifiOnly => 'Yalnızca Wi-Fi';
+
+  @override
+  String get uploadWifiOnlyDesc => 'Yalnızca ölçüsüz bağlantılarda yükle';
+
+  @override
+  String get uploadTestConnection => 'Bağlantıyı sına';
+
+  @override
+  String get uploadTestConnectionDesc => 'Sunucunun durumunu denetle';
+
+  @override
+  String get uploadTestOk => 'Sunucuya ulaşıldı';
+
+  @override
+  String get uploadTestFailed =>
+      'Sunucuya ulaşılamadı — adresi ve anahtarı kontrol edin';
+
+  @override
+  String get uploadStateQueued => 'Yüklemeyi bekliyor';
+
+  @override
+  String get uploadStateUploading => 'Yükleniyor…';
+
+  @override
+  String get uploadStateUploaded => 'Yüklendi';
+
+  @override
+  String get uploadStateFailed => 'Yükleme başarısız — yeniden dene';
+
+  @override
   String get aboutPrivacy => 'Hakkında ve gizlilik';
 
   @override

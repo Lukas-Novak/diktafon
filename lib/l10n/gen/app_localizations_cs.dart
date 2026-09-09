@@ -328,6 +328,68 @@ class AppLocalizationsCs extends AppLocalizations {
       'Vezměte si kazety s sebou — zvuk, přepisy i souhrny — nebo je vraťte zpět';
 
   @override
+  String get groupUpload => 'Nahrávání na server';
+
+  @override
+  String get uploadToggle => 'Automatické nahrávání';
+
+  @override
+  String get uploadToggleDesc =>
+      'Po přepisu odesílat hotové poznámky na váš server';
+
+  @override
+  String get uploadUrlRow => 'Adresa serveru';
+
+  @override
+  String get uploadUrlDialogTitle => 'ADRESA SERVERU';
+
+  @override
+  String get uploadUrlHint => 'https://example.com/diktafon/upload';
+
+  @override
+  String get uploadTokenRow => 'Přístupový token';
+
+  @override
+  String get uploadTokenDialogTitle => 'PŘÍSTUPOVÝ TOKEN';
+
+  @override
+  String get uploadTokenHint => 'Sdílené tajemství nastavené na vašem serveru';
+
+  @override
+  String get uploadNotConfigured => 'Nenastaveno';
+
+  @override
+  String get uploadWifiOnly => 'Pouze přes Wi-Fi';
+
+  @override
+  String get uploadWifiOnlyDesc => 'Nahrávat jen přes neomezené připojení';
+
+  @override
+  String get uploadTestConnection => 'Vyzkoušet připojení';
+
+  @override
+  String get uploadTestConnectionDesc => 'Otestovat dostupnost serveru';
+
+  @override
+  String get uploadTestOk => 'Server je dostupný';
+
+  @override
+  String get uploadTestFailed =>
+      'Server nedostupný — zkontrolujte adresu a token';
+
+  @override
+  String get uploadStateQueued => 'Čeká na nahrání';
+
+  @override
+  String get uploadStateUploading => 'Nahrávám…';
+
+  @override
+  String get uploadStateUploaded => 'Nahráno';
+
+  @override
+  String get uploadStateFailed => 'Nahrání selhalo — zkusit znovu';
+
+  @override
   String get aboutPrivacy => 'O aplikaci a soukromí';
 
   @override

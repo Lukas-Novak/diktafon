@@ -325,6 +325,67 @@ class AppLocalizationsEn extends AppLocalizations {
       'Take your cassettes with you — audio, transcripts and summaries — or bring them back';
 
   @override
+  String get groupUpload => 'Server upload';
+
+  @override
+  String get uploadToggle => 'Automatic upload';
+
+  @override
+  String get uploadToggleDesc =>
+      'Send finished memos to your server after transcription';
+
+  @override
+  String get uploadUrlRow => 'Server URL';
+
+  @override
+  String get uploadUrlDialogTitle => 'SERVER URL';
+
+  @override
+  String get uploadUrlHint => 'https://example.com/diktafon/upload';
+
+  @override
+  String get uploadTokenRow => 'Access token';
+
+  @override
+  String get uploadTokenDialogTitle => 'ACCESS TOKEN';
+
+  @override
+  String get uploadTokenHint => 'Shared secret configured on your server';
+
+  @override
+  String get uploadNotConfigured => 'Not configured';
+
+  @override
+  String get uploadWifiOnly => 'Wi-Fi only';
+
+  @override
+  String get uploadWifiOnlyDesc => 'Upload only on unmetered connections';
+
+  @override
+  String get uploadTestConnection => 'Test connection';
+
+  @override
+  String get uploadTestConnectionDesc => 'Ping the server\'s health endpoint';
+
+  @override
+  String get uploadTestOk => 'Server reachable';
+
+  @override
+  String get uploadTestFailed => 'Server unreachable — check URL and token';
+
+  @override
+  String get uploadStateQueued => 'Waiting for upload';
+
+  @override
+  String get uploadStateUploading => 'Uploading…';
+
+  @override
+  String get uploadStateUploaded => 'Uploaded';
+
+  @override
+  String get uploadStateFailed => 'Upload failed — retry';
+
+  @override
   String get aboutPrivacy => 'About & privacy';
 
   @override

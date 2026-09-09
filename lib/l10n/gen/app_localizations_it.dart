@@ -329,6 +329,68 @@ class AppLocalizationsIt extends AppLocalizations {
       'Porta con te le tue cassette — audio, trascrizioni e riassunti — o riportale indietro';
 
   @override
+  String get groupUpload => 'Caricamento sul server';
+
+  @override
+  String get uploadToggle => 'Caricamento automatico';
+
+  @override
+  String get uploadToggleDesc =>
+      'Invia i memo completati al tuo server dopo la trascrizione';
+
+  @override
+  String get uploadUrlRow => 'URL del server';
+
+  @override
+  String get uploadUrlDialogTitle => 'URL DEL SERVER';
+
+  @override
+  String get uploadUrlHint => 'https://example.com/diktafon/upload';
+
+  @override
+  String get uploadTokenRow => 'Token di accesso';
+
+  @override
+  String get uploadTokenDialogTitle => 'TOKEN DI ACCESSO';
+
+  @override
+  String get uploadTokenHint => 'Segreto condiviso configurato sul tuo server';
+
+  @override
+  String get uploadNotConfigured => 'Non configurato';
+
+  @override
+  String get uploadWifiOnly => 'Solo Wi-Fi';
+
+  @override
+  String get uploadWifiOnlyDesc => 'Carica solo su connessioni senza limiti';
+
+  @override
+  String get uploadTestConnection => 'Prova connessione';
+
+  @override
+  String get uploadTestConnectionDesc => 'Interroga lo stato del server';
+
+  @override
+  String get uploadTestOk => 'Server raggiungibile';
+
+  @override
+  String get uploadTestFailed =>
+      'Server irraggiungibile — controlla URL e token';
+
+  @override
+  String get uploadStateQueued => 'In attesa di caricamento';
+
+  @override
+  String get uploadStateUploading => 'Caricamento…';
+
+  @override
+  String get uploadStateUploaded => 'Caricato';
+
+  @override
+  String get uploadStateFailed => 'Caricamento fallito — riprova';
+
+  @override
   String get aboutPrivacy => 'Informazioni e privacy';
 
   @override

@@ -322,6 +322,69 @@ class AppLocalizationsId extends AppLocalizations {
       'Bawa kaset Anda ke mana pun — audio, transkrip, dan ringkasan — atau kembalikan lagi';
 
   @override
+  String get groupUpload => 'Unggahan server';
+
+  @override
+  String get uploadToggle => 'Unggahan otomatis';
+
+  @override
+  String get uploadToggleDesc =>
+      'Kirim memo selesai ke server Anda setelah transkripsi';
+
+  @override
+  String get uploadUrlRow => 'URL server';
+
+  @override
+  String get uploadUrlDialogTitle => 'URL SERVER';
+
+  @override
+  String get uploadUrlHint => 'https://example.com/diktafon/upload';
+
+  @override
+  String get uploadTokenRow => 'Token akses';
+
+  @override
+  String get uploadTokenDialogTitle => 'TOKEN AKSES';
+
+  @override
+  String get uploadTokenHint =>
+      'Rahasia bersama yang dikonfigurasi di server Anda';
+
+  @override
+  String get uploadNotConfigured => 'Belum dikonfigurasi';
+
+  @override
+  String get uploadWifiOnly => 'Hanya Wi-Fi';
+
+  @override
+  String get uploadWifiOnlyDesc => 'Unggah hanya lewat koneksi tanpa kuota';
+
+  @override
+  String get uploadTestConnection => 'Uji koneksi';
+
+  @override
+  String get uploadTestConnectionDesc => 'Ping status server';
+
+  @override
+  String get uploadTestOk => 'Server dapat dijangkau';
+
+  @override
+  String get uploadTestFailed =>
+      'Server tidak dapat dijangkau — periksa URL dan token';
+
+  @override
+  String get uploadStateQueued => 'Menunggu unggahan';
+
+  @override
+  String get uploadStateUploading => 'Mengunggah…';
+
+  @override
+  String get uploadStateUploaded => 'Terunggah';
+
+  @override
+  String get uploadStateFailed => 'Unggahan gagal — coba lagi';
+
+  @override
   String get aboutPrivacy => 'Tentang & privasi';
 
   @override

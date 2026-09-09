@@ -327,6 +327,68 @@ class AppLocalizationsHi extends AppLocalizations {
       'अपनी कैसेट साथ ले जाएं — ऑडियो, ट्रांसक्रिप्ट और सारांश — या उन्हें वापस लाएं';
 
   @override
+  String get groupUpload => 'सर्वर अपलोड';
+
+  @override
+  String get uploadToggle => 'स्वचालित अपलोड';
+
+  @override
+  String get uploadToggleDesc =>
+      'ट्रांसक्रिप्शन पूरा होने पर तैयार नोट्स आपके सर्वर पर भेजता है';
+
+  @override
+  String get uploadUrlRow => 'सर्वर पता';
+
+  @override
+  String get uploadUrlDialogTitle => 'सर्वर पता';
+
+  @override
+  String get uploadUrlHint => 'https://example.com/diktafon/upload';
+
+  @override
+  String get uploadTokenRow => 'एक्सेस टोकन';
+
+  @override
+  String get uploadTokenDialogTitle => 'एक्सेस टोकन';
+
+  @override
+  String get uploadTokenHint => 'आपके सर्वर पर कॉन्फ़िगर साझा गुप्त कुंजी';
+
+  @override
+  String get uploadNotConfigured => 'कॉन्फ़िगर नहीं';
+
+  @override
+  String get uploadWifiOnly => 'केवल Wi-Fi';
+
+  @override
+  String get uploadWifiOnlyDesc =>
+      'केवल बिना डेटा-सीमा वाले कनेक्शन पर अपलोड करें';
+
+  @override
+  String get uploadTestConnection => 'कनेक्शन जांचें';
+
+  @override
+  String get uploadTestConnectionDesc => 'सर्वर की स्थिति जांचें';
+
+  @override
+  String get uploadTestOk => 'सर्वर उपलब्ध है';
+
+  @override
+  String get uploadTestFailed => 'सर्वर उपलब्ध नहीं — पता और टोकन जांचें';
+
+  @override
+  String get uploadStateQueued => 'अपलोड की प्रतीक्षा में';
+
+  @override
+  String get uploadStateUploading => 'अपलोड हो रहा है…';
+
+  @override
+  String get uploadStateUploaded => 'अपलोड हुआ';
+
+  @override
+  String get uploadStateFailed => 'अपलोड विफल — पुनः प्रयास करें';
+
+  @override
   String get aboutPrivacy => 'ऐप की जानकारी और निजता';
 
   @override

@@ -327,6 +327,68 @@ class AppLocalizationsFa extends AppLocalizations {
       'کاست‌هایتان را با خود ببرید — صدا، رونوشت‌ها و خلاصه‌ها — یا آن‌ها را بازگردانید';
 
   @override
+  String get groupUpload => 'بارگذاری به سرور';
+
+  @override
+  String get uploadToggle => 'بارگذاری خودکار';
+
+  @override
+  String get uploadToggleDesc =>
+      'پس از رونویسی، یادداشت‌های تکمیل‌شده به سرور شما ارسال می‌شود';
+
+  @override
+  String get uploadUrlRow => 'نشانی سرور';
+
+  @override
+  String get uploadUrlDialogTitle => 'نشانی سرور';
+
+  @override
+  String get uploadUrlHint => 'https://example.com/diktafon/upload';
+
+  @override
+  String get uploadTokenRow => 'توکن دسترسی';
+
+  @override
+  String get uploadTokenDialogTitle => 'توکن دسترسی';
+
+  @override
+  String get uploadTokenHint => 'راز مشترک پیکربندی‌شده روی سرور شما';
+
+  @override
+  String get uploadNotConfigured => 'پیکربندی نشده';
+
+  @override
+  String get uploadWifiOnly => 'فقط Wi-Fi';
+
+  @override
+  String get uploadWifiOnlyDesc => 'فقط از اتصال‌های نامحدود بارگذاری شود';
+
+  @override
+  String get uploadTestConnection => 'آزمایش اتصال';
+
+  @override
+  String get uploadTestConnectionDesc => 'بررسی وضعیت سرور';
+
+  @override
+  String get uploadTestOk => 'سرور در دسترس است';
+
+  @override
+  String get uploadTestFailed =>
+      'سرور در دسترس نیست — نشانی و توکن را بررسی کنید';
+
+  @override
+  String get uploadStateQueued => 'در انتظار بارگذاری';
+
+  @override
+  String get uploadStateUploading => 'در حال بارگذاری…';
+
+  @override
+  String get uploadStateUploaded => 'بارگذاری شد';
+
+  @override
+  String get uploadStateFailed => 'بارگذاری ناموفق — تلاش دوباره';
+
+  @override
   String get aboutPrivacy => 'درباره و حریم خصوصی';
 
   @override

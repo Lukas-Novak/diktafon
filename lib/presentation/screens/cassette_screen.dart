@@ -261,6 +261,12 @@ class _CassetteScreenState extends ConsumerState<CassetteScreen>
                           .retryEnrichment(memoId),
                       onEditMemo: (i) => _editTranscript(tape.memos[i]),
                       onDeleteMemo: (i) => _deleteMemo(tape.memos[i], i),
+                      uploadVisible: (ref.watch(settingsProvider).value ??
+                              const AppSettings())
+                          .uploadEnabled,
+                      onRetryUpload: (memoId) => ref
+                          .read(jobQueueProvider)
+                          .retryUpload(memoId),
                     ),
                   ),
           ),

@@ -329,6 +329,69 @@ class AppLocalizationsEs extends AppLocalizations {
       'Llévate tus casetes — audio, transcripciones y resúmenes — o tráelos de vuelta';
 
   @override
+  String get groupUpload => 'Subida al servidor';
+
+  @override
+  String get uploadToggle => 'Subida automática';
+
+  @override
+  String get uploadToggleDesc =>
+      'Enviar las notas terminadas a tu servidor tras la transcripción';
+
+  @override
+  String get uploadUrlRow => 'URL del servidor';
+
+  @override
+  String get uploadUrlDialogTitle => 'URL DEL SERVIDOR';
+
+  @override
+  String get uploadUrlHint => 'https://example.com/diktafon/upload';
+
+  @override
+  String get uploadTokenRow => 'Token de acceso';
+
+  @override
+  String get uploadTokenDialogTitle => 'TOKEN DE ACCESO';
+
+  @override
+  String get uploadTokenHint => 'Secreto compartido configurado en tu servidor';
+
+  @override
+  String get uploadNotConfigured => 'Sin configurar';
+
+  @override
+  String get uploadWifiOnly => 'Solo Wi-Fi';
+
+  @override
+  String get uploadWifiOnlyDesc =>
+      'Subir solo con conexiones sin límite de datos';
+
+  @override
+  String get uploadTestConnection => 'Probar conexión';
+
+  @override
+  String get uploadTestConnectionDesc => 'Comprobar el estado del servidor';
+
+  @override
+  String get uploadTestOk => 'Servidor accesible';
+
+  @override
+  String get uploadTestFailed =>
+      'Servidor inaccesible — revisa la URL y el token';
+
+  @override
+  String get uploadStateQueued => 'Esperando para subir';
+
+  @override
+  String get uploadStateUploading => 'Subiendo…';
+
+  @override
+  String get uploadStateUploaded => 'Subido';
+
+  @override
+  String get uploadStateFailed => 'Subida fallida — reintentar';
+
+  @override
   String get aboutPrivacy => 'Acerca de y privacidad';
 
   @override

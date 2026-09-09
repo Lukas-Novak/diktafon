@@ -322,6 +322,69 @@ class AppLocalizationsVi extends AppLocalizations {
       'Mang băng cassette đi cùng bạn — âm thanh, bản chép lời và tóm tắt — hoặc đưa chúng trở lại';
 
   @override
+  String get groupUpload => 'Tải lên máy chủ';
+
+  @override
+  String get uploadToggle => 'Tự động tải lên';
+
+  @override
+  String get uploadToggleDesc =>
+      'Gửi ghi chú đã hoàn tất lên máy chủ của bạn sau khi phiên âm';
+
+  @override
+  String get uploadUrlRow => 'URL máy chủ';
+
+  @override
+  String get uploadUrlDialogTitle => 'URL MÁY CHỦ';
+
+  @override
+  String get uploadUrlHint => 'https://example.com/diktafon/upload';
+
+  @override
+  String get uploadTokenRow => 'Mã truy cập';
+
+  @override
+  String get uploadTokenDialogTitle => 'MÃ TRUY CẬP';
+
+  @override
+  String get uploadTokenHint =>
+      'Khóa chia sẻ được cấu hình trên máy chủ của bạn';
+
+  @override
+  String get uploadNotConfigured => 'Chưa cấu hình';
+
+  @override
+  String get uploadWifiOnly => 'Chỉ qua Wi-Fi';
+
+  @override
+  String get uploadWifiOnlyDesc => 'Chỉ tải lên qua kết nối không giới hạn';
+
+  @override
+  String get uploadTestConnection => 'Kiểm tra kết nối';
+
+  @override
+  String get uploadTestConnectionDesc => 'Kiểm tra trạng thái máy chủ';
+
+  @override
+  String get uploadTestOk => 'Kết nối được máy chủ';
+
+  @override
+  String get uploadTestFailed =>
+      'Không kết nối được máy chủ — kiểm tra URL và mã';
+
+  @override
+  String get uploadStateQueued => 'Đang chờ tải lên';
+
+  @override
+  String get uploadStateUploading => 'Đang tải lên…';
+
+  @override
+  String get uploadStateUploaded => 'Đã tải lên';
+
+  @override
+  String get uploadStateFailed => 'Tải lên thất bại — thử lại';
+
+  @override
   String get aboutPrivacy => 'Giới thiệu & quyền riêng tư';
 
   @override

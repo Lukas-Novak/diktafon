@@ -33,6 +33,8 @@ class TranscriptView extends StatefulWidget {
     this.onRetryMemo,
     this.onEditMemo,
     this.onDeleteMemo,
+    this.uploadVisible = false,
+    this.onRetryUpload,
   });
 
   final Tape tape;
@@ -40,6 +42,14 @@ class TranscriptView extends StatefulWidget {
   final int globalMs;
   final int currentMemoIndex;
   final bool playing;
+
+  /// Server upload (opt-in): whether the per-memo upload state surfaces
+  /// under the memo stamp. Kept off the screen entirely while the feature
+  /// is disabled.
+  final bool uploadVisible;
+
+  /// "Upload failed — retry" tapped → re-enqueue this memo's upload.
+  final ValueChanged<String>? onRetryUpload;
 
   /// Bumps on every user seek (scrub, word tap, memo jump, ±15 s): the view
   /// scrolls so the highlighted word stays visible with some context (§5.3),
@@ -212,6 +222,10 @@ class _TranscriptViewState extends State<TranscriptView> {
               onRetry: widget.onRetryMemo == null
                   ? null
                   : () => widget.onRetryMemo!(memo.id),
+              uploadVisible: widget.uploadVisible,
+              onRetryUpload: widget.onRetryUpload == null
+                  ? null
+                  : () => widget.onRetryUpload!(memo.id),
               onCopy: memo.transcript?.isEmpty == false
                   ? () => _copyTranscript(memo)
                   : null,
@@ -307,6 +321,8 @@ class _MemoDivider extends StatelessWidget {
     this.onCopy,
     this.onEdit,
     this.onDelete,
+    this.uploadVisible = false,
+    this.onRetryUpload,
   });
 
   final Memo memo;
@@ -314,6 +330,11 @@ class _MemoDivider extends StatelessWidget {
   final Color hue;
   final bool first;
   final VoidCallback? onRetry;
+
+  /// Server upload: surface [Memo.uploadStatus] under the stamp; the
+  /// failed state is tappable ([onRetryUpload]).
+  final bool uploadVisible;
+  final VoidCallback? onRetryUpload;
 
   /// The quiet per-memo menu at the stamp's right edge; entries appear only
   /// when their action is possible (copy needs words on the clipboard's
@@ -334,6 +355,38 @@ class _MemoDivider extends StatelessWidget {
       return (context.l10n.summaryFailedRetry, onRetry);
     }
     return null;
+  }
+
+  /// Small upload-state note under the gist line (§ upload): queued /
+  /// uploading / uploaded are informational; failed is a retry affordance
+  /// in the same style as the enrichment retries (§14).
+  Widget _uploadLine(BuildContext context, UploadStatus status) {
+    final tape = context.tape;
+    final retryable = status == UploadStatus.failed;
+    final text = switch (status) {
+      UploadStatus.queued => context.l10n.uploadStateQueued,
+      UploadStatus.uploading => context.l10n.uploadStateUploading,
+      UploadStatus.uploaded => context.l10n.uploadStateUploaded,
+      UploadStatus.failed => context.l10n.uploadStateFailed,
+    };
+    return Padding(
+      padding: const EdgeInsets.only(top: 2),
+      child: GestureDetector(
+        onTap: retryable ? onRetryUpload : null,
+        child: Text(
+          text,
+          style: TextStyle(
+            fontSize: 10,
+            fontWeight: FontWeight.w600,
+            letterSpacing: 0.5,
+            color: tape.ink2,
+            decoration:
+                retryable ? TextDecoration.underline : null,
+            decorationColor: tape.ink2,
+          ),
+        ),
+      ),
+    );
   }
 
   @override
@@ -399,6 +452,8 @@ class _MemoDivider extends StatelessWidget {
                       ),
                     ),
                   ),
+                if (uploadVisible && memo.uploadStatus != null)
+                  _uploadLine(context, memo.uploadStatus!),
               ],
             ),
           ),

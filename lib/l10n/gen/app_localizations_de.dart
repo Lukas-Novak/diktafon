@@ -331,6 +331,70 @@ class AppLocalizationsDe extends AppLocalizations {
       'Nimm deine Kassetten mit — Audio, Transkripte und Zusammenfassungen — oder hole sie zurück';
 
   @override
+  String get groupUpload => 'Server-Upload';
+
+  @override
+  String get uploadToggle => 'Automatischer Upload';
+
+  @override
+  String get uploadToggleDesc =>
+      'Fertige Memos nach der Transkription an deinen Server senden';
+
+  @override
+  String get uploadUrlRow => 'Server-URL';
+
+  @override
+  String get uploadUrlDialogTitle => 'SERVER-URL';
+
+  @override
+  String get uploadUrlHint => 'https://example.com/diktafon/upload';
+
+  @override
+  String get uploadTokenRow => 'Zugriffstoken';
+
+  @override
+  String get uploadTokenDialogTitle => 'ZUGRIFFSTOKEN';
+
+  @override
+  String get uploadTokenHint =>
+      'Geteiltes Geheimnis, auf deinem Server konfiguriert';
+
+  @override
+  String get uploadNotConfigured => 'Nicht konfiguriert';
+
+  @override
+  String get uploadWifiOnly => 'Nur WLAN';
+
+  @override
+  String get uploadWifiOnlyDesc =>
+      'Nur bei unbegrenzten Verbindungen hochladen';
+
+  @override
+  String get uploadTestConnection => 'Verbindung testen';
+
+  @override
+  String get uploadTestConnectionDesc => 'Serverstatus abfragen';
+
+  @override
+  String get uploadTestOk => 'Server erreichbar';
+
+  @override
+  String get uploadTestFailed =>
+      'Server nicht erreichbar — URL und Token prüfen';
+
+  @override
+  String get uploadStateQueued => 'Warten auf Upload';
+
+  @override
+  String get uploadStateUploading => 'Wird hochgeladen…';
+
+  @override
+  String get uploadStateUploaded => 'Hochgeladen';
+
+  @override
+  String get uploadStateFailed => 'Upload fehlgeschlagen — erneut versuchen';
+
+  @override
   String get aboutPrivacy => 'Über & Datenschutz';
 
   @override

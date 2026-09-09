@@ -72,3 +72,33 @@ Any changes will be published at this URL with an updated effective date.
 
 Jaromír Janisch — author@jaromiru.com — or open an issue at
 <https://github.com/jaromiru/diktafon>.
+
+---
+
+## Fork note — opt-in server upload (added in this fork)
+
+This fork adds an **optional, off-by-default** upload of finished memos to
+a server **you** configure. Everything above still applies while the
+feature stays disabled — with `Automatic upload` off (the default), the
+app's network behaviour is unchanged: model downloads only, nothing
+uploaded.
+
+If you explicitly enable it in Settings → Server upload:
+
+- After a memo's recording is finalized and its on-device transcription
+  completes, the app sends **to the URL you entered** — and nowhere else —
+  the finalized audio file, the local Whisper transcript (structured JSON)
+  and a small metadata manifest (memo id, timestamps, duration, language,
+  audio format and size, app version).
+- The access token you enter is kept in the operating system's secure
+  credential store (Android Keystore), never in the app's database, and is
+  sent only as an Authorization header to your own server.
+- Uploads happen over HTTPS (plain HTTP works only as an explicit
+  local-development escape hatch). Retries are automatic; your local
+  recordings and transcripts are never deleted by the upload feature.
+- There is still no account, no analytics, and no telemetry to the fork's
+  authors: the only added network destination is the one you type in.
+
+Server-side handling of the uploaded data is governed by the server you
+chose, outside the scope of this document.
+

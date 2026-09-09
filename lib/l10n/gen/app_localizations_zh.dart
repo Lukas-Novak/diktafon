@@ -309,6 +309,66 @@ class AppLocalizationsZh extends AppLocalizations {
   String get backupExportDesc => '随身带走你的卡带（音频、转写文本和摘要），或再把它们带回来';
 
   @override
+  String get groupUpload => '服务器上传';
+
+  @override
+  String get uploadToggle => '自动上传';
+
+  @override
+  String get uploadToggleDesc => '转录完成后将备忘发送到您的服务器';
+
+  @override
+  String get uploadUrlRow => '服务器地址';
+
+  @override
+  String get uploadUrlDialogTitle => '服务器地址';
+
+  @override
+  String get uploadUrlHint => 'https://example.com/diktafon/upload';
+
+  @override
+  String get uploadTokenRow => '访问令牌';
+
+  @override
+  String get uploadTokenDialogTitle => '访问令牌';
+
+  @override
+  String get uploadTokenHint => '在您的服务器上配置的共享密钥';
+
+  @override
+  String get uploadNotConfigured => '未配置';
+
+  @override
+  String get uploadWifiOnly => '仅 Wi-Fi';
+
+  @override
+  String get uploadWifiOnlyDesc => '仅在非计费连接下上传';
+
+  @override
+  String get uploadTestConnection => '测试连接';
+
+  @override
+  String get uploadTestConnectionDesc => '检测服务器状态';
+
+  @override
+  String get uploadTestOk => '服务器可达';
+
+  @override
+  String get uploadTestFailed => '无法连接服务器 — 请检查地址和令牌';
+
+  @override
+  String get uploadStateQueued => '等待上传';
+
+  @override
+  String get uploadStateUploading => '上传中…';
+
+  @override
+  String get uploadStateUploaded => '已上传';
+
+  @override
+  String get uploadStateFailed => '上传失败 — 重试';
+
+  @override
   String get aboutPrivacy => '关于与隐私';
 
   @override
@@ -912,6 +972,66 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String get backupExportDesc => '隨身帶走你的卡帶（音訊、逐字稿和摘要），或再把它們帶回來';
+
+  @override
+  String get groupUpload => '伺服器上傳';
+
+  @override
+  String get uploadToggle => '自動上傳';
+
+  @override
+  String get uploadToggleDesc => '轉錄完成後將備忘傳送到您的伺服器';
+
+  @override
+  String get uploadUrlRow => '伺服器網址';
+
+  @override
+  String get uploadUrlDialogTitle => '伺服器網址';
+
+  @override
+  String get uploadUrlHint => 'https://example.com/diktafon/upload';
+
+  @override
+  String get uploadTokenRow => '存取權杖';
+
+  @override
+  String get uploadTokenDialogTitle => '存取權杖';
+
+  @override
+  String get uploadTokenHint => '在您的伺服器上設定的共用密鑰';
+
+  @override
+  String get uploadNotConfigured => '未設定';
+
+  @override
+  String get uploadWifiOnly => '僅 Wi-Fi';
+
+  @override
+  String get uploadWifiOnlyDesc => '僅在非計量連線時上傳';
+
+  @override
+  String get uploadTestConnection => '測試連線';
+
+  @override
+  String get uploadTestConnectionDesc => '檢查伺服器狀態';
+
+  @override
+  String get uploadTestOk => '伺服器可連線';
+
+  @override
+  String get uploadTestFailed => '無法連線伺服器 — 請檢查網址與權杖';
+
+  @override
+  String get uploadStateQueued => '等待上傳';
+
+  @override
+  String get uploadStateUploading => '上傳中…';
+
+  @override
+  String get uploadStateUploaded => '已上傳';
+
+  @override
+  String get uploadStateFailed => '上傳失敗 — 重試';
 
   @override
   String get aboutPrivacy => '關於與隱私';
