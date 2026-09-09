@@ -95,14 +95,14 @@ Future<void> main() async {
     await container.read(jobQueueProvider).drain();
     // The upload lane resumes alongside (its own single-flight loop; the
     // two lanes share the launch recovery, so start order can't skew the
-    // transcode gate). WorkManager registration/lifecycle is glued behind
-    // uploadLifecycleProvider — kept alive for the app's lifetime here.
-    container.read(uploadLifecycleProvider);
+    // transcode gate). WorkManager is initialized BEFORE the lifecycle
+    // provider wires settings-triggered register/cancel calls to it.
     if (UploadBackgroundScheduler.isSupported) {
       try {
         await container.read(uploadSchedulerProvider).initialize();
       } catch (_) {}
     }
+    container.read(uploadLifecycleProvider); // kept alive for the app
     unawaited(container.read(jobQueueProvider).drainUploads());
   });
 
