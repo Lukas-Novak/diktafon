@@ -154,6 +154,7 @@ void main() {
             status: 'transcribed',
           ));
       await db.into(db.jobs).insert(JobRow(
+            availableAt: 0,
             id: 'job-m3',
             type: JobType.summarizeMemo.name,
             targetId: 'm-m3',

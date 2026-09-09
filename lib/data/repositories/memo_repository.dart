@@ -109,6 +109,19 @@ class MemoRepository {
         ),
       );
 
+  /// Upload surface state (UploadStatus.name). [uploadedAt] is written on
+  /// server confirmation; passing null for it leaves the column untouched.
+  Future<void> setUploadState(String id, UploadStatus status,
+          {DateTime? uploadedAt}) =>
+      (_db.update(_db.memos)..where((m) => m.id.equals(id))).write(
+        MemosCompanion(
+          uploadStatus: Value(status.name),
+          uploadedAt: uploadedAt == null
+              ? const Value.absent()
+              : Value(uploadedAt.millisecondsSinceEpoch),
+        ),
+      );
+
   Future<void> delete(String id) =>
       (_db.delete(_db.memos)..where((m) => m.id.equals(id))).go();
 

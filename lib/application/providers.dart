@@ -2,9 +2,12 @@
 /// transcription/summarization engine is a factory change — never a UI change.
 library;
 
+import 'dart:async';
+
 import 'dart:ui' as ui;
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 
 import '../data/db/database.dart';
 import '../data/files/audio_file_store.dart';
@@ -32,6 +35,10 @@ import '../services/providers/whisper/whisper_model_manager.dart';
 import '../services/providers/whisper/whisper_transcription_provider.dart';
 import '../services/providers/whisper/whisper_worker.dart';
 import '../services/system/system_settings.dart';
+import '../services/upload/background_uploads.dart';
+import '../services/upload/connectivity_probe.dart';
+import '../services/upload/upload_service.dart';
+import '../services/upload/upload_token_store.dart';
 
 final appDatabaseProvider = Provider<AppDatabase>((ref) {
   final db = AppDatabase();
@@ -103,6 +110,42 @@ final summarizationProvider = Provider<SummarizationProvider>((ref) {
   );
 });
 
+/// §6.4: WAV capture → archival AAC (MediaCodec/AVAssetWriter on mobile,
+/// ffmpeg CLI on desktop).
+final audioTranscoderProvider =
+    Provider<AudioTranscoder>((ref) => defaultAudioTranscoder());
+
+// ---------------------------------------------------------- server upload
+
+final uploadTokenStoreProvider =
+    Provider<UploadTokenStore>((ref) => UploadTokenStore());
+
+final connectivityProbeProvider =
+    Provider<ConnectivityProbe>((ref) => ConnectivityProbe());
+
+final uploadPerformerProvider =
+    Provider<UploadPerformer>((ref) => UploadService());
+
+final uploadSchedulerProvider =
+    Provider<UploadBackgroundScheduler>((ref) => UploadBackgroundScheduler());
+
+/// `<version>+<build>` for the upload manifest's app_version field; empty
+/// when the platform can't say (unit tests).
+Future<String> appVersionString() async {
+  try {
+    final info = await PackageInfo.fromPlatform();
+    return '${info.version}+${info.buildNumber}';
+  } catch (_) {
+    return '';
+  }
+}
+
+/// Presence of a stored upload token, for the Settings form (the value
+/// itself never reaches the widget tree).
+final uploadTokenSetProvider = FutureProvider<bool>((ref) async {
+  return (await ref.watch(uploadTokenStoreProvider).read()) != null;
+});
+
 /// Deliberately *not* watching the two engine providers: the queue survives
 /// a tier switch and resolves them per job instead (see JobQueue docs).
 final jobQueueProvider = Provider<JobQueue>((ref) => JobQueue(
@@ -114,12 +157,45 @@ final jobQueueProvider = Provider<JobQueue>((ref) => JobQueue(
       () => ref.read(summarizationProvider),
       transcoder: () => ref.read(audioTranscoderProvider),
       systemZhScript: systemZhScript,
+      uploadPerformer: ref.read(uploadPerformerProvider),
+      uploadTokenReader: () => ref.read(uploadTokenStoreProvider).read(),
+      hasConnectivity: () => ref.read(connectivityProbeProvider).hasConnectivity(),
+      isUnmetered: () => ref.read(connectivityProbeProvider).isUnmetered(),
+      appVersionProvider: appVersionString,
+      onUploadScheduled: () {
+        final wifiOnly =
+            (ref.read(settingsProvider).value ?? const AppSettings())
+                .uploadWifiOnly;
+        ref.read(uploadSchedulerProvider).kick(wifiOnly: wifiOnly);
+      },
     ));
 
-/// §6.4: WAV capture → archival AAC (MediaCodec/AVAssetWriter on mobile,
-/// ffmpeg CLI on desktop).
-final audioTranscoderProvider =
-    Provider<AudioTranscoder>((ref) => defaultAudioTranscoder());
+/// Upload lifecycle glue, kept alive for the app's lifetime by main():
+/// WorkManager registrations follow the settings, and a connectivity regain
+/// (or the feature being switched on) kicks the durable upload lane.
+final uploadLifecycleProvider = Provider<void>((ref) {
+  ref.listen(settingsProvider, (previous, next) {
+    final settings = next.value;
+    if (settings == null) return;
+    unawaited(ref.read(uploadSchedulerProvider).sync(
+        enabled: settings.uploadEnabled, wifiOnly: settings.uploadWifiOnly));
+    final wasEnabled = previous?.value?.uploadEnabled ?? false;
+    if (settings.uploadEnabled && !wasEnabled) {
+      // A freshly enabled (or re-enabled) feature may have rows parked by
+      // the disabled gate.
+      unawaited(ref.read(jobQueueProvider).drainUploads());
+    }
+  }, fireImmediately: true);
+  final subscription = ref
+      .watch(connectivityProbeProvider)
+      .uploadOpportunities
+      .listen((hasConnectivity) {
+    if (hasConnectivity) {
+      unawaited(ref.read(jobQueueProvider).drainUploads());
+    }
+  });
+  ref.onDispose(subscription.cancel);
+});
 
 /// D13: the Android microphone foreground service under a live capture.
 /// A class-shaped seam so controller tests can fake the platform answer.

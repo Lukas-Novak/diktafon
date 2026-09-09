@@ -10,6 +10,9 @@ class AppSettings {
     this.summariesEnabled = true,
     this.theme = 'system',
     this.firstRunDone = false,
+    this.uploadEnabled = false,
+    this.uploadUrl,
+    this.uploadWifiOnly = true,
   });
 
   /// Null → auto-detect per memo (D8), so one tape may mix languages; set →
@@ -26,6 +29,19 @@ class AppSettings {
   /// The first-run setup (§5.6) has been walked through (or skipped).
   final bool firstRunDone;
 
+  /// Server upload (off by default — nothing leaves the device until both
+  /// this is on and an [uploadUrl] is set; the token lives in secure
+  /// storage, never in this table, because the DB is covered by the OS
+  /// backup).
+  final bool uploadEnabled;
+
+  /// Full endpoint, e.g. `https://example.com/diktafon/upload`. Null/empty
+  /// → not configured.
+  final String? uploadUrl;
+
+  /// Defer uploads to unmetered (Wi-Fi/Ethernet) connectivity.
+  final bool uploadWifiOnly;
+
   static AppSettings fromRows(Map<String, String> rows) => AppSettings(
         appLanguage: rows['appLanguage'],
         chimeEnabled: rows['chimeEnabled'] != '0',
@@ -36,6 +52,9 @@ class AppSettings {
         // (§6.8 retired 2026-07-13); it is simply ignored.
         theme: rows['theme'] ?? 'system',
         firstRunDone: rows['firstRunDone'] == '1',
+        uploadEnabled: rows['uploadEnabled'] == '1',
+        uploadUrl: rows['uploadUrl'],
+        uploadWifiOnly: rows['uploadWifiOnly'] != '0',
       );
 }
 
@@ -73,4 +92,9 @@ class SettingsRepository {
       _set('summariesEnabled', on ? '1' : '0');
   Future<void> setTheme(String theme) => _set('theme', theme);
   Future<void> setFirstRunDone() => _set('firstRunDone', '1');
+  Future<void> setUploadEnabled(bool on) => _set('uploadEnabled', on ? '1' : '0');
+  Future<void> setUploadUrl(String? url) =>
+      _set('uploadUrl', (url == null || url.trim().isEmpty) ? null : url.trim());
+  Future<void> setUploadWifiOnly(bool on) =>
+      _set('uploadWifiOnly', on ? '1' : '0');
 }

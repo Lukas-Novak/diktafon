@@ -170,6 +170,7 @@ void main() {
       () async {
     await plantMemo('m1');
     await db.into(db.jobs).insert(JobRow(
+          availableAt: 0,
           id: 'j-dead',
           type: JobType.transcodeAudio.name,
           targetId: 'm1',

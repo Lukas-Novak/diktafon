@@ -17,6 +17,23 @@ enum MemoStatus {
       MemoStatus.values.firstWhere((s) => s.name == name);
 }
 
+/// Server-upload surface state of a memo (orthogonal to [MemoStatus]: upload
+/// must never make a memo "failed" — it is enrichment-adjacent bookkeeping,
+/// like the archival transcode).
+enum UploadStatus {
+  /// An upload job exists (queued, or parked waiting for connectivity).
+  queued,
+  uploading,
+  uploaded,
+
+  /// Gave up after the retry budget (or a permanent rejection: auth, 4xx,
+  /// conflict). The UI offers a manual retry.
+  failed;
+
+  static UploadStatus fromName(String name) =>
+      UploadStatus.values.firstWhere((s) => s.name == name);
+}
+
 /// A named, topic-based collection of memos, rendered as one continuous tape.
 class Cassette {
   const Cassette({
@@ -62,6 +79,8 @@ class Memo {
     this.detectedLang,
     this.transcript,
     this.memoSummary,
+    this.uploadStatus,
+    this.uploadedAt,
   });
 
   final String id;
@@ -79,6 +98,13 @@ class Memo {
   /// pending — and permanently for short transcripts, which are their own
   /// summary (§6.7).
   final String? memoSummary;
+
+  /// Server-upload state; null = upload never scheduled (feature off when
+  /// the memo finalized, or a pre-upload database).
+  final UploadStatus? uploadStatus;
+
+  /// When the server confirmed the upload; null until then.
+  final DateTime? uploadedAt;
 }
 
 /// Structured transcription output (§6.3) — engine-agnostic.

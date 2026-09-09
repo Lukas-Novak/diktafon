@@ -50,6 +50,13 @@ class Memos extends Table {
   IntColumn get foldedAt => integer().nullable()();  // epoch ms
   TextColumn get status => text()();
 
+  /// Server-upload surface state (UploadStatus.name); null = the feature has
+  /// never touched this memo (upload disabled when it was finalized).
+  TextColumn get uploadStatus => text().nullable()();
+
+  /// Server-confirmed upload instant (epoch ms); null until then.
+  IntColumn get uploadedAt => integer().nullable()();
+
   @override
   Set<Column> get primaryKey => {id};
 }
@@ -63,6 +70,10 @@ class Jobs extends Table {
   TextColumn get status => text()();
   IntColumn get attempts => integer().withDefault(const Constant(0))();
   IntColumn get createdAt => integer()();  // epoch ms
+
+  /// Do-not-pick-before instant (epoch ms). Backoff without occupying the
+  /// drain loop: a deferred/requeued job parks in 'queued' until then.
+  IntColumn get availableAt => integer().withDefault(const Constant(0))();
 
   @override
   Set<Column> get primaryKey => {id};
@@ -86,7 +97,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase.forTesting(super.executor);
 
   @override
-  int get schemaVersion => 3;
+  int get schemaVersion => 4;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -98,6 +109,12 @@ class AppDatabase extends _$AppDatabase {
           if (from < 3) {
             // The retired transcript cleanup's raw-take column (§6.8).
             await m.addColumn(memos, memos.rawTranscript);
+          }
+          if (from < 4) {
+            // Server upload: surface state on memos, parked retries on jobs.
+            await m.addColumn(memos, memos.uploadStatus);
+            await m.addColumn(memos, memos.uploadedAt);
+            await m.addColumn(jobs, jobs.availableAt);
           }
         },
         beforeOpen: (details) async {

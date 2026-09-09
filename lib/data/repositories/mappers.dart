@@ -34,4 +34,9 @@ Memo memoFromRow(MemoRow row) => Memo(
           : Transcript.fromJson(
               jsonDecode(row.transcript!) as Map<String, dynamic>),
       memoSummary: row.memoSummary,
+      uploadStatus: row.uploadStatus == null
+          ? null
+          : UploadStatus.fromName(row.uploadStatus!),
+      uploadedAt:
+          row.uploadedAt == null ? null : _fromMs(row.uploadedAt!),
     );

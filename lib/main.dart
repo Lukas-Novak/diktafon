@@ -19,6 +19,7 @@ import 'services/providers/llm/llm_model_manager.dart';
 import 'services/providers/model_manager.dart';
 import 'services/providers/whisper/whisper_model_manager.dart';
 import 'services/system/system_settings.dart';
+import 'services/upload/background_uploads.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -92,6 +93,17 @@ Future<void> main() async {
       await container.read(settingsProvider.future);
     } catch (_) {}
     await container.read(jobQueueProvider).drain();
+    // The upload lane resumes alongside (its own single-flight loop; the
+    // two lanes share the launch recovery, so start order can't skew the
+    // transcode gate). WorkManager registration/lifecycle is glued behind
+    // uploadLifecycleProvider — kept alive for the app's lifetime here.
+    container.read(uploadLifecycleProvider);
+    if (UploadBackgroundScheduler.isSupported) {
+      try {
+        await container.read(uploadSchedulerProvider).initialize();
+      } catch (_) {}
+    }
+    unawaited(container.read(jobQueueProvider).drainUploads());
   });
 
   // A force-close mid-download left a `.part` behind — put it back on the

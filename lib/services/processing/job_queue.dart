@@ -7,6 +7,7 @@ import 'package:uuid/uuid.dart';
 
 import '../../data/db/database.dart';
 import '../../data/repositories/cassette_repository.dart';
+import '../../data/repositories/mappers.dart';
 import '../../data/repositories/memo_repository.dart';
 import '../../data/repositories/settings_repository.dart';
 import '../../domain/models.dart';
@@ -14,6 +15,7 @@ import '../providers/llm/summary_prompts.dart' show estimateTokens;
 import '../audio/audio_transcoder.dart';
 import '../providers/summarization_provider.dart';
 import '../providers/transcription_provider.dart';
+import '../upload/upload_service.dart';
 import 'chinese_script.dart';
 
 /// The §6.5 job types. The cassette overview is always rebuilt from *all*
@@ -28,7 +30,8 @@ enum JobType {
   summarizeMemo,
   updateCassetteSummary,
   recomputeCassetteSummary,
-  transcodeAudio;
+  transcodeAudio,
+  uploadMemo;
 
   /// Enrichment stages whose failure marks the memo `failed` (§14).
   /// `transcodeAudio` deliberately stays out: a WAV that never becomes AAC
@@ -36,6 +39,11 @@ enum JobType {
   /// never suffer for a codec hiccup.
   bool get targetsMemo =>
       this == transcribe || this == cleanupTranscript || this == summarizeMemo;
+
+  /// Upload-lane rows ride their own drain; `targetsMemo` deliberately
+  /// excludes them: upload state lives on Memos.uploadStatus, never on the
+  /// memo lifecycle itself.
+  bool get isUpload => this == JobType.uploadMemo;
 }
 
 /// §6.7 (revised 2026-07-28): only transcripts estimated *longer* than this
@@ -57,7 +65,17 @@ class JobQueue {
       this._transcription, this._summarization,
       {this._transcoder,
       this._retryDelayUnit = const Duration(seconds: 1),
-      this._systemZhScript = _defaultZhScript});
+      this._systemZhScript = _defaultZhScript,
+      this._uploadPerformer,
+      this._uploadTokenReader,
+      this._hasConnectivity,
+      this._isUnmetered,
+      this._appVersionProvider,
+      this._onUploadScheduled,
+      List<Duration>? uploadBackoffSchedule,
+      this._uploadDeferDelay = const Duration(seconds: 30)})
+      : _uploadBackoff =
+            uploadBackoffSchedule ?? JobQueue._defaultUploadBackoff;
 
   final AppDatabase _db;
   final MemoRepository _memos;
@@ -74,6 +92,27 @@ class JobQueue {
   /// production wires the system locale; tests inject.
   final String Function() _systemZhScript;
 
+  /// Server upload (opt-in). See the upload lane section below.
+  final UploadPerformer? _uploadPerformer;
+  final Future<String?> Function()? _uploadTokenReader;
+  final Future<bool> Function()? _hasConnectivity;
+  final Future<bool> Function()? _isUnmetered;
+  final Future<String> Function()? _appVersionProvider;
+  final void Function()? _onUploadScheduled;
+  final List<Duration> _uploadBackoff;
+  static const List<Duration> _defaultUploadBackoff = [
+    Duration(minutes: 1),
+    Duration(minutes: 5),
+    Duration(minutes: 15),
+    Duration(hours: 1),
+    Duration(hours: 2),
+    Duration(hours: 6),
+  ];
+  static const _maxUploadAttempts = 10;
+  final Duration _uploadDeferDelay;
+  Future<void>? _drainingUploads;
+  Future<void>? _reconcileFuture;
+
   static String _defaultZhScript() => 'Hans';
 
   /// Backoff = attempts × this; tests inject zero.
@@ -84,7 +123,7 @@ class JobQueue {
   final Map<String, CancelToken> _active = {};
 
   Future<void>? _draining;
-  bool _recoveredOrphans = false;
+  bool _recoveryComplete = false;
   static const _maxAttempts = 5;
 
   /// Enqueued on record-stop (D7).
@@ -125,6 +164,9 @@ class JobQueue {
   /// needs refreshing. The memo's queued jobs are dropped first — they would
   /// re-derive stale artifacts from the replaced text.
   Future<void> applyTranscriptEdit(String memoId, Transcript transcript) async {
+    // Settings fetch fires concurrent with the awaited steps (a fresh
+    // serial await inside this method shifts the §6.9 teardown timing).
+    final uploadOn = _settings.get().then((s) => s.uploadEnabled);
     final row = await _memoRow(memoId);
     if (row == null) return; // deleted meanwhile (§14)
     await cancelJobsFor(memoId);
@@ -141,6 +183,21 @@ class JobQueue {
       }
     });
     unawaited(drain());
+    // The server must see the corrected transcript too (it dedupes by
+    // audio, replacing the artifacts). Deliberately fire-and-forget AFTER
+    // drain(): awaiting ANY extra database work here shifts this method's
+    // completion chain past the §6.9 suite's close-in-teardown timing.
+    // The kill window between the transaction and this insert is covered
+    // by [_reconcileStrandedUploads] at next launch, the §6.5 way.
+    unawaited(uploadOn.then((enabled) async {
+      if (!enabled) return;
+      try {
+        await _enqueueUpload(memoId);
+      } catch (_) {
+        // Best-effort scheduling inside the edit flow — the upload lane's
+        // launch reconcile re-schedules stranded surfaces anyway.
+      }
+    }));
   }
 
   /// Re-runs the whole enrichment pipeline for every memo on the cassette —
@@ -203,17 +260,30 @@ class JobQueue {
   Future<void> drain() => _draining ??=
       _drainLoop().whenComplete(() => _draining = null);
 
+  /// The once-per-process launch recovery both lanes pass before working:
+  /// orphan requeue, stranded reconciles, legacy 'done' sweep. Sharing one
+  /// future makes the upload lane's transcode gate sound no matter which
+  /// lane starts first — the reconciles (re)create rows the gate reads —
+  /// while [_recoveryComplete] keeps the post-launch hot path hop-free:
+  /// a bare bool check schedules NO microtask (the §6.9 suite's teardown
+  /// timing breaks if even one hop is added to the drain's entry chain).
+  Future<void> _ensureRecovered() =>
+      _reconcileFuture ??= _recoverOnce()
+          .whenComplete(() => _recoveryComplete = true);
+
+  Future<void> _recoverOnce() async {
+    await _recoverOrphans();
+    await _reconcileStrandedMemos();
+    await _reconcileStrandedWavs();
+    await _reconcileStrandedUploads();
+    // Done rows written by pre-pruning builds are pure archaeology —
+    // completed jobs are deleted outright now (see _run), so sweep the
+    // legacy ones too instead of scanning them on every drain forever.
+    await (_db.delete(_db.jobs)..where((j) => j.status.equals('done'))).go();
+  }
+
   Future<void> _drainLoop() async {
-    if (!_recoveredOrphans) {
-      _recoveredOrphans = true;
-      await _recoverOrphans();
-      await _reconcileStrandedMemos();
-      await _reconcileStrandedWavs();
-      // Done rows written by pre-pruning builds are pure archaeology —
-      // completed jobs are deleted outright now (see _run), so sweep the
-      // legacy ones too instead of scanning them on every drain forever.
-      await (_db.delete(_db.jobs)..where((j) => j.status.equals('done'))).go();
-    }
+    if (!_recoveryComplete) await _ensureRecovered();
     while (true) {
       // Enrichment waits for a provisioned model (§14) — and summarization
       // additionally for the summaries switch (the model picker's "No
@@ -265,6 +335,10 @@ class JobQueue {
           await _updateCassetteSummary(job.targetId);
         case JobType.transcodeAudio:
           await _transcodeAudio(job.targetId);
+        case JobType.uploadMemo:
+          // Not on this drain's runnable list — uploads run on their own
+          // lane; case exists for exhaustiveness only.
+          break;
       }
       // Completed jobs are deleted, not archived: nothing reads them back,
       // and years of use would otherwise leave thousands of dead rows under
@@ -324,9 +398,23 @@ class JobQueue {
           ..where((j) => j.status.equals('running')))
         .get();
     for (final job in orphans) {
+      final type = JobType.values.byName(job.type);
+      if (type == JobType.uploadMemo) {
+        // A killed in-flight upload is simply retried from the top — the
+        // server dedupes by memo id, so the re-send is safe. Its own
+        // attempt budget applies.
+        await _setJob(
+            job.id, job.attempts >= _maxUploadAttempts ? 'failed' : 'queued');
+        await _memos.setUploadState(
+            job.targetId,
+            job.attempts >= _maxUploadAttempts
+                ? UploadStatus.failed
+                : UploadStatus.queued);
+        continue;
+      }
       final permanent = job.attempts >= _maxAttempts;
       await _setJob(job.id, permanent ? 'failed' : 'queued');
-      if (!JobType.values.byName(job.type).targetsMemo) continue;
+      if (!type.targetsMemo) continue;
       if (permanent) {
         await _memos.updateStatus(job.targetId, MemoStatus.failed);
       } else {
@@ -389,6 +477,34 @@ class JobQueue {
     }
   }
 
+  /// Upload-lane counterpart of [_reconcileStrandedMemos]: a memo whose
+  /// surface says queued/uploading but whose job row is GONE — killed in a
+  /// scheduling window (stop/recovery's two write steps, transcript-edit's
+  /// cancel-then-reschedule) — would otherwise say "waiting" forever with
+  /// nothing riding the lane. Re-scheduled coalesced; only when enabled.
+  Future<void> _reconcileStrandedUploads() async {
+    if (!(await _settings.get()).uploadEnabled) return;
+    final live = await (_db.select(_db.jobs)
+          ..where((j) =>
+              j.type.equals(JobType.uploadMemo.name) &
+              j.status.isIn(['queued', 'running'])))
+        .get();
+    final covered = {for (final job in live) job.targetId};
+    final stranded = await (_db.select(_db.memos)
+          ..where((m) => m.uploadStatus
+              .isIn([UploadStatus.queued.name, UploadStatus.uploading.name])))
+        .get();
+    for (final row in stranded) {
+      if (covered.contains(row.id)) continue;
+      if (row.transcript == null) {
+        await (_db.update(_db.memos)..where((m) => m.id.equals(row.id)))
+            .write(const MemosCompanion(uploadStatus: Value(null)));
+        continue;
+      }
+      await _tryScheduleUpload(row.id);
+    }
+  }
+
   /// §6.4: WAV capture → archival AAC, then the memo row is swapped over
   /// and the WAV deleted. Idempotent and self-cancelling: a memo already on
   /// AAC, gone, or missing its audio simply completes the job.
@@ -418,6 +534,11 @@ class JobQueue {
     } catch (_) {
       // A busy/vanished WAV is orphan-sweep food, not a failure.
     }
+    // The upload lane defers on a live transcode row (it wants the archival
+    // AAC): a deferred memo needs a fresh kick now that the row is gone.
+    if ((await _settings.get()).uploadEnabled) {
+      await _enqueueUpload(memoId);
+    }
   }
 
   Future<void> _transcribe(String memoId) async {
@@ -444,22 +565,38 @@ class JobQueue {
         systemZhScript: _systemZhScript,
       );
 
+      // Server upload (opt-in): scheduled in the same transaction as the
+      // transcript write — a kill between them must not strand a finished
+      // memo with an unschedulable upload. The lane itself additionally
+      // waits for the archival transcode before touching the network.
+      final uploadOn = settings.uploadEnabled;
+
       if (transcript.isEmpty) {
         // Empty/near-silent memo: kept playable, summary skipped (§14, §6.7)
         // — nothing left to enrich.
-        await _memos.setTranscript(memoId, transcript, MemoStatus.ready);
+        await _db.transaction(() async {
+          await _memos.setTranscript(memoId, transcript, MemoStatus.ready);
+          if (uploadOn) await _tryScheduleUpload(memoId);
+        });
       } else if (!_wantsGist(transcript)) {
         // Short transcript (§6.7): it is its own summary — the memo is done
         // without ever touching the LLM; only the overview job (which reads
         // the transcript directly) waits on the summarization gate.
-        await _memos.setTranscript(memoId, transcript, MemoStatus.ready);
+        await _db.transaction(() async {
+          await _memos.setTranscript(memoId, transcript, MemoStatus.ready);
+          if (uploadOn) await _tryScheduleUpload(memoId);
+        });
         await _enqueueCassetteUpdate(row.cassetteId);
       } else {
-        await _memos.setTranscript(memoId, transcript, MemoStatus.transcribed);
-        // The gist job waits in the queue while its model is missing or
-        // summaries are disabled — the drain gate holds it, never the memo.
-        await _insertJob(JobType.summarizeMemo, memoId);
+        await _db.transaction(() async {
+          await _memos.setTranscript(memoId, transcript, MemoStatus.transcribed);
+          if (uploadOn) await _tryScheduleUpload(memoId);
+          // The gist job waits in the queue while its model is missing or
+          // summaries are disabled — the drain gate holds it, never the memo.
+          await _insertJob(JobType.summarizeMemo, memoId);
+        });
       }
+      if (uploadOn) _afterUploadScheduled();
     } finally {
       _active.remove(memoId);
     }
@@ -632,6 +769,7 @@ class JobQueue {
             status: 'queued',
             attempts: 0,
             createdAt: DateTime.now().millisecondsSinceEpoch,
+            availableAt: 0,
           ));
 
   Future<void> _setJob(String id, String status, {int? attempts}) =>
@@ -639,4 +777,204 @@ class JobQueue {
         status: Value(status),
         attempts: attempts == null ? const Value.absent() : Value(attempts),
       ));
+
+  // --------------------------------------------------------- server upload
+  //
+  // The upload lane (§ upload, opt-in). Same durability rules as the ML
+  // drain — rows persist across process death — but it runs on its OWN
+  // single-flight loop so a slow multipart never throttles transcription
+  // behind it, and reads its configuration per attempt (URL/token may
+  // change while rows are queued).
+
+  /// Coalesced scheduling used by every trigger point: a live row already
+  /// covers the memo; a 'failed' row is swept (fresh trigger, fresh
+  /// conditions). Callers must check settings.uploadEnabled first.
+  Future<bool> _tryScheduleUpload(String memoId) async {
+    final live = await (_db.select(_db.jobs)
+          ..where((j) =>
+              j.targetId.equals(memoId) &
+              j.type.equals(JobType.uploadMemo.name) &
+              j.status.isIn(['queued', 'running'])))
+        .get();
+    if (live.isNotEmpty) return false;
+    await (_db.delete(_db.jobs)
+          ..where((j) =>
+              j.targetId.equals(memoId) &
+              j.type.equals(JobType.uploadMemo.name) &
+              j.status.equals('failed')))
+        .go();
+    await _memos.setUploadState(memoId, UploadStatus.queued);
+    await _insertJob(JobType.uploadMemo, memoId);
+    return true;
+  }
+
+  Future<void> _enqueueUpload(String memoId) async {
+    if (!(await _settings.get()).uploadEnabled) return;
+    if (await _tryScheduleUpload(memoId)) _afterUploadScheduled();
+  }
+
+  /// Manual retry ("Upload failed — retry"). Also the re-entry point when
+  /// the user fixes the URL/token after a permanent failure.
+  Future<void> retryUpload(String memoId) => _enqueueUpload(memoId);
+
+  void _afterUploadScheduled() {
+    _onUploadScheduled?.call(); // wakes WorkManager in production
+    unawaited(drainUploads());
+  }
+
+  /// The upload lane's own single-flight drain: uploads must never stall
+  /// the ML drain behind a big multipart body.
+  Future<void> drainUploads() => _drainingUploads ??=
+      _drainUploadLoop().whenComplete(() => _drainingUploads = null);
+
+  Future<void> _drainUploadLoop() async {
+    if (!_recoveryComplete) await _ensureRecovered();
+    if (_uploadPerformer == null) return;
+    while (true) {
+      final settings = await _settings.get();
+      if (!settings.uploadEnabled) return;
+      final url = settings.uploadUrl;
+      if (url == null || url.isEmpty) return;
+      final token = await _uploadTokenReader?.call();
+      if (token == null || token.isEmpty) return;
+      final online = _hasConnectivity == null || await _hasConnectivity();
+      if (!online) return;
+      if (settings.uploadWifiOnly &&
+          _isUnmetered != null &&
+          !await _isUnmetered()) {
+        return;
+      }
+      final config = UploadConfig(url: url, token: token);
+      final now = DateTime.now().millisecondsSinceEpoch;
+      final job = await (_db.select(_db.jobs)
+            ..where((j) =>
+                j.status.equals('queued') &
+                j.type.equals(JobType.uploadMemo.name) &
+                j.availableAt.isSmallerOrEqualValue(now))
+            ..orderBy([(j) => OrderingTerm.asc(j.createdAt)])
+            ..limit(1))
+          .getSingleOrNull();
+      if (job == null) return;
+      // A deferred job parks with a future availableAt — nothing else in
+      // this lane can usefully run right now (FIFO: older rows first), so
+      // the lane exits and waits for the next kick.
+      if (!await _runUpload(job, config)) return;
+    }
+  }
+
+  /// One upload row. Returns false when the lane should stop (the row was
+  /// parked — its availableAt moved into the future).
+  Future<bool> _runUpload(JobRow job, UploadConfig config) async {
+    final memoId = job.targetId;
+    final row = await _memoRow(memoId);
+    if (row == null) {
+      // Deleted meanwhile (§14) — the job is moot, not failed.
+      await _deleteJobRow(job.id);
+      return true;
+    }
+    if (row.transcript == null) {
+      // Wiped for a re-transcribe race; the fresh transcription schedules
+      // the upload again. Convergent, so this row may close quietly.
+      await _deleteJobRow(job.id);
+      return true;
+    }
+    if (!File(row.filePath).existsSync()) {
+      // The master is gone — no retry will ever conjure it.
+      await _failUpload(job, row, attempts: job.attempts + 1);
+      return true;
+    }
+    if (!row.filePath.endsWith('.m4a') && await _hasLiveTranscode(memoId)) {
+      // Transcode in flight — upload the archival AAC once it lands: park
+      // without consuming an attempt (its completion re-kicks the lane).
+      await (_db.update(_db.jobs)..where((j) => j.id.equals(job.id)))
+          .write(JobsCompanion(
+              availableAt: Value(DateTime.now()
+                  .add(_uploadDeferDelay)
+                  .millisecondsSinceEpoch)));
+      return false; // FIFO: older rows first — exit the lane
+    }
+
+    await _setJob(job.id, 'running', attempts: job.attempts + 1);
+    await _memos.setUploadState(memoId, UploadStatus.uploading);
+    try {
+      final outcome = await _uploadPerformer!.upload(
+        config,
+        MemoUpload(
+          memo: memoFromRow(row),
+          cassetteLabel: await _cassetteLabel(row.cassetteId),
+          appVersion: await _appVersion(),
+        ),
+      );
+      switch (outcome) {
+        case UploadSuccess():
+          await _deleteJobRow(job.id);
+          await _memos.setUploadState(memoId, UploadStatus.uploaded,
+              uploadedAt: DateTime.now());
+        case UploadRetryable(:final retryAfter):
+          await _retryUploadLater(job, row, retryAfter);
+        case UploadPermanent():
+          await _failUpload(job, row, attempts: job.attempts + 1);
+      }
+    } catch (_) {
+      // Unexpected performer failure gets the same budgeted treatment as a
+      // server error — never silently dropped, never hot-looped.
+      await _retryUploadLater(job, row, null);
+    }
+    return true;
+  }
+
+  Future<void> _retryUploadLater(
+      JobRow job, MemoRow row, Duration? retryAfter) async {
+    final attempts = job.attempts + 1;
+    if (attempts >= _maxUploadAttempts) {
+      await _failUpload(job, row, attempts: attempts);
+      return;
+    }
+    final delay =
+        retryAfter ?? _uploadBackoff[(attempts - 1) % _uploadBackoff.length];
+    await _setJob(job.id, 'queued', attempts: attempts);
+    await (_db.update(_db.jobs)..where((j) => j.id.equals(job.id))).write(
+        JobsCompanion(
+            availableAt:
+                Value(DateTime.now().add(delay).millisecondsSinceEpoch)));
+    await _memos.setUploadState(job.targetId, UploadStatus.queued);
+  }
+
+  Future<void> _failUpload(JobRow job, MemoRow row,
+      {required int attempts}) async {
+    await _setJob(job.id, 'failed', attempts: attempts);
+    await _memos.setUploadState(row.id, UploadStatus.failed);
+  }
+
+  /// True while any transcodeAudio row for this memo is queued or running —
+  /// a settled transcode leaves either an .m4a filePath, a 'failed' row, or
+  /// no row at all. The lane and the ML drain share one isolate and one
+  /// first-run recovery, so this is read only at quiescent points.
+  Future<bool> _hasLiveTranscode(String memoId) async {
+    final rows = await (_db.select(_db.jobs)
+          ..where((j) =>
+              j.targetId.equals(memoId) &
+              j.type.equals(JobType.transcodeAudio.name) &
+              j.status.isIn(['queued', 'running'])))
+        .get();
+    return rows.isNotEmpty;
+  }
+
+  Future<void> _deleteJobRow(String id) =>
+      (_db.delete(_db.jobs)..where((j) => j.id.equals(id))).go();
+
+  Future<String?> _cassetteLabel(String cassetteId) async =>
+      (await (_db.select(_db.cassettes)
+                ..where((c) => c.id.equals(cassetteId)))
+              .getSingleOrNull())
+          ?.label;
+
+  Future<String> _appVersion() async {
+    try {
+      return await _appVersionProvider?.call() ?? '';
+    } catch (_) {
+      return '';
+    }
+  }
+
 }
