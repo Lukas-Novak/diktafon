@@ -405,6 +405,7 @@ class JobQueue {
         // A killed in-flight upload is simply retried from the top — the
         // server dedupes by memo id, so the re-send is safe. Its own
         // attempt budget applies.
+        debugPrint('[upload-lane] orphan-recover ${job.targetId} (attempts=${job.attempts})');
         await _setJob(
             job.id, job.attempts >= _maxUploadAttempts ? 'failed' : 'queued');
         await _memos.setUploadState(
@@ -798,7 +799,10 @@ class JobQueue {
               j.type.equals(JobType.uploadMemo.name) &
               j.status.isIn(['queued', 'running'])))
         .get();
-    if (live.isNotEmpty) return false;
+    if (live.isNotEmpty) {
+      debugPrint('[upload-lane] schedule $memoId: live row exists (${live.single.status})');
+      return false;
+    }
     await (_db.delete(_db.jobs)
           ..where((j) =>
               j.targetId.equals(memoId) &
@@ -807,6 +811,7 @@ class JobQueue {
         .go();
     await _memos.setUploadState(memoId, UploadStatus.queued);
     await _insertJob(JobType.uploadMemo, memoId);
+    debugPrint('[upload-lane] scheduled $memoId');
     return true;
   }
 
@@ -920,6 +925,7 @@ class JobQueue {
     if (!row.filePath.endsWith('.m4a') && await _hasLiveTranscode(memoId)) {
       // Transcode in flight — upload the archival AAC once it lands: park
       // without consuming an attempt (its completion re-kicks the lane).
+      debugPrint('[upload-lane] $memoId deferred: transcode in flight (${row.filePath})');
       await (_db.update(_db.jobs)..where((j) => j.id.equals(job.id)))
           .write(JobsCompanion(
               availableAt: Value(DateTime.now()
@@ -966,11 +972,13 @@ class JobQueue {
       JobRow job, MemoRow row, Duration? retryAfter) async {
     final attempts = job.attempts + 1;
     if (attempts >= _maxUploadAttempts) {
+      debugPrint('[upload-lane] ${job.targetId} failed: budget exhausted');
       await _failUpload(job, row, attempts: attempts);
       return;
     }
     final delay =
         retryAfter ?? _uploadBackoff[(attempts - 1) % _uploadBackoff.length];
+    debugPrint('[upload-lane] ${job.targetId} requeued (attempt $attempts, +${delay.inSeconds}s)');
     await _setJob(job.id, 'queued', attempts: attempts);
     await (_db.update(_db.jobs)..where((j) => j.id.equals(job.id))).write(
         JobsCompanion(
