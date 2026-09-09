@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:drift/drift.dart';
+import 'package:flutter/foundation.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../data/db/database.dart';
@@ -836,18 +837,32 @@ class JobQueue {
   Future<void> _drainUploadLoop() async {
     if (!_recoveryComplete) await _ensureRecovered();
     if (_uploadPerformer == null) return;
+    debugPrint('[upload-lane] drain start');
     while (true) {
       final settings = await _settings.get();
-      if (!settings.uploadEnabled) return;
+      if (!settings.uploadEnabled) {
+        debugPrint('[upload-lane] gate: disabled');
+        return;
+      }
       final url = settings.uploadUrl;
-      if (url == null || url.isEmpty) return;
+      if (url == null || url.isEmpty) {
+        debugPrint('[upload-lane] gate: url missing');
+        return;
+      }
       final token = await _uploadTokenReader?.call();
-      if (token == null || token.isEmpty) return;
+      if (token == null || token.isEmpty) {
+        debugPrint('[upload-lane] gate: token missing');
+        return;
+      }
       final online = _hasConnectivity == null || await _hasConnectivity();
-      if (!online) return;
+      if (!online) {
+        debugPrint('[upload-lane] gate: offline');
+        return;
+      }
       if (settings.uploadWifiOnly &&
           _isUnmetered != null &&
           !await _isUnmetered()) {
+        debugPrint('[upload-lane] gate: wifi-only, metered');
         return;
       }
       final config = UploadConfig(url: url, token: token);
@@ -860,7 +875,10 @@ class JobQueue {
             ..orderBy([(j) => OrderingTerm.asc(j.createdAt)])
             ..limit(1))
           .getSingleOrNull();
-      if (job == null) return;
+      if (job == null) {
+        debugPrint('[upload-lane] clean: no due row');
+        return;
+      }
       // A deferred job parks with a future availableAt — nothing else in
       // this lane can usefully run right now (FIFO: older rows first), so
       // the lane exits and waits for the next kick.
@@ -902,6 +920,7 @@ class JobQueue {
 
     await _setJob(job.id, 'running', attempts: job.attempts + 1);
     await _memos.setUploadState(memoId, UploadStatus.uploading);
+    debugPrint('[upload-lane] attempt ${job.attempts + 1} for $memoId');
     try {
       final outcome = await _uploadPerformer!.upload(
         config,
@@ -913,15 +932,19 @@ class JobQueue {
       );
       switch (outcome) {
         case UploadSuccess():
+          debugPrint('[upload-lane] success: $memoId uploaded');
           await _deleteJobRow(job.id);
           await _memos.setUploadState(memoId, UploadStatus.uploaded,
               uploadedAt: DateTime.now());
-        case UploadRetryable(:final retryAfter):
+        case UploadRetryable(:final reason, :final retryAfter):
+          debugPrint('[upload-lane] retryable: $memoId ($reason)');
           await _retryUploadLater(job, row, retryAfter);
-        case UploadPermanent():
+        case UploadPermanent(:final reason):
+          debugPrint('[upload-lane] permanent: $memoId ($reason)');
           await _failUpload(job, row, attempts: job.attempts + 1);
       }
-    } catch (_) {
+    } catch (e) {
+      debugPrint('[upload-lane] error: $memoId — $e');
       // Unexpected performer failure gets the same budgeted treatment as a
       // server error — never silently dropped, never hot-looped.
       await _retryUploadLater(job, row, null);

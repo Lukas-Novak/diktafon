@@ -6,6 +6,7 @@ import 'dart:async';
 
 import 'dart:ui' as ui;
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
@@ -123,7 +124,8 @@ final uploadTokenStoreProvider =
 final connectivityProbeProvider =
     Provider<ConnectivityProbe>((ref) => ConnectivityProbe());
 
-final uploadServiceProvider = Provider<UploadService>((ref) => UploadService());
+final uploadServiceProvider = Provider<UploadService>((ref) =>
+    UploadService(onLog: (m) => debugPrint(m)));
 
 final uploadPerformerProvider =
     Provider<UploadPerformer>((ref) => ref.read(uploadServiceProvider));

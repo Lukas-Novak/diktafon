@@ -24,6 +24,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:crypto/crypto.dart';
+import 'package:flutter/foundation.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../domain/models.dart';
@@ -102,7 +103,10 @@ class UploadService implements UploadPerformer {
   final Duration responseTimeout;
   final void Function(String message)? _onLog;
 
-  void _log(String message) => _onLog?.call(message);
+  void _log(String message) {
+    _onLog?.call(message);
+    debugPrint('[upload] $message'); // diagnostics, no payloads/tokens ever
+  }
 
   /// "Test connection": GET the health route derived from the upload URL
   /// (`.../upload` → `.../health`); true only on a JSON {"ok": true}.
