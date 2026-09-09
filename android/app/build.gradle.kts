@@ -33,6 +33,12 @@ android {
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
         applicationId = "cz.mod42.diktafon"
+        // Side-by-side testing of modified builds next to an installed
+        // upstream app: flutter build apk -PappIdSuffix=.dev — the suffix
+        // shifts the applicationId (and WorkManager/backup authorities
+        // derived from it), so signatures never collide with the official
+        // install. Unset → byte-identical to upstream behavior.
+        applicationIdSuffix = providers.gradleProperty("appIdSuffix").getOrElse("")
         // You can update the following values to match your application needs.
         // For more information, see: https://flutter.dev/to/review-gradle-config.
         minSdk = flutter.minSdkVersion
