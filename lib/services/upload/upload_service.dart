@@ -105,7 +105,7 @@ class UploadService implements UploadPerformer {
 
   void _log(String message) {
     _onLog?.call(message);
-    debugPrint('[upload] $message'); // diagnostics, no payloads/tokens ever
+    if (kDebugMode) debugPrint('[upload] $message'); // diagnostics, no payloads/tokens ever
   }
 
   /// "Test connection": GET the health route derived from the upload URL

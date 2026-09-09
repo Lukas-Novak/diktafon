@@ -418,7 +418,7 @@ class JobQueue {
         // A killed in-flight upload is simply retried from the top — the
         // server dedupes by memo id, so the re-send is safe. Its own
         // attempt budget applies.
-        debugPrint('[upload-lane] orphan-recover ${job.targetId} (attempts=${job.attempts})');
+        if (kDebugMode) debugPrint('[upload-lane] orphan-recover ${job.targetId} (attempts=${job.attempts})');
         await _setJob(
             job.id, job.attempts >= _maxUploadAttempts ? 'failed' : 'queued');
         await _memos.setUploadState(
@@ -823,7 +823,7 @@ class JobQueue {
               j.status.isIn(['queued', 'running'])))
         .get();
     if (live.isNotEmpty) {
-      debugPrint('[upload-lane] schedule $memoId: live row exists (${live.single.status})');
+      if (kDebugMode) debugPrint('[upload-lane] schedule $memoId: live row exists (${live.single.status})');
       return false;
     }
     await (_db.delete(_db.jobs)
@@ -834,7 +834,7 @@ class JobQueue {
         .go();
     await _memos.setUploadState(memoId, UploadStatus.queued);
     await _insertJob(JobType.uploadMemo, memoId);
-    debugPrint('[upload-lane] scheduled $memoId');
+    if (kDebugMode) debugPrint('[upload-lane] scheduled $memoId');
     return true;
   }
 
@@ -874,21 +874,21 @@ class JobQueue {
   Future<void> _drainUploadLoop() async {
     if (!_recoveryComplete) await _ensureRecovered();
     if (_uploadPerformer == null) return;
-    debugPrint('[upload-lane] drain start');
+    if (kDebugMode) debugPrint('[upload-lane] drain start');
     while (true) {
       final settings = await _settings.get();
       if (!settings.uploadEnabled) {
-        debugPrint('[upload-lane] gate: disabled');
+        if (kDebugMode) debugPrint('[upload-lane] gate: disabled');
         return;
       }
       final url = settings.uploadUrl;
       if (url == null || url.isEmpty) {
-        debugPrint('[upload-lane] gate: url missing');
+        if (kDebugMode) debugPrint('[upload-lane] gate: url missing');
         return;
       }
       final token = await _uploadTokenReader?.call();
       if (token == null || token.isEmpty) {
-        debugPrint('[upload-lane] gate: token missing');
+        if (kDebugMode) debugPrint('[upload-lane] gate: token missing');
         return;
       }
       bool online;
@@ -900,16 +900,16 @@ class JobQueue {
         // Connectivity probing broke (platform quirks, e.g. VPN-shaped
         // transports): rather than wedge the lane silently, TRY the
         // upload — the outcome classifier retries real outages sanely.
-        debugPrint('[upload-lane] connectivity probe failed ($e) — trying anyway');
+        if (kDebugMode) debugPrint('[upload-lane] connectivity probe failed ($e) — trying anyway');
         online = true;
         unmetered = true;
       }
       if (!online) {
-        debugPrint('[upload-lane] gate: offline');
+        if (kDebugMode) debugPrint('[upload-lane] gate: offline');
         return;
       }
       if (settings.uploadWifiOnly && !unmetered) {
-        debugPrint('[upload-lane] gate: wifi-only, metered');
+        if (kDebugMode) debugPrint('[upload-lane] gate: wifi-only, metered');
         return;
       }
       final config = UploadConfig(url: url, token: token);
@@ -923,7 +923,7 @@ class JobQueue {
             ..limit(1))
           .getSingleOrNull();
       if (job == null) {
-        debugPrint('[upload-lane] clean: no due row');
+        if (kDebugMode) debugPrint('[upload-lane] clean: no due row');
         return;
       }
       // A deferred job parks with a future availableAt — nothing else in
@@ -957,7 +957,7 @@ class JobQueue {
     if (!row.filePath.endsWith('.m4a') && await _hasLiveTranscode(memoId)) {
       // Transcode in flight — upload the archival AAC once it lands: park
       // without consuming an attempt (its completion re-kicks the lane).
-      debugPrint('[upload-lane] $memoId deferred: transcode in flight (${row.filePath})');
+      if (kDebugMode) debugPrint('[upload-lane] $memoId deferred: transcode in flight (${row.filePath})');
       await (_db.update(_db.jobs)..where((j) => j.id.equals(job.id)))
           .write(JobsCompanion(
               availableAt: Value(DateTime.now()
@@ -968,7 +968,7 @@ class JobQueue {
 
     await _setJob(job.id, 'running', attempts: job.attempts + 1);
     await _memos.setUploadState(memoId, UploadStatus.uploading);
-    debugPrint('[upload-lane] attempt ${job.attempts + 1} for $memoId');
+    if (kDebugMode) debugPrint('[upload-lane] attempt ${job.attempts + 1} for $memoId');
     try {
       final outcome = await _uploadPerformer!.upload(
         config,
@@ -980,19 +980,19 @@ class JobQueue {
       );
       switch (outcome) {
         case UploadSuccess():
-          debugPrint('[upload-lane] success: $memoId uploaded');
+          if (kDebugMode) debugPrint('[upload-lane] success: $memoId uploaded');
           await _deleteJobRow(job.id);
           await _memos.setUploadState(memoId, UploadStatus.uploaded,
               uploadedAt: DateTime.now());
         case UploadRetryable(:final reason, :final retryAfter):
-          debugPrint('[upload-lane] retryable: $memoId ($reason)');
+          if (kDebugMode) debugPrint('[upload-lane] retryable: $memoId ($reason)');
           await _retryUploadLater(job, row, retryAfter);
         case UploadPermanent(:final reason):
-          debugPrint('[upload-lane] permanent: $memoId ($reason)');
+          if (kDebugMode) debugPrint('[upload-lane] permanent: $memoId ($reason)');
           await _failUpload(job, row, attempts: job.attempts + 1);
       }
     } catch (e) {
-      debugPrint('[upload-lane] error: $memoId — $e');
+      if (kDebugMode) debugPrint('[upload-lane] error: $memoId — $e');
       // Unexpected performer failure gets the same budgeted treatment as a
       // server error — never silently dropped, never hot-looped.
       await _retryUploadLater(job, row, null);
@@ -1004,13 +1004,13 @@ class JobQueue {
       JobRow job, MemoRow row, Duration? retryAfter) async {
     final attempts = job.attempts + 1;
     if (attempts >= _maxUploadAttempts) {
-      debugPrint('[upload-lane] ${job.targetId} failed: budget exhausted');
+      if (kDebugMode) debugPrint('[upload-lane] ${job.targetId} failed: budget exhausted');
       await _failUpload(job, row, attempts: attempts);
       return;
     }
     final delay =
         retryAfter ?? _uploadBackoff[(attempts - 1) % _uploadBackoff.length];
-    debugPrint('[upload-lane] ${job.targetId} requeued (attempt $attempts, +${delay.inSeconds}s)');
+    if (kDebugMode) debugPrint('[upload-lane] ${job.targetId} requeued (attempt $attempts, +${delay.inSeconds}s)');
     await _setJob(job.id, 'queued', attempts: attempts);
     await (_db.update(_db.jobs)..where((j) => j.id.equals(job.id))).write(
         JobsCompanion(
