@@ -854,14 +854,24 @@ class JobQueue {
         debugPrint('[upload-lane] gate: token missing');
         return;
       }
-      final online = _hasConnectivity == null || await _hasConnectivity();
+      bool online;
+      bool unmetered;
+      try {
+        online = _hasConnectivity == null || await _hasConnectivity();
+        unmetered = _isUnmetered == null || await _isUnmetered();
+      } catch (e) {
+        // Connectivity probing broke (platform quirks, e.g. VPN-shaped
+        // transports): rather than wedge the lane silently, TRY the
+        // upload — the outcome classifier retries real outages sanely.
+        debugPrint('[upload-lane] connectivity probe failed ($e) — trying anyway');
+        online = true;
+        unmetered = true;
+      }
       if (!online) {
         debugPrint('[upload-lane] gate: offline');
         return;
       }
-      if (settings.uploadWifiOnly &&
-          _isUnmetered != null &&
-          !await _isUnmetered()) {
+      if (settings.uploadWifiOnly && !unmetered) {
         debugPrint('[upload-lane] gate: wifi-only, metered');
         return;
       }
