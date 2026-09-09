@@ -73,7 +73,8 @@ class JobQueue {
       this._appVersionProvider,
       this._onUploadScheduled,
       List<Duration>? uploadBackoffSchedule,
-      this._uploadDeferDelay = const Duration(seconds: 30)})
+      this._uploadDeferDelay = const Duration(seconds: 30),
+      this._autoDrainUploads = true})
       : _uploadBackoff =
             uploadBackoffSchedule ?? JobQueue._defaultUploadBackoff;
 
@@ -817,9 +818,14 @@ class JobQueue {
   /// the user fixes the URL/token after a permanent failure.
   Future<void> retryUpload(String memoId) => _enqueueUpload(memoId);
 
+  /// Whether scheduling fires the lane immediately (production) or waits
+  /// for explicit [drainUploads] calls (tests priming scripted outcomes —
+  /// like [_retryDelayUnit], an honest wiring seam, not behavior).
+  final bool _autoDrainUploads;
+
   void _afterUploadScheduled() {
     _onUploadScheduled?.call(); // wakes WorkManager in production
-    unawaited(drainUploads());
+    if (_autoDrainUploads) unawaited(drainUploads());
   }
 
   /// The upload lane's own single-flight drain: uploads must never stall
