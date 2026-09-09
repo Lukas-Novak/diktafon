@@ -142,6 +142,19 @@ class JobQueue {
     unawaited(drain());
   }
 
+  /// A memo's deferred upload becoming due again should not wait on a wall
+  /// clock once the archival file landed (see [_transcodeAudio]'s tail kick):
+  /// exposed for the Wi-Fi-only relax path and manual retries where the
+  /// memo's row may have been parked by metered/transcode gates.
+  Future<void> bumpUploadDue(String memoId) async {
+    await (_db.update(_db.jobs)
+          ..where((j) =>
+              j.targetId.equals(memoId) &
+              j.type.equals(JobType.uploadMemo.name) &
+              j.status.equals('queued')))
+        .write(const JobsCompanion(availableAt: Value(0)));
+  }
+
   /// Failed memo → back on the queue at the right stage (§14 retry
   /// affordance): no transcript yet → transcribe again, otherwise only the
   /// summarization is redone.
@@ -538,9 +551,19 @@ class JobQueue {
       // A busy/vanished WAV is orphan-sweep food, not a failure.
     }
     // The upload lane defers on a live transcode row (it wants the archival
-    // AAC): a deferred memo needs a fresh kick now that the row is gone.
+    // AAC). That row parks by clock as a fallback — the *event* just landed:
+    // un-park it so the kick below doesn't find a not-yet-due row, then
+    // kick unconditionally (the coalesce returns early on live rows and
+    // would skip it).
     if ((await _settings.get()).uploadEnabled) {
+      await (_db.update(_db.jobs)
+            ..where((j) =>
+                j.targetId.equals(memoId) &
+                j.type.equals(JobType.uploadMemo.name) &
+                j.status.equals('queued')))
+          .write(const JobsCompanion(availableAt: Value(0)));
       await _enqueueUpload(memoId);
+      _afterUploadScheduled();
     }
   }
 
@@ -821,8 +844,17 @@ class JobQueue {
   }
 
   /// Manual retry ("Upload failed — retry"). Also the re-entry point when
-  /// the user fixes the URL/token after a permanent failure.
-  Future<void> retryUpload(String memoId) => _enqueueUpload(memoId);
+  /// the user fixes the URL/token after a permanent failure. Always *now*
+  /// for a manual tap: any backoff-parked due time is cleared first.
+  Future<void> retryUpload(String memoId) async {
+    if (!(await _settings.get()).uploadEnabled) return;
+    await bumpUploadDue(memoId);
+    if (await _tryScheduleUpload(memoId)) {
+      _afterUploadScheduled(); // newly scheduled: wake WorkManager too
+    } else {
+      unawaited(drainUploads()); // live row exists (now due): kick the lane
+    }
+  }
 
   /// Whether scheduling fires the lane immediately (production) or waits
   /// for explicit [drainUploads] calls (tests priming scripted outcomes —

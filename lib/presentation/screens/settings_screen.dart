@@ -171,7 +171,12 @@ class SettingsScreen extends ConsumerWidget {
           value: l10n.uploadWifiOnlyDesc,
           trailing: InkToggle(
             value: settings.uploadWifiOnly,
-            onChanged: repo.setUploadWifiOnly,
+            onChanged: (on) async {
+              await repo.setUploadWifiOnly(on);
+              // A queue parked on a metered gate should move the moment the
+              // preference relaxes.
+              unawaited(ref.read(jobQueueProvider).drainUploads());
+            },
           ),
         ),
         SettingsRow(
