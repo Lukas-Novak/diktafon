@@ -2,6 +2,13 @@
   <img src="media/icon.png" height="40" align="top" alt=""> Diktafon
 </h1>
 
+> **This fork** — adds one thing on top of upstream
+> [jaromiru/diktafon](https://github.com/jaromiru/diktafon): opt-in automatic
+> upload of finished memos (audio + local transcript + metadata) to **your own
+> server**, with durable retry. Off by default; everything else is unchanged.
+> APKs live on the [Releases page](../../releases); the matching self-hosted
+> receiver is [diktafon-ingest](https://github.com/Lukas-Novak/diktafon-ingest).
+
 <p align="center">
   <a href="https://f-droid.org/packages/cz.mod42.diktafon"><img src="media/badges/f-droid.png" alt="Get it on F-Droid" height="60"></a>&nbsp;
   <a href="https://play.google.com/store/apps/details?id=cz.mod42.diktafon"><img src="media/badges/google-play.png" alt="Get it on Google Play" height="60"></a>&nbsp;

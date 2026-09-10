@@ -3,7 +3,7 @@
 All notable changes to Diktafon are documented in this file. Versions
 correspond to git tags (`v*`); dates are tag dates.
 
-## [Unreleased] — fork: server upload
+## [1.1.0] — 2026-09-10 (fork: server upload)
 
 ### Added
 - **Opt-in automatic server upload** (Android) — after a memo's audio is
