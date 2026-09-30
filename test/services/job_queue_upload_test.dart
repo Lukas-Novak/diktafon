@@ -190,6 +190,7 @@ void main() {
           'm1', shortTranscript('cs', 'ahoj'), MemoStatus.ready);
       await db.into(db.jobs).insert(JobRow(
             availableAt: 0,
+            leaseUntil: 0,
             id: 'transcode-m1',
             type: JobType.transcodeAudio.name,
             targetId: 'm1',
@@ -226,6 +227,7 @@ void main() {
           'm1', shortTranscript('cs', 'ahoj'), MemoStatus.ready);
       await db.into(db.jobs).insert(JobRow(
             availableAt: 0,
+            leaseUntil: 0,
             id: 'transcode-m1',
             type: JobType.transcodeAudio.name,
             targetId: 'm1',

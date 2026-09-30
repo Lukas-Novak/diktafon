@@ -206,6 +206,7 @@ void main() {
         id, longTranscript('cs', ['memo', id]), MemoStatus.transcribed);
     await db.into(db.jobs).insert(JobRow(
           availableAt: 0,
+          leaseUntil: 0,
           id: 'job-$id',
           type: JobType.summarizeMemo.name,
           targetId: id,
@@ -354,6 +355,7 @@ void main() {
             {int attempts = 1}) =>
         db.into(db.jobs).insert(JobRow(
               availableAt: 0,
+              leaseUntil: 0,
               id: id,
               type: type.name,
               targetId: targetId,
@@ -562,6 +564,7 @@ void main() {
     test('legacy done rows are pruned at the first drain', () async {
       await db.into(db.jobs).insert(JobRow(
             availableAt: 0,
+            leaseUntil: 0,
             id: 'job-old',
             type: JobType.transcribe.name,
             targetId: 'gone',
@@ -582,6 +585,7 @@ void main() {
       await seedTranscribed('m2', jobCreatedAt: 2);
       await db.into(db.jobs).insert(JobRow(
             availableAt: 0,
+            leaseUntil: 0,
             id: 'job-c1-update',
             type: JobType.updateCassetteSummary.name,
             targetId: 'c1',
@@ -601,6 +605,7 @@ void main() {
     Future<void> seedLegacyCleanupJob(String memoId) =>
         db.into(db.jobs).insert(JobRow(
               availableAt: 0,
+              leaseUntil: 0,
               id: 'legacy-$memoId',
               type: JobType.cleanupTranscript.name,
               targetId: memoId,
@@ -960,6 +965,7 @@ void main() {
       llm.status = ModelStatus.notInstalled;
       await db.into(db.jobs).insert(JobRow(
             availableAt: 0,
+            leaseUntil: 0,
             id: 'job-stale-update',
             type: JobType.updateCassetteSummary.name,
             targetId: 'c1',
@@ -987,6 +993,7 @@ void main() {
       // Park an update as if a gist had landed earlier.
       await db.into(db.jobs).insert(JobRow(
             availableAt: 0,
+            leaseUntil: 0,
             id: 'job-update',
             type: JobType.updateCassetteSummary.name,
             targetId: 'c1',

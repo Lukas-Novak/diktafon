@@ -16,8 +16,44 @@ import '../providers/llm/summary_prompts.dart' show estimateTokens;
 import '../audio/audio_transcoder.dart';
 import '../providers/summarization_provider.dart';
 import '../providers/transcription_provider.dart';
+import '../cloud/cloud_client.dart';
+import '../cloud/cloud_job_store.dart';
 import '../upload/upload_service.dart';
 import 'chinese_script.dart';
+
+/// Cloud-poll schedule: short-start backoff, capped at 15 s (the ingest
+/// worker usually answers well ahead of this).
+const _cloudPollSchedule = [
+  Duration(seconds: 2),
+  Duration(seconds: 4),
+  Duration(seconds: 8),
+  Duration(seconds: 15),
+];
+
+/// How far one job attempt may poll before yielding to the queue budget;
+/// expiry resumes (not restarts) polling against the durable request row.
+const _cloudPollRounds = 90;
+
+/// Cloud-transient failures (offline, timeouts, provider recoveries): the
+/// upload-lane schedule parks the attempt with a generous backoff instead of
+/// burning the local 5×1s ladder.
+class CloudTransient implements Exception {
+  const CloudTransient(this.reason);
+  final String reason;
+
+  @override
+  String toString() => 'CloudTransient: $reason';
+}
+
+/// A hard cloud configuration/auth/result rejection: marks the memo failed
+/// immediately rather than re-running an error whose retry cannot differ.
+class CloudConfiguration implements Exception {
+  const CloudConfiguration(this.code);
+  final String code;
+
+  @override
+  String toString() => 'CloudConfiguration: $code';
+}
 
 /// The §6.5 job types. The cassette overview is always rebuilt from *all*
 /// memo digests (§6.7 revised 2026-07-08), so `recomputeCassetteSummary` and
@@ -75,9 +111,12 @@ class JobQueue {
       this._onUploadScheduled,
       List<Duration>? uploadBackoffSchedule,
       this._uploadDeferDelay = const Duration(seconds: 30),
-      this._autoDrainUploads = true})
+      this._autoDrainUploads = true,
+      CloudClient Function()? cloudClientFactory})
       : _uploadBackoff =
-            uploadBackoffSchedule ?? JobQueue._defaultUploadBackoff;
+            uploadBackoffSchedule ?? JobQueue._defaultUploadBackoff,
+        _cloudClient = cloudClientFactory,
+        _cloudStore = CloudJobStore(_db);
 
   final AppDatabase _db;
   final MemoRepository _memos;
@@ -114,6 +153,12 @@ class JobQueue {
   final Duration _uploadDeferDelay;
   Future<void>? _drainingUploads;
   Future<void>? _reconcileFuture;
+
+  /// Cloud transcription (§ cloud): shared multipart client and the durable
+  /// per-memo request store. Null client = cloud features fail fast with
+  /// [CloudConfiguration] rather than endless local retries.
+  final CloudClient Function()? _cloudClient;
+  final CloudJobStore _cloudStore;
 
   static String _defaultZhScript() => 'Hans';
 
@@ -169,6 +214,19 @@ class JobQueue {
       await _insertJob(JobType.summarizeMemo, memoId);
     }
     unawaited(drain());
+  }
+
+  /// Explicit user consent to send THIS memo to the configured backend for
+  /// cloud transcription (§ cloud): everything after that point is automatic
+  /// — upload once, resumable polling, structured transcript back on tape.
+  /// Honor is carved per memo: audio is content-immutable, so the consent
+  /// never extends to different content.
+  Future<void> sendMemoToCloud(String memoId) async {
+    final row = await _memoRow(memoId);
+    if (row == null) return;
+    await _memos.setCloudConsent(
+        memoId, DateTime.now().millisecondsSinceEpoch);
+    await retryEnrichment(memoId);
   }
 
   /// Manual transcript edit (§6.9): the corrected text replaces the engine's
@@ -324,8 +382,14 @@ class JobQueue {
         ]);
       }
 
+      final now = DateTime.now().millisecondsSinceEpoch;
       final job = await (_db.select(_db.jobs)
-            ..where((j) => j.status.equals('queued') & j.type.isIn(runnable))
+            ..where((j) =>
+                j.status.equals('queued') &
+                j.type.isIn(runnable) &
+                // §6.5: a parked requeue parks for real — without this, the
+                // upload lane hour-long backoff is ignored and attempts burn.
+                j.availableAt.isSmallerOrEqualValue(now))
             ..orderBy([(j) => OrderingTerm.asc(j.createdAt)])
             ..limit(1))
           .getSingleOrNull();
@@ -362,6 +426,36 @@ class JobQueue {
     } on TranscriptionCancelled {
       // Memo deleted while transcribing — the job is moot, not failed.
       await (_db.delete(_db.jobs)..where((j) => j.id.equals(job.id))).go();
+    } on CloudConfiguration catch (error) {
+      // Hard cloud rejection: configuration/auth/content mismatch — retry
+      // cannot change the answer; end with the memo honestly failed once.
+      if (type.targetsMemo) {
+        await _memos.updateStatus(job.targetId, MemoStatus.failed);
+        await _cloudStore.recordFailure(job.targetId, error.code);
+      }
+      await _setJob(job.id, 'failed', attempts: job.attempts + 1);
+    } on CloudTransient catch (error) {
+      // Transient cloud failure: park for the upload-lane schedule (minutes
+      // to hours) instead of burning the ML ladder on one bad minute.
+      final attempts = job.attempts + 1;
+      final permanent = attempts >= _maxUploadAttempts;
+      await _cloudStore.recordFailure(job.targetId, error.reason);
+      if (type.targetsMemo) await _resetToWaiting(job.targetId);
+      if (permanent) {
+        await _setJob(job.id, 'failed', attempts: attempts);
+        if (type.targetsMemo) {
+          await _memos.updateStatus(job.targetId, MemoStatus.failed);
+        }
+      } else {
+        final delay =
+            _uploadBackoff[(attempts - 1) % _uploadBackoff.length];
+        await _setJob(job.id, 'queued', attempts: attempts);
+        await (_db.update(_db.jobs)..where((j) => j.id.equals(job.id))).write(
+            JobsCompanion(
+              availableAt:
+                  Value(DateTime.now().add(delay).millisecondsSinceEpoch),
+            ));
+      }
     } catch (_) {
       final attempts = job.attempts + 1;
       final permanent = attempts >= _maxAttempts;
@@ -555,7 +649,8 @@ class JobQueue {
     // un-park it so the kick below doesn't find a not-yet-due row, then
     // kick unconditionally (the coalesce returns early on live rows and
     // would skip it).
-    if ((await _settings.get()).uploadEnabled) {
+    final tcSettings = await _settings.get();
+    if (tcSettings.uploadEnabled && tcSettings.transcriptionMode != 'cloud') {
       await (_db.update(_db.jobs)
             ..where((j) =>
                 j.targetId.equals(memoId) &
@@ -567,6 +662,140 @@ class JobQueue {
     }
   }
 
+  Future<Transcript> _transcribeCloud(
+      MemoRow row, AppSettings settings, CancelToken cancel) async {
+    final memoId = row.id;
+    final url = settings.uploadUrl;
+    final token = await _uploadTokenReader?.call();
+    if (url == null || url.isEmpty || token == null || token.isEmpty) {
+      throw const CloudConfiguration('config');
+    }
+    if (_cloudClient == null) {
+      throw const CloudConfiguration('wiring');
+    }
+
+    final client = _cloudClient();
+    final config = CloudConfig(url: url, token: token);
+    await _cloudStore.markUploading(memoId);
+
+    final audioFile = File(row.filePath);
+    if (!await audioFile.exists()) {
+      throw const TranscriptionCancelled();
+    }
+    final audioSha = await CloudClient.sha256OfFile(audioFile);
+
+    var rowStoreId = _uuid.v4();
+    var accepted = false;
+    while (!accepted) {
+      final flow = await _cloudStore.ensure(
+          memoId: memoId, requestId: rowStoreId, audioSha256: audioSha);
+      final outcome = await client.submitTranscriptionJob(
+        config: config,
+        memoId: memoId,
+        requestId: flow.requestId,
+        clientRevision: flow.clientRevision,
+        audioPath: row.filePath,
+        metadataLanguage: settings.appLanguage ?? '',
+        durationMs: row.durationMs,
+      );
+      switch (outcome) {
+        case CloudAccepted():
+          accepted = true;
+        case CloudRetryableError(:final reason):
+          await _cloudStore.recordFailure(memoId, reason);
+          throw CloudTransient(reason);
+        case CloudPermanentError(:final code):
+          if (code == 'conflict') {
+            rowStoreId = _uuid.v4(); // fresh revision; one more cycle
+            continue;
+          }
+          throw CloudConfiguration(code);
+        default:
+          await _cloudStore.recordFailure(memoId, 'unexpected_outcome');
+          throw CloudTransient('unexpected_outcome');
+      }
+    }
+    await _cloudStore.markUploaded(memoId);
+
+    for (var step = 0; step < _cloudPollRounds; step++) {
+      if (cancel.isCancelled) {
+        await client.cancelJob(config, (await _cloudStore.current(memoId))!.requestId);
+        throw const TranscriptionCancelled();
+      }
+      await Future<void>.delayed(
+          _cloudPollSchedule[step < _cloudPollSchedule.length
+              ? step
+              : _cloudPollSchedule.length - 1]);
+      final statusOutcome = await client.jobStatus(
+          config, (await _cloudStore.current(memoId))!.requestId);
+      switch (statusOutcome) {
+        case CloudStatus(:final state, :final errorCode):
+          if (state == 'complete') {
+            final rd = (await _cloudStore.current(memoId))!;
+            final loaded = await client.jobResult(config, rd.requestId);
+            if (loaded is CloudResultLoaded) {
+              return _acceptCloudResult(row, loaded.payload, audioSha,
+                  markComplete: (precision) =>
+                      _cloudStore.markImported(memoId, timingPrecision: precision));
+            }
+            if (loaded is CloudRetryableError) {
+              throw CloudTransient(loaded.reason);
+            }
+            throw CloudTransient('result_read');
+          }
+          if (state == 'failed' || state == 'cancelled') {
+            if (errorCode == 'auth') {
+              throw const CloudConfiguration('auth');
+            }
+            // Retry server-side ONCE per attempt, giving the provider time
+            // to recover first; we only then bill the durable budget.
+            await client.retryJob(
+                config, (await _cloudStore.current(memoId))!.requestId);
+            throw CloudTransient('server_job_$errorCode');
+          }
+        case CloudResultNotReady():
+          throw CloudTransient('polling');
+        case CloudRetryableError(:final reason):
+          throw CloudTransient(reason);
+        case CloudPermanentError(:final code):
+          if (code == 'not_found') {
+            await _cloudStore.markPending(memoId);
+            throw CloudTransient('remote_lost');
+          }
+          throw CloudConfiguration(code);
+        default:
+          throw CloudTransient('status_unhandled');
+      }
+    }
+    throw CloudTransient('poll_timeout');
+  }
+
+  Future<Transcript> _acceptCloudResult(
+      MemoRow row,
+      Map<String, dynamic> payload,
+      String audioSha,
+      {required Future<void> Function(String? precision) markComplete}) async {
+    final memoId = row.id;
+    if (payload['memo_id'] != memoId || payload['audio_sha256'] != audioSha) {
+      throw CloudConfiguration('result_mismatch');
+    }
+    final transcriptJson = payload['transcript'];
+    final transcript = transcriptJson is Map
+        ? Transcript.fromJson((transcriptJson).cast<String, dynamic>())
+        : null;
+    if (transcript == null) {
+      throw CloudConfiguration('result_invalid');
+    }
+    final provenance = payload['provenance'];
+    final precision = provenance is Map
+        ? provenance['timing_precision'] as String?
+        : null;
+    await _memos.setUploadState(memoId, UploadStatus.uploaded,
+        uploadedAt: DateTime.now());
+    await markComplete(precision);
+    return transcript;
+  }
+
   Future<void> _transcribe(String memoId) async {
     final row = await _memoRow(memoId);
     if (row == null) return; // deleted meanwhile (§14)
@@ -576,11 +805,15 @@ class JobQueue {
     try {
       await _memos.updateStatus(memoId, MemoStatus.transcribing);
       final settings = await _settings.get();
-      final raw = await _transcription().transcribe(
-        AudioRef(row.filePath),
-        languageCode: settings.appLanguage,
-        cancel: cancel,
-      );
+      final cloudRun = settings.transcriptionMode == 'cloud' ||
+          row.cloudConsentAt != null;
+      final raw = cloudRun
+          ? await _transcribeCloud(row, settings, cancel)
+          : await _transcription().transcribe(
+              AudioRef(row.filePath),
+              languageCode: settings.appLanguage,
+              cancel: cancel,
+            );
       // D8 amendment: Chinese transcripts are stored script-converted under
       // a script-qualified code (forced zh-Hans/zh-Hant, or the system
       // locale's script for an auto-detected zh); everything else is
@@ -595,7 +828,9 @@ class JobQueue {
       // transcript write — a kill between them must not strand a finished
       // memo with an unschedulable upload. The lane itself additionally
       // waits for the archival transcode before touching the network.
-      final uploadOn = settings.uploadEnabled;
+      // Cloud runs never round-trip through the archive: the backend already
+      // holds the master and emitted the notification when it verified.
+      final uploadOn = settings.uploadEnabled && !cloudRun;
 
       if (transcript.isEmpty) {
         // Empty/near-silent memo: kept playable, summary skipped (§14, §6.7)
@@ -796,6 +1031,7 @@ class JobQueue {
             attempts: 0,
             createdAt: DateTime.now().millisecondsSinceEpoch,
             availableAt: 0,
+            leaseUntil: 0,
           ));
 
   Future<void> _setJob(String id, String status, {int? attempts}) =>

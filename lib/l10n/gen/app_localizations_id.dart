@@ -322,6 +322,52 @@ class AppLocalizationsId extends AppLocalizations {
       'Bawa kaset Anda ke mana pun — audio, transkrip, dan ringkasan — atau kembalikan lagi';
 
   @override
+  String get transcriptionLocation => 'Lokasi transkripsi';
+
+  @override
+  String get transcriptionLocationTitle => 'LOKASI TRANSKRIPSI';
+
+  @override
+  String get transcriptionLocationPhone => 'Di ponsel ini';
+
+  @override
+  String get transcriptionLocationCloud => 'Di cloud';
+
+  @override
+  String get transcriptionCloudNeedsConnection =>
+      'Atur dulu URL server dan token (di bagian Unggahan server).';
+
+  @override
+  String get transcriptionCloudConfirmTitle =>
+      'GUNAKAN SERVER UNTUK TRANSKRIPSI?';
+
+  @override
+  String transcriptionCloudConfirmBody(String host) {
+    return 'Rekaman baru otomatis dikirim ke $host untuk ditranskripsi, lalu hasilnya kembali ke sini. Penyedia dan kredensialnya tetap di server Anda.';
+  }
+
+  @override
+  String get transcriptionFailedCloud => 'Gagal di sini — kirim ke cloud';
+
+  @override
+  String get transcriptionCloudGranted =>
+      'Terkirim ke cloud — menunggu transkrip';
+
+  @override
+  String get cloudConsentTitle => 'KIRIM REKAMAN INI KE SERVER?';
+
+  @override
+  String cloudConsentBody(String host, String duration, String size) {
+    return 'Rekaman ($duration, $size) dikirim ke $host untuk ditranskripsi. Jika transkripsi di ponsel ini gagal lagi, rekaman tetap aman di perangkat.';
+  }
+
+  @override
+  String get cloudConsentSend => 'Kirim ke server';
+
+  @override
+  String get cloudConsentScheduled => 'Rekaman dikirim ke server';
+
+  @override
   String get groupUpload => 'Unggahan server';
 
   @override

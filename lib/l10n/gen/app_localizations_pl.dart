@@ -335,6 +335,52 @@ class AppLocalizationsPl extends AppLocalizations {
       'Zabierz kasety ze sobą — dźwięk, transkrypcje i podsumowania — albo przywróć je z powrotem';
 
   @override
+  String get transcriptionLocation => 'Miejsce transkrypcji';
+
+  @override
+  String get transcriptionLocationTitle => 'MIEJSCE TRANSKRYPCJI';
+
+  @override
+  String get transcriptionLocationPhone => 'Na tym telefonie';
+
+  @override
+  String get transcriptionLocationCloud => 'W chmurze';
+
+  @override
+  String get transcriptionCloudNeedsConnection =>
+      'Najpierw ustaw adres serwera i token (w sekcji Wysyłanie na serwer).';
+
+  @override
+  String get transcriptionCloudConfirmTitle => 'UŻYĆ SERWERA DO TRANSKRYPCJI?';
+
+  @override
+  String transcriptionCloudConfirmBody(String host) {
+    return 'Nowe nagrania będą automatycznie wysyłane do $host w celu popisania, a następnie popis wróci tutaj. Dostawca i jego dane uwierzytelniające pozostają na twoim serwerze.';
+  }
+
+  @override
+  String get transcriptionFailedCloud =>
+      'Nie powiodło się tutaj — wyślij do chmury';
+
+  @override
+  String get transcriptionCloudGranted =>
+      'Wysłano do chmury — oczekiwanie na popis';
+
+  @override
+  String get cloudConsentTitle => 'WYSŁAĆ TO NAGRANIE NA SERWER?';
+
+  @override
+  String cloudConsentBody(String host, String duration, String size) {
+    return 'Nagranie ($duration, $size) zostanie wysłane do $host w celu popisania. Jeśli popis na tym telefonie znów się nie powiedzie, nagranie pozostanie bezpieczne lokalnie.';
+  }
+
+  @override
+  String get cloudConsentSend => 'Wyślij na serwer';
+
+  @override
+  String get cloudConsentScheduled => 'Nagranie wysłane na serwer';
+
+  @override
   String get groupUpload => 'Wysyłanie na serwer';
 
   @override

@@ -35,6 +35,8 @@ class TranscriptView extends StatefulWidget {
     this.onDeleteMemo,
     this.uploadVisible = false,
     this.onRetryUpload,
+    this.cloudConsentVisible = false,
+    this.onSendToCloud,
   });
 
   final Tape tape;
@@ -50,6 +52,15 @@ class TranscriptView extends StatefulWidget {
 
   /// "Upload failed — retry" tapped → re-enqueue this memo's upload.
   final ValueChanged<String>? onRetryUpload;
+
+  /// Whether a failed memo may additionally offer *explicit* cloud consent —
+  /// hidden in cloud mode (there is nothing left to consent to) and always
+  /// opened by the app's confirmation dialog, never automatically.
+  final bool cloudConsentVisible;
+
+  /// Tapped "Selhalo — Poslat do cloudu" on [Memo] — presenter opens the
+  /// per-memo confirmation flow; audio leaves only after the user approves.
+  final ValueChanged<Memo>? onSendToCloud;
 
   /// Bumps on every user seek (scrub, word tap, memo jump, ±15 s): the view
   /// scrolls so the highlighted word stays visible with some context (§5.3),
@@ -272,6 +283,9 @@ class _TranscriptViewState extends State<TranscriptView> {
         onCopy: () => _copyTranscript(memo),
       );
     }
+    if (memo.status == MemoStatus.failed && memo.transcript == null) {
+      return _failedWithCloudOffer(context, memo);
+    }
     return switch (memo.status) {
       MemoStatus.transcribing => const _ShimmerRows(),
       MemoStatus.failed => _caption(
@@ -290,6 +304,32 @@ class _TranscriptViewState extends State<TranscriptView> {
               : context.l10n.waitingForModel,
         ),
     };
+  }
+
+  /// Honest local-failure diagnostics: retry stays primary; explicit cloud
+  /// consent is a clearly-labelled secondary action (§ cloud) — every send
+  /// of this kind carries the user's approval in the memo row.
+  Widget _failedWithCloudOffer(BuildContext context, Memo memo) {
+    final l10n = context.l10n;
+    final granted = memo.cloudConsentAt != null;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _caption(context, l10n.transcriptionFailedRetry,
+            onTap: widget.onRetryMemo == null
+                ? null
+                : () => widget.onRetryMemo!(memo.id)),
+        const SizedBox(height: 2),
+        if (widget.cloudConsentVisible && widget.onSendToCloud != null)
+          _caption(
+            context,
+            granted
+                ? l10n.transcriptionCloudGranted
+                : l10n.transcriptionFailedCloud,
+            onTap: granted ? null : () => widget.onSendToCloud!(memo),
+          ),
+      ],
+    );
   }
 
   Widget _caption(BuildContext context, String text, {VoidCallback? onTap}) =>

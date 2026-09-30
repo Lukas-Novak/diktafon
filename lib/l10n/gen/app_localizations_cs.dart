@@ -328,6 +328,51 @@ class AppLocalizationsCs extends AppLocalizations {
       'Vezměte si kazety s sebou — zvuk, přepisy i souhrny — nebo je vraťte zpět';
 
   @override
+  String get transcriptionLocation => 'Místo přepisu';
+
+  @override
+  String get transcriptionLocationTitle => 'MÍSTO PŘEPISU';
+
+  @override
+  String get transcriptionLocationPhone => 'V tomto telefonu';
+
+  @override
+  String get transcriptionLocationCloud => 'V cloudu';
+
+  @override
+  String get transcriptionCloudNeedsConnection =>
+      'Nejdřív nastavte adresu serveru a token (v části Nahrávání na server).';
+
+  @override
+  String get transcriptionCloudConfirmTitle => 'POUŽÍT K PŘEPISU SERVER?';
+
+  @override
+  String transcriptionCloudConfirmBody(String host) {
+    return 'Nové záznamy se budou automaticky nahrávat na $host k přepisu, potom se přepis vrátí zpátky sem. Poskytovatel i jeho přístupové údaje žijí na vašem serveru.';
+  }
+
+  @override
+  String get transcriptionFailedCloud => 'Selhalo tady — poslat do cloudu';
+
+  @override
+  String get transcriptionCloudGranted =>
+      'Odesláno do cloudu — čeká se na přepis';
+
+  @override
+  String get cloudConsentTitle => 'ODESLAT TENTO ZÁZNAM NA SERVER?';
+
+  @override
+  String cloudConsentBody(String host, String duration, String size) {
+    return 'Záznam ($duration, $size) se pro přepis odešle na $host. Pokud přepis v tomto telefonu opět selže, zůstane zálohovaný lokálně.';
+  }
+
+  @override
+  String get cloudConsentSend => 'Odeslat na server';
+
+  @override
+  String get cloudConsentScheduled => 'Záznam odeslán na server';
+
+  @override
   String get groupUpload => 'Nahrávání na server';
 
   @override

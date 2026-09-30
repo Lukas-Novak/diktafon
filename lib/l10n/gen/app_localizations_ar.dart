@@ -333,6 +333,51 @@ class AppLocalizationsAr extends AppLocalizations {
       'خذ كاسيتاتك معك — الصوت والنصوص والملخصات — أو أعدها إلى الجهاز';
 
   @override
+  String get transcriptionLocation => 'مكان التفريغ';
+
+  @override
+  String get transcriptionLocationTitle => 'مكان التفريغ';
+
+  @override
+  String get transcriptionLocationPhone => 'على هذا الهاتف';
+
+  @override
+  String get transcriptionLocationCloud => 'في السحابة';
+
+  @override
+  String get transcriptionCloudNeedsConnection =>
+      'عيّن أولاً عنوان الخادم والرمز المميز (ضمن الرفع إلى الخادم).';
+
+  @override
+  String get transcriptionCloudConfirmTitle => 'استخدام الخادم للتفريغ؟';
+
+  @override
+  String transcriptionCloudConfirmBody(String host) {
+    return 'ستُحمَّل التسجيلات الجديدة تلقائياً إلى $host للتفريغ، ثم يعود النص إلى هنا. المزوّد وبيانات الاعتماد الخاصة به يبقيان على خادمك.';
+  }
+
+  @override
+  String get transcriptionFailedCloud => 'فشل هنا — إرسال إلى السحابة';
+
+  @override
+  String get transcriptionCloudGranted =>
+      'تم الإرسال إلى السحابة — بانتظار النص';
+
+  @override
+  String get cloudConsentTitle => 'إرسال هذا التسجيل إلى الخادم؟';
+
+  @override
+  String cloudConsentBody(String host, String duration, String size) {
+    return 'سيُرسل التسجيل ($duration، $size) إلى $host للتفريغ. إذا فشل التفريغ على هذا الهاتف مرة أخرى، يبقى آمناً على الجهاز.';
+  }
+
+  @override
+  String get cloudConsentSend => 'إرسال إلى الخادم';
+
+  @override
+  String get cloudConsentScheduled => 'تم إرسال التسجيل إلى الخادم';
+
+  @override
   String get groupUpload => 'الرفع إلى الخادم';
 
   @override

@@ -322,6 +322,51 @@ class AppLocalizationsVi extends AppLocalizations {
       'Mang băng cassette đi cùng bạn — âm thanh, bản chép lời và tóm tắt — hoặc đưa chúng trở lại';
 
   @override
+  String get transcriptionLocation => 'Vị trí phiên âm';
+
+  @override
+  String get transcriptionLocationTitle => 'VỊ TRÍ PHIÊN ÂM';
+
+  @override
+  String get transcriptionLocationPhone => 'Trên điện thoại này';
+
+  @override
+  String get transcriptionLocationCloud => 'Trên đám mây';
+
+  @override
+  String get transcriptionCloudNeedsConnection =>
+      'Hãy đặt URL máy chủ và mã token trước (trong phần Tải lên máy chủ).';
+
+  @override
+  String get transcriptionCloudConfirmTitle => 'DÙNG MÁY CHỦ ĐỂ PHIÊN ÂM?';
+
+  @override
+  String transcriptionCloudConfirmBody(String host) {
+    return 'Bản ghi mới sẽ tự động được tải lên $host để phiên âm, sau đó bản phiên âm quay trở lại đây. Nhà cung cấp và thông tin xác thực nằm trên máy chủ của bạn.';
+  }
+
+  @override
+  String get transcriptionFailedCloud => 'Thất bại ở đây — gửi lên đám mây';
+
+  @override
+  String get transcriptionCloudGranted =>
+      'Đã gửi lên đám mây — đang chờ bản phiên âm';
+
+  @override
+  String get cloudConsentTitle => 'GỬI BẢN GHI NÀY LÊN MÁY CHỦ?';
+
+  @override
+  String cloudConsentBody(String host, String duration, String size) {
+    return 'Bản ghi ($duration, $size) sẽ được gửi lên $host để phiên âm. Nếu phiên âm trên điện thoại này lại thất bại, bản sao vẫn an toàn trên thiết bị.';
+  }
+
+  @override
+  String get cloudConsentSend => 'Gửi lên máy chủ';
+
+  @override
+  String get cloudConsentScheduled => 'Đã gửi bản ghi lên máy chủ';
+
+  @override
   String get groupUpload => 'Tải lên máy chủ';
 
   @override

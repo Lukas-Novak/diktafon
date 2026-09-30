@@ -327,6 +327,52 @@ class AppLocalizationsHi extends AppLocalizations {
       'अपनी कैसेट साथ ले जाएं — ऑडियो, ट्रांसक्रिप्ट और सारांश — या उन्हें वापस लाएं';
 
   @override
+  String get transcriptionLocation => 'ट्रांसक्रिप्शन स्थान';
+
+  @override
+  String get transcriptionLocationTitle => 'ट्रांसक्रिप्शन स्थान';
+
+  @override
+  String get transcriptionLocationPhone => 'इसी फ़ोन पर';
+
+  @override
+  String get transcriptionLocationCloud => 'क्लाउड में';
+
+  @override
+  String get transcriptionCloudNeedsConnection =>
+      'पहले सर्वर का URL और टोकन सेट करें (सर्वर अपलोड खंड में)।';
+
+  @override
+  String get transcriptionCloudConfirmTitle =>
+      'ट्रांसक्रिप्शन के लिए सर्वर का उपयोग करें?';
+
+  @override
+  String transcriptionCloudConfirmBody(String host) {
+    return 'नए रिकॉर्डिंग स्वचालित रूप से ट्रांसक्रिप्शन के लिए $host पर भेजे जाएंगे और ट्रांसक्रिप्ट वापस यहाँ आ जाएगा। प्रदाता और उसके क्रेडेंशियल आपके सर्वर पर रहते हैं।';
+  }
+
+  @override
+  String get transcriptionFailedCloud => 'यहाँ विफल — क्लाउड में भेजें';
+
+  @override
+  String get transcriptionCloudGranted =>
+      'क्लाउड में भेजा गया — ट्रांसक्रिप्ट की प्रतीक्षा';
+
+  @override
+  String get cloudConsentTitle => 'क्या यह रिकॉर्डिंग सर्वर पर भेजें?';
+
+  @override
+  String cloudConsentBody(String host, String duration, String size) {
+    return 'रिकॉर्डिंग ($duration, $size) ट्रांसक्रिप्शन के लिए $host को भेजी जाएगी। यदि इस फ़ोन पर फिर विफल हो तो यह डिवाइस पर सुरक्षित रहेगी।';
+  }
+
+  @override
+  String get cloudConsentSend => 'सर्वर पर भेजें';
+
+  @override
+  String get cloudConsentScheduled => 'रिकॉर्डिंग सर्वर पर भेजी गई';
+
+  @override
   String get groupUpload => 'सर्वर अपलोड';
 
   @override

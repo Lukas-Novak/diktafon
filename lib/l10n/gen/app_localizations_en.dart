@@ -325,6 +325,52 @@ class AppLocalizationsEn extends AppLocalizations {
       'Take your cassettes with you — audio, transcripts and summaries — or bring them back';
 
   @override
+  String get transcriptionLocation => 'Transcription location';
+
+  @override
+  String get transcriptionLocationTitle => 'TRANSCRIPTION LOCATION';
+
+  @override
+  String get transcriptionLocationPhone => 'On this phone';
+
+  @override
+  String get transcriptionLocationCloud => 'In cloud';
+
+  @override
+  String get transcriptionCloudNeedsConnection =>
+      'Set the server URL and token first (under Server upload).';
+
+  @override
+  String get transcriptionCloudConfirmTitle =>
+      'USE THE SERVER FOR TRANSCRIPTION?';
+
+  @override
+  String transcriptionCloudConfirmBody(String host) {
+    return 'New recordings will be uploaded to $host automatically for transcription, then the transcript comes back here. The provider and its credentials live on your server.';
+  }
+
+  @override
+  String get transcriptionFailedCloud => 'Failed here — send to cloud';
+
+  @override
+  String get transcriptionCloudGranted =>
+      'Sent to cloud — waiting for the transcript';
+
+  @override
+  String get cloudConsentTitle => 'SEND THIS RECORDING TO THE SERVER?';
+
+  @override
+  String cloudConsentBody(String host, String duration, String size) {
+    return 'The recording ($duration, $size) goes to $host for transcription. If it fails on this phone again, it stays safe locally.';
+  }
+
+  @override
+  String get cloudConsentSend => 'Send to server';
+
+  @override
+  String get cloudConsentScheduled => 'Recording sent to the server';
+
+  @override
   String get groupUpload => 'Server upload';
 
   @override

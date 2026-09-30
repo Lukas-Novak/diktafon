@@ -37,6 +37,7 @@ Memo memoFromRow(MemoRow row) => Memo(
       uploadStatus: row.uploadStatus == null
           ? null
           : UploadStatus.fromName(row.uploadStatus!),
-      uploadedAt:
-          row.uploadedAt == null ? null : _fromMs(row.uploadedAt!),
+      uploadedAt: row.uploadedAt == null ? null : _fromMs(row.uploadedAt!),
+      cloudConsentAt:
+          row.cloudConsentAt == null ? null : _fromMs(row.cloudConsentAt!),
     );

@@ -676,6 +676,17 @@ class $MemosTable extends Memos with TableInfo<$MemosTable, MemoRow> {
     type: DriftSqlType.int,
     requiredDuringInsert: false,
   );
+  static const VerificationMeta _cloudConsentAtMeta = const VerificationMeta(
+    'cloudConsentAt',
+  );
+  @override
+  late final GeneratedColumn<int> cloudConsentAt = GeneratedColumn<int>(
+    'cloud_consent_at',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
   @override
   List<GeneratedColumn> get $columns => [
     id,
@@ -691,6 +702,7 @@ class $MemosTable extends Memos with TableInfo<$MemosTable, MemoRow> {
     status,
     uploadStatus,
     uploadedAt,
+    cloudConsentAt,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -803,6 +815,15 @@ class $MemosTable extends Memos with TableInfo<$MemosTable, MemoRow> {
         uploadedAt.isAcceptableOrUnknown(data['uploaded_at']!, _uploadedAtMeta),
       );
     }
+    if (data.containsKey('cloud_consent_at')) {
+      context.handle(
+        _cloudConsentAtMeta,
+        cloudConsentAt.isAcceptableOrUnknown(
+          data['cloud_consent_at']!,
+          _cloudConsentAtMeta,
+        ),
+      );
+    }
     return context;
   }
 
@@ -864,6 +885,10 @@ class $MemosTable extends Memos with TableInfo<$MemosTable, MemoRow> {
         DriftSqlType.int,
         data['${effectivePrefix}uploaded_at'],
       ),
+      cloudConsentAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}cloud_consent_at'],
+      ),
     );
   }
 
@@ -903,6 +928,11 @@ class MemoRow extends DataClass implements Insertable<MemoRow> {
 
   /// Server-confirmed upload instant (epoch ms); null until then.
   final int? uploadedAt;
+
+  /// The user explicitly approved cloud-processing this exact memo
+  /// (epoch ms); audio is content-immutable, so the grant never rebinds.
+  /// Null = never asked/never granted; phone-local mode handles it.
+  final int? cloudConsentAt;
   const MemoRow({
     required this.id,
     required this.cassetteId,
@@ -917,6 +947,7 @@ class MemoRow extends DataClass implements Insertable<MemoRow> {
     required this.status,
     this.uploadStatus,
     this.uploadedAt,
+    this.cloudConsentAt,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -947,6 +978,9 @@ class MemoRow extends DataClass implements Insertable<MemoRow> {
     }
     if (!nullToAbsent || uploadedAt != null) {
       map['uploaded_at'] = Variable<int>(uploadedAt);
+    }
+    if (!nullToAbsent || cloudConsentAt != null) {
+      map['cloud_consent_at'] = Variable<int>(cloudConsentAt);
     }
     return map;
   }
@@ -980,6 +1014,9 @@ class MemoRow extends DataClass implements Insertable<MemoRow> {
       uploadedAt: uploadedAt == null && nullToAbsent
           ? const Value.absent()
           : Value(uploadedAt),
+      cloudConsentAt: cloudConsentAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(cloudConsentAt),
     );
   }
 
@@ -1002,6 +1039,7 @@ class MemoRow extends DataClass implements Insertable<MemoRow> {
       status: serializer.fromJson<String>(json['status']),
       uploadStatus: serializer.fromJson<String?>(json['uploadStatus']),
       uploadedAt: serializer.fromJson<int?>(json['uploadedAt']),
+      cloudConsentAt: serializer.fromJson<int?>(json['cloudConsentAt']),
     );
   }
   @override
@@ -1021,6 +1059,7 @@ class MemoRow extends DataClass implements Insertable<MemoRow> {
       'status': serializer.toJson<String>(status),
       'uploadStatus': serializer.toJson<String?>(uploadStatus),
       'uploadedAt': serializer.toJson<int?>(uploadedAt),
+      'cloudConsentAt': serializer.toJson<int?>(cloudConsentAt),
     };
   }
 
@@ -1038,6 +1077,7 @@ class MemoRow extends DataClass implements Insertable<MemoRow> {
     String? status,
     Value<String?> uploadStatus = const Value.absent(),
     Value<int?> uploadedAt = const Value.absent(),
+    Value<int?> cloudConsentAt = const Value.absent(),
   }) => MemoRow(
     id: id ?? this.id,
     cassetteId: cassetteId ?? this.cassetteId,
@@ -1054,6 +1094,9 @@ class MemoRow extends DataClass implements Insertable<MemoRow> {
     status: status ?? this.status,
     uploadStatus: uploadStatus.present ? uploadStatus.value : this.uploadStatus,
     uploadedAt: uploadedAt.present ? uploadedAt.value : this.uploadedAt,
+    cloudConsentAt: cloudConsentAt.present
+        ? cloudConsentAt.value
+        : this.cloudConsentAt,
   );
   MemoRow copyWithCompanion(MemosCompanion data) {
     return MemoRow(
@@ -1086,6 +1129,9 @@ class MemoRow extends DataClass implements Insertable<MemoRow> {
       uploadedAt: data.uploadedAt.present
           ? data.uploadedAt.value
           : this.uploadedAt,
+      cloudConsentAt: data.cloudConsentAt.present
+          ? data.cloudConsentAt.value
+          : this.cloudConsentAt,
     );
   }
 
@@ -1104,7 +1150,8 @@ class MemoRow extends DataClass implements Insertable<MemoRow> {
           ..write('foldedAt: $foldedAt, ')
           ..write('status: $status, ')
           ..write('uploadStatus: $uploadStatus, ')
-          ..write('uploadedAt: $uploadedAt')
+          ..write('uploadedAt: $uploadedAt, ')
+          ..write('cloudConsentAt: $cloudConsentAt')
           ..write(')'))
         .toString();
   }
@@ -1124,6 +1171,7 @@ class MemoRow extends DataClass implements Insertable<MemoRow> {
     status,
     uploadStatus,
     uploadedAt,
+    cloudConsentAt,
   );
   @override
   bool operator ==(Object other) =>
@@ -1141,7 +1189,8 @@ class MemoRow extends DataClass implements Insertable<MemoRow> {
           other.foldedAt == this.foldedAt &&
           other.status == this.status &&
           other.uploadStatus == this.uploadStatus &&
-          other.uploadedAt == this.uploadedAt);
+          other.uploadedAt == this.uploadedAt &&
+          other.cloudConsentAt == this.cloudConsentAt);
 }
 
 class MemosCompanion extends UpdateCompanion<MemoRow> {
@@ -1158,6 +1207,7 @@ class MemosCompanion extends UpdateCompanion<MemoRow> {
   final Value<String> status;
   final Value<String?> uploadStatus;
   final Value<int?> uploadedAt;
+  final Value<int?> cloudConsentAt;
   final Value<int> rowid;
   const MemosCompanion({
     this.id = const Value.absent(),
@@ -1173,6 +1223,7 @@ class MemosCompanion extends UpdateCompanion<MemoRow> {
     this.status = const Value.absent(),
     this.uploadStatus = const Value.absent(),
     this.uploadedAt = const Value.absent(),
+    this.cloudConsentAt = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   MemosCompanion.insert({
@@ -1189,6 +1240,7 @@ class MemosCompanion extends UpdateCompanion<MemoRow> {
     required String status,
     this.uploadStatus = const Value.absent(),
     this.uploadedAt = const Value.absent(),
+    this.cloudConsentAt = const Value.absent(),
     this.rowid = const Value.absent(),
   }) : id = Value(id),
        cassetteId = Value(cassetteId),
@@ -1210,6 +1262,7 @@ class MemosCompanion extends UpdateCompanion<MemoRow> {
     Expression<String>? status,
     Expression<String>? uploadStatus,
     Expression<int>? uploadedAt,
+    Expression<int>? cloudConsentAt,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
@@ -1226,6 +1279,7 @@ class MemosCompanion extends UpdateCompanion<MemoRow> {
       if (status != null) 'status': status,
       if (uploadStatus != null) 'upload_status': uploadStatus,
       if (uploadedAt != null) 'uploaded_at': uploadedAt,
+      if (cloudConsentAt != null) 'cloud_consent_at': cloudConsentAt,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -1244,6 +1298,7 @@ class MemosCompanion extends UpdateCompanion<MemoRow> {
     Value<String>? status,
     Value<String?>? uploadStatus,
     Value<int?>? uploadedAt,
+    Value<int?>? cloudConsentAt,
     Value<int>? rowid,
   }) {
     return MemosCompanion(
@@ -1260,6 +1315,7 @@ class MemosCompanion extends UpdateCompanion<MemoRow> {
       status: status ?? this.status,
       uploadStatus: uploadStatus ?? this.uploadStatus,
       uploadedAt: uploadedAt ?? this.uploadedAt,
+      cloudConsentAt: cloudConsentAt ?? this.cloudConsentAt,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -1306,6 +1362,9 @@ class MemosCompanion extends UpdateCompanion<MemoRow> {
     if (uploadedAt.present) {
       map['uploaded_at'] = Variable<int>(uploadedAt.value);
     }
+    if (cloudConsentAt.present) {
+      map['cloud_consent_at'] = Variable<int>(cloudConsentAt.value);
+    }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
     }
@@ -1328,6 +1387,7 @@ class MemosCompanion extends UpdateCompanion<MemoRow> {
           ..write('status: $status, ')
           ..write('uploadStatus: $uploadStatus, ')
           ..write('uploadedAt: $uploadedAt, ')
+          ..write('cloudConsentAt: $cloudConsentAt, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -1412,6 +1472,29 @@ class $JobsTable extends Jobs with TableInfo<$JobsTable, JobRow> {
     requiredDuringInsert: false,
     defaultValue: const Constant(0),
   );
+  static const VerificationMeta _ownerIdMeta = const VerificationMeta(
+    'ownerId',
+  );
+  @override
+  late final GeneratedColumn<String> ownerId = GeneratedColumn<String>(
+    'owner_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _leaseUntilMeta = const VerificationMeta(
+    'leaseUntil',
+  );
+  @override
+  late final GeneratedColumn<int> leaseUntil = GeneratedColumn<int>(
+    'lease_until',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
   @override
   List<GeneratedColumn> get $columns => [
     id,
@@ -1421,6 +1504,8 @@ class $JobsTable extends Jobs with TableInfo<$JobsTable, JobRow> {
     attempts,
     createdAt,
     availableAt,
+    ownerId,
+    leaseUntil,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -1486,6 +1571,18 @@ class $JobsTable extends Jobs with TableInfo<$JobsTable, JobRow> {
         ),
       );
     }
+    if (data.containsKey('owner_id')) {
+      context.handle(
+        _ownerIdMeta,
+        ownerId.isAcceptableOrUnknown(data['owner_id']!, _ownerIdMeta),
+      );
+    }
+    if (data.containsKey('lease_until')) {
+      context.handle(
+        _leaseUntilMeta,
+        leaseUntil.isAcceptableOrUnknown(data['lease_until']!, _leaseUntilMeta),
+      );
+    }
     return context;
   }
 
@@ -1523,6 +1620,14 @@ class $JobsTable extends Jobs with TableInfo<$JobsTable, JobRow> {
         DriftSqlType.int,
         data['${effectivePrefix}available_at'],
       )!,
+      ownerId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}owner_id'],
+      ),
+      leaseUntil: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}lease_until'],
+      )!,
     );
   }
 
@@ -1543,6 +1648,15 @@ class JobRow extends DataClass implements Insertable<JobRow> {
   /// Do-not-pick-before instant (epoch ms). Backoff without occupying the
   /// drain loop: a deferred/requeued job parks in 'queued' until then.
   final int availableAt;
+
+  /// Claim token of the process/lane currently working the job — guards
+  /// the app process and the WorkManager headless engine from running
+  /// each other's jobs concurrently.
+  final String? ownerId;
+
+  /// Claim expiry (epoch ms); another lane may take over only afterwards.
+  /// NULL/0 = no lease.
+  final int leaseUntil;
   const JobRow({
     required this.id,
     required this.type,
@@ -1551,6 +1665,8 @@ class JobRow extends DataClass implements Insertable<JobRow> {
     required this.attempts,
     required this.createdAt,
     required this.availableAt,
+    this.ownerId,
+    required this.leaseUntil,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -1562,6 +1678,10 @@ class JobRow extends DataClass implements Insertable<JobRow> {
     map['attempts'] = Variable<int>(attempts);
     map['created_at'] = Variable<int>(createdAt);
     map['available_at'] = Variable<int>(availableAt);
+    if (!nullToAbsent || ownerId != null) {
+      map['owner_id'] = Variable<String>(ownerId);
+    }
+    map['lease_until'] = Variable<int>(leaseUntil);
     return map;
   }
 
@@ -1574,6 +1694,10 @@ class JobRow extends DataClass implements Insertable<JobRow> {
       attempts: Value(attempts),
       createdAt: Value(createdAt),
       availableAt: Value(availableAt),
+      ownerId: ownerId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(ownerId),
+      leaseUntil: Value(leaseUntil),
     );
   }
 
@@ -1590,6 +1714,8 @@ class JobRow extends DataClass implements Insertable<JobRow> {
       attempts: serializer.fromJson<int>(json['attempts']),
       createdAt: serializer.fromJson<int>(json['createdAt']),
       availableAt: serializer.fromJson<int>(json['availableAt']),
+      ownerId: serializer.fromJson<String?>(json['ownerId']),
+      leaseUntil: serializer.fromJson<int>(json['leaseUntil']),
     );
   }
   @override
@@ -1603,6 +1729,8 @@ class JobRow extends DataClass implements Insertable<JobRow> {
       'attempts': serializer.toJson<int>(attempts),
       'createdAt': serializer.toJson<int>(createdAt),
       'availableAt': serializer.toJson<int>(availableAt),
+      'ownerId': serializer.toJson<String?>(ownerId),
+      'leaseUntil': serializer.toJson<int>(leaseUntil),
     };
   }
 
@@ -1614,6 +1742,8 @@ class JobRow extends DataClass implements Insertable<JobRow> {
     int? attempts,
     int? createdAt,
     int? availableAt,
+    Value<String?> ownerId = const Value.absent(),
+    int? leaseUntil,
   }) => JobRow(
     id: id ?? this.id,
     type: type ?? this.type,
@@ -1622,6 +1752,8 @@ class JobRow extends DataClass implements Insertable<JobRow> {
     attempts: attempts ?? this.attempts,
     createdAt: createdAt ?? this.createdAt,
     availableAt: availableAt ?? this.availableAt,
+    ownerId: ownerId.present ? ownerId.value : this.ownerId,
+    leaseUntil: leaseUntil ?? this.leaseUntil,
   );
   JobRow copyWithCompanion(JobsCompanion data) {
     return JobRow(
@@ -1634,6 +1766,10 @@ class JobRow extends DataClass implements Insertable<JobRow> {
       availableAt: data.availableAt.present
           ? data.availableAt.value
           : this.availableAt,
+      ownerId: data.ownerId.present ? data.ownerId.value : this.ownerId,
+      leaseUntil: data.leaseUntil.present
+          ? data.leaseUntil.value
+          : this.leaseUntil,
     );
   }
 
@@ -1646,14 +1782,25 @@ class JobRow extends DataClass implements Insertable<JobRow> {
           ..write('status: $status, ')
           ..write('attempts: $attempts, ')
           ..write('createdAt: $createdAt, ')
-          ..write('availableAt: $availableAt')
+          ..write('availableAt: $availableAt, ')
+          ..write('ownerId: $ownerId, ')
+          ..write('leaseUntil: $leaseUntil')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode =>
-      Object.hash(id, type, targetId, status, attempts, createdAt, availableAt);
+  int get hashCode => Object.hash(
+    id,
+    type,
+    targetId,
+    status,
+    attempts,
+    createdAt,
+    availableAt,
+    ownerId,
+    leaseUntil,
+  );
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -1664,7 +1811,9 @@ class JobRow extends DataClass implements Insertable<JobRow> {
           other.status == this.status &&
           other.attempts == this.attempts &&
           other.createdAt == this.createdAt &&
-          other.availableAt == this.availableAt);
+          other.availableAt == this.availableAt &&
+          other.ownerId == this.ownerId &&
+          other.leaseUntil == this.leaseUntil);
 }
 
 class JobsCompanion extends UpdateCompanion<JobRow> {
@@ -1675,6 +1824,8 @@ class JobsCompanion extends UpdateCompanion<JobRow> {
   final Value<int> attempts;
   final Value<int> createdAt;
   final Value<int> availableAt;
+  final Value<String?> ownerId;
+  final Value<int> leaseUntil;
   final Value<int> rowid;
   const JobsCompanion({
     this.id = const Value.absent(),
@@ -1684,6 +1835,8 @@ class JobsCompanion extends UpdateCompanion<JobRow> {
     this.attempts = const Value.absent(),
     this.createdAt = const Value.absent(),
     this.availableAt = const Value.absent(),
+    this.ownerId = const Value.absent(),
+    this.leaseUntil = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   JobsCompanion.insert({
@@ -1694,6 +1847,8 @@ class JobsCompanion extends UpdateCompanion<JobRow> {
     this.attempts = const Value.absent(),
     required int createdAt,
     this.availableAt = const Value.absent(),
+    this.ownerId = const Value.absent(),
+    this.leaseUntil = const Value.absent(),
     this.rowid = const Value.absent(),
   }) : id = Value(id),
        type = Value(type),
@@ -1708,6 +1863,8 @@ class JobsCompanion extends UpdateCompanion<JobRow> {
     Expression<int>? attempts,
     Expression<int>? createdAt,
     Expression<int>? availableAt,
+    Expression<String>? ownerId,
+    Expression<int>? leaseUntil,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
@@ -1718,6 +1875,8 @@ class JobsCompanion extends UpdateCompanion<JobRow> {
       if (attempts != null) 'attempts': attempts,
       if (createdAt != null) 'created_at': createdAt,
       if (availableAt != null) 'available_at': availableAt,
+      if (ownerId != null) 'owner_id': ownerId,
+      if (leaseUntil != null) 'lease_until': leaseUntil,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -1730,6 +1889,8 @@ class JobsCompanion extends UpdateCompanion<JobRow> {
     Value<int>? attempts,
     Value<int>? createdAt,
     Value<int>? availableAt,
+    Value<String?>? ownerId,
+    Value<int>? leaseUntil,
     Value<int>? rowid,
   }) {
     return JobsCompanion(
@@ -1740,6 +1901,8 @@ class JobsCompanion extends UpdateCompanion<JobRow> {
       attempts: attempts ?? this.attempts,
       createdAt: createdAt ?? this.createdAt,
       availableAt: availableAt ?? this.availableAt,
+      ownerId: ownerId ?? this.ownerId,
+      leaseUntil: leaseUntil ?? this.leaseUntil,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -1768,6 +1931,12 @@ class JobsCompanion extends UpdateCompanion<JobRow> {
     if (availableAt.present) {
       map['available_at'] = Variable<int>(availableAt.value);
     }
+    if (ownerId.present) {
+      map['owner_id'] = Variable<String>(ownerId.value);
+    }
+    if (leaseUntil.present) {
+      map['lease_until'] = Variable<int>(leaseUntil.value);
+    }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
     }
@@ -1784,6 +1953,593 @@ class JobsCompanion extends UpdateCompanion<JobRow> {
           ..write('attempts: $attempts, ')
           ..write('createdAt: $createdAt, ')
           ..write('availableAt: $availableAt, ')
+          ..write('ownerId: $ownerId, ')
+          ..write('leaseUntil: $leaseUntil, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $CloudJobsTable extends CloudJobs
+    with TableInfo<$CloudJobsTable, CloudJobRow> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $CloudJobsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _memoIdMeta = const VerificationMeta('memoId');
+  @override
+  late final GeneratedColumn<String> memoId = GeneratedColumn<String>(
+    'memo_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES memos (id) ON DELETE CASCADE',
+    ),
+  );
+  static const VerificationMeta _requestIdMeta = const VerificationMeta(
+    'requestId',
+  );
+  @override
+  late final GeneratedColumn<String> requestId = GeneratedColumn<String>(
+    'request_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _clientRevisionMeta = const VerificationMeta(
+    'clientRevision',
+  );
+  @override
+  late final GeneratedColumn<int> clientRevision = GeneratedColumn<int>(
+    'client_revision',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _audioSha256Meta = const VerificationMeta(
+    'audioSha256',
+  );
+  @override
+  late final GeneratedColumn<String> audioSha256 = GeneratedColumn<String>(
+    'audio_sha256',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _stateMeta = const VerificationMeta('state');
+  @override
+  late final GeneratedColumn<String> state = GeneratedColumn<String>(
+    'state',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _timingPrecisionMeta = const VerificationMeta(
+    'timingPrecision',
+  );
+  @override
+  late final GeneratedColumn<String> timingPrecision = GeneratedColumn<String>(
+    'timing_precision',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _errorMeta = const VerificationMeta('error');
+  @override
+  late final GeneratedColumn<String> error = GeneratedColumn<String>(
+    'error',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<int> createdAt = GeneratedColumn<int>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
+    'updatedAt',
+  );
+  @override
+  late final GeneratedColumn<int> updatedAt = GeneratedColumn<int>(
+    'updated_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    memoId,
+    requestId,
+    clientRevision,
+    audioSha256,
+    state,
+    timingPrecision,
+    error,
+    createdAt,
+    updatedAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'cloud_jobs';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<CloudJobRow> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('memo_id')) {
+      context.handle(
+        _memoIdMeta,
+        memoId.isAcceptableOrUnknown(data['memo_id']!, _memoIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_memoIdMeta);
+    }
+    if (data.containsKey('request_id')) {
+      context.handle(
+        _requestIdMeta,
+        requestId.isAcceptableOrUnknown(data['request_id']!, _requestIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_requestIdMeta);
+    }
+    if (data.containsKey('client_revision')) {
+      context.handle(
+        _clientRevisionMeta,
+        clientRevision.isAcceptableOrUnknown(
+          data['client_revision']!,
+          _clientRevisionMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_clientRevisionMeta);
+    }
+    if (data.containsKey('audio_sha256')) {
+      context.handle(
+        _audioSha256Meta,
+        audioSha256.isAcceptableOrUnknown(
+          data['audio_sha256']!,
+          _audioSha256Meta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_audioSha256Meta);
+    }
+    if (data.containsKey('state')) {
+      context.handle(
+        _stateMeta,
+        state.isAcceptableOrUnknown(data['state']!, _stateMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_stateMeta);
+    }
+    if (data.containsKey('timing_precision')) {
+      context.handle(
+        _timingPrecisionMeta,
+        timingPrecision.isAcceptableOrUnknown(
+          data['timing_precision']!,
+          _timingPrecisionMeta,
+        ),
+      );
+    }
+    if (data.containsKey('error')) {
+      context.handle(
+        _errorMeta,
+        error.isAcceptableOrUnknown(data['error']!, _errorMeta),
+      );
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(
+        _updatedAtMeta,
+        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_updatedAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {memoId};
+  @override
+  CloudJobRow map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return CloudJobRow(
+      memoId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}memo_id'],
+      )!,
+      requestId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}request_id'],
+      )!,
+      clientRevision: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}client_revision'],
+      )!,
+      audioSha256: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}audio_sha256'],
+      )!,
+      state: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}state'],
+      )!,
+      timingPrecision: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}timing_precision'],
+      ),
+      error: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}error'],
+      ),
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}created_at'],
+      )!,
+      updatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}updated_at'],
+      )!,
+    );
+  }
+
+  @override
+  $CloudJobsTable createAlias(String alias) {
+    return $CloudJobsTable(attachedDatabase, alias);
+  }
+}
+
+class CloudJobRow extends DataClass implements Insertable<CloudJobRow> {
+  final String memoId;
+  final String requestId;
+  final int clientRevision;
+  final String audioSha256;
+
+  /// pending → uploading → uploaded → complete | imported_end
+  /// (terminal 'cancelled'/'failed' survive so state reads honestly;
+  /// code resets them lazily on the next run instead of deleting).
+  final String state;
+  final String? timingPrecision;
+  final String? error;
+  final int createdAt;
+  final int updatedAt;
+  const CloudJobRow({
+    required this.memoId,
+    required this.requestId,
+    required this.clientRevision,
+    required this.audioSha256,
+    required this.state,
+    this.timingPrecision,
+    this.error,
+    required this.createdAt,
+    required this.updatedAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['memo_id'] = Variable<String>(memoId);
+    map['request_id'] = Variable<String>(requestId);
+    map['client_revision'] = Variable<int>(clientRevision);
+    map['audio_sha256'] = Variable<String>(audioSha256);
+    map['state'] = Variable<String>(state);
+    if (!nullToAbsent || timingPrecision != null) {
+      map['timing_precision'] = Variable<String>(timingPrecision);
+    }
+    if (!nullToAbsent || error != null) {
+      map['error'] = Variable<String>(error);
+    }
+    map['created_at'] = Variable<int>(createdAt);
+    map['updated_at'] = Variable<int>(updatedAt);
+    return map;
+  }
+
+  CloudJobsCompanion toCompanion(bool nullToAbsent) {
+    return CloudJobsCompanion(
+      memoId: Value(memoId),
+      requestId: Value(requestId),
+      clientRevision: Value(clientRevision),
+      audioSha256: Value(audioSha256),
+      state: Value(state),
+      timingPrecision: timingPrecision == null && nullToAbsent
+          ? const Value.absent()
+          : Value(timingPrecision),
+      error: error == null && nullToAbsent
+          ? const Value.absent()
+          : Value(error),
+      createdAt: Value(createdAt),
+      updatedAt: Value(updatedAt),
+    );
+  }
+
+  factory CloudJobRow.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return CloudJobRow(
+      memoId: serializer.fromJson<String>(json['memoId']),
+      requestId: serializer.fromJson<String>(json['requestId']),
+      clientRevision: serializer.fromJson<int>(json['clientRevision']),
+      audioSha256: serializer.fromJson<String>(json['audioSha256']),
+      state: serializer.fromJson<String>(json['state']),
+      timingPrecision: serializer.fromJson<String?>(json['timingPrecision']),
+      error: serializer.fromJson<String?>(json['error']),
+      createdAt: serializer.fromJson<int>(json['createdAt']),
+      updatedAt: serializer.fromJson<int>(json['updatedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'memoId': serializer.toJson<String>(memoId),
+      'requestId': serializer.toJson<String>(requestId),
+      'clientRevision': serializer.toJson<int>(clientRevision),
+      'audioSha256': serializer.toJson<String>(audioSha256),
+      'state': serializer.toJson<String>(state),
+      'timingPrecision': serializer.toJson<String?>(timingPrecision),
+      'error': serializer.toJson<String?>(error),
+      'createdAt': serializer.toJson<int>(createdAt),
+      'updatedAt': serializer.toJson<int>(updatedAt),
+    };
+  }
+
+  CloudJobRow copyWith({
+    String? memoId,
+    String? requestId,
+    int? clientRevision,
+    String? audioSha256,
+    String? state,
+    Value<String?> timingPrecision = const Value.absent(),
+    Value<String?> error = const Value.absent(),
+    int? createdAt,
+    int? updatedAt,
+  }) => CloudJobRow(
+    memoId: memoId ?? this.memoId,
+    requestId: requestId ?? this.requestId,
+    clientRevision: clientRevision ?? this.clientRevision,
+    audioSha256: audioSha256 ?? this.audioSha256,
+    state: state ?? this.state,
+    timingPrecision: timingPrecision.present
+        ? timingPrecision.value
+        : this.timingPrecision,
+    error: error.present ? error.value : this.error,
+    createdAt: createdAt ?? this.createdAt,
+    updatedAt: updatedAt ?? this.updatedAt,
+  );
+  CloudJobRow copyWithCompanion(CloudJobsCompanion data) {
+    return CloudJobRow(
+      memoId: data.memoId.present ? data.memoId.value : this.memoId,
+      requestId: data.requestId.present ? data.requestId.value : this.requestId,
+      clientRevision: data.clientRevision.present
+          ? data.clientRevision.value
+          : this.clientRevision,
+      audioSha256: data.audioSha256.present
+          ? data.audioSha256.value
+          : this.audioSha256,
+      state: data.state.present ? data.state.value : this.state,
+      timingPrecision: data.timingPrecision.present
+          ? data.timingPrecision.value
+          : this.timingPrecision,
+      error: data.error.present ? data.error.value : this.error,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('CloudJobRow(')
+          ..write('memoId: $memoId, ')
+          ..write('requestId: $requestId, ')
+          ..write('clientRevision: $clientRevision, ')
+          ..write('audioSha256: $audioSha256, ')
+          ..write('state: $state, ')
+          ..write('timingPrecision: $timingPrecision, ')
+          ..write('error: $error, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    memoId,
+    requestId,
+    clientRevision,
+    audioSha256,
+    state,
+    timingPrecision,
+    error,
+    createdAt,
+    updatedAt,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is CloudJobRow &&
+          other.memoId == this.memoId &&
+          other.requestId == this.requestId &&
+          other.clientRevision == this.clientRevision &&
+          other.audioSha256 == this.audioSha256 &&
+          other.state == this.state &&
+          other.timingPrecision == this.timingPrecision &&
+          other.error == this.error &&
+          other.createdAt == this.createdAt &&
+          other.updatedAt == this.updatedAt);
+}
+
+class CloudJobsCompanion extends UpdateCompanion<CloudJobRow> {
+  final Value<String> memoId;
+  final Value<String> requestId;
+  final Value<int> clientRevision;
+  final Value<String> audioSha256;
+  final Value<String> state;
+  final Value<String?> timingPrecision;
+  final Value<String?> error;
+  final Value<int> createdAt;
+  final Value<int> updatedAt;
+  final Value<int> rowid;
+  const CloudJobsCompanion({
+    this.memoId = const Value.absent(),
+    this.requestId = const Value.absent(),
+    this.clientRevision = const Value.absent(),
+    this.audioSha256 = const Value.absent(),
+    this.state = const Value.absent(),
+    this.timingPrecision = const Value.absent(),
+    this.error = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  CloudJobsCompanion.insert({
+    required String memoId,
+    required String requestId,
+    required int clientRevision,
+    required String audioSha256,
+    required String state,
+    this.timingPrecision = const Value.absent(),
+    this.error = const Value.absent(),
+    required int createdAt,
+    required int updatedAt,
+    this.rowid = const Value.absent(),
+  }) : memoId = Value(memoId),
+       requestId = Value(requestId),
+       clientRevision = Value(clientRevision),
+       audioSha256 = Value(audioSha256),
+       state = Value(state),
+       createdAt = Value(createdAt),
+       updatedAt = Value(updatedAt);
+  static Insertable<CloudJobRow> custom({
+    Expression<String>? memoId,
+    Expression<String>? requestId,
+    Expression<int>? clientRevision,
+    Expression<String>? audioSha256,
+    Expression<String>? state,
+    Expression<String>? timingPrecision,
+    Expression<String>? error,
+    Expression<int>? createdAt,
+    Expression<int>? updatedAt,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (memoId != null) 'memo_id': memoId,
+      if (requestId != null) 'request_id': requestId,
+      if (clientRevision != null) 'client_revision': clientRevision,
+      if (audioSha256 != null) 'audio_sha256': audioSha256,
+      if (state != null) 'state': state,
+      if (timingPrecision != null) 'timing_precision': timingPrecision,
+      if (error != null) 'error': error,
+      if (createdAt != null) 'created_at': createdAt,
+      if (updatedAt != null) 'updated_at': updatedAt,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  CloudJobsCompanion copyWith({
+    Value<String>? memoId,
+    Value<String>? requestId,
+    Value<int>? clientRevision,
+    Value<String>? audioSha256,
+    Value<String>? state,
+    Value<String?>? timingPrecision,
+    Value<String?>? error,
+    Value<int>? createdAt,
+    Value<int>? updatedAt,
+    Value<int>? rowid,
+  }) {
+    return CloudJobsCompanion(
+      memoId: memoId ?? this.memoId,
+      requestId: requestId ?? this.requestId,
+      clientRevision: clientRevision ?? this.clientRevision,
+      audioSha256: audioSha256 ?? this.audioSha256,
+      state: state ?? this.state,
+      timingPrecision: timingPrecision ?? this.timingPrecision,
+      error: error ?? this.error,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (memoId.present) {
+      map['memo_id'] = Variable<String>(memoId.value);
+    }
+    if (requestId.present) {
+      map['request_id'] = Variable<String>(requestId.value);
+    }
+    if (clientRevision.present) {
+      map['client_revision'] = Variable<int>(clientRevision.value);
+    }
+    if (audioSha256.present) {
+      map['audio_sha256'] = Variable<String>(audioSha256.value);
+    }
+    if (state.present) {
+      map['state'] = Variable<String>(state.value);
+    }
+    if (timingPrecision.present) {
+      map['timing_precision'] = Variable<String>(timingPrecision.value);
+    }
+    if (error.present) {
+      map['error'] = Variable<String>(error.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<int>(createdAt.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<int>(updatedAt.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('CloudJobsCompanion(')
+          ..write('memoId: $memoId, ')
+          ..write('requestId: $requestId, ')
+          ..write('clientRevision: $clientRevision, ')
+          ..write('audioSha256: $audioSha256, ')
+          ..write('state: $state, ')
+          ..write('timingPrecision: $timingPrecision, ')
+          ..write('error: $error, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -2004,6 +2760,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $CassettesTable cassettes = $CassettesTable(this);
   late final $MemosTable memos = $MemosTable(this);
   late final $JobsTable jobs = $JobsTable(this);
+  late final $CloudJobsTable cloudJobs = $CloudJobsTable(this);
   late final $SettingsEntriesTable settingsEntries = $SettingsEntriesTable(
     this,
   );
@@ -2015,6 +2772,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     cassettes,
     memos,
     jobs,
+    cloudJobs,
     settingsEntries,
   ];
   @override
@@ -2025,6 +2783,13 @@ abstract class _$AppDatabase extends GeneratedDatabase {
         limitUpdateKind: UpdateKind.delete,
       ),
       result: [TableUpdate('memos', kind: UpdateKind.delete)],
+    ),
+    WritePropagation(
+      on: TableUpdateQuery.onTableName(
+        'memos',
+        limitUpdateKind: UpdateKind.delete,
+      ),
+      result: [TableUpdate('cloud_jobs', kind: UpdateKind.delete)],
     ),
   ]);
 }
@@ -2403,6 +3168,7 @@ typedef $$MemosTableCreateCompanionBuilder =
       required String status,
       Value<String?> uploadStatus,
       Value<int?> uploadedAt,
+      Value<int?> cloudConsentAt,
       Value<int> rowid,
     });
 typedef $$MemosTableUpdateCompanionBuilder =
@@ -2420,6 +3186,7 @@ typedef $$MemosTableUpdateCompanionBuilder =
       Value<String> status,
       Value<String?> uploadStatus,
       Value<int?> uploadedAt,
+      Value<int?> cloudConsentAt,
       Value<int> rowid,
     });
 
@@ -2441,6 +3208,24 @@ final class $$MemosTableReferences
     if (item == null) return manager;
     return ProcessedTableManager(
       manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+
+  static MultiTypedResultKey<$CloudJobsTable, List<CloudJobRow>>
+  _cloudJobsRefsTable(_$AppDatabase db) => MultiTypedResultKey.fromTable(
+    db.cloudJobs,
+    aliasName: 'memos__id__cloud_jobs__memo_id',
+  );
+
+  $$CloudJobsTableProcessedTableManager get cloudJobsRefs {
+    final manager = $$CloudJobsTableTableManager(
+      $_db,
+      $_db.cloudJobs,
+    ).filter((f) => f.memoId.id.sqlEquals($_itemColumn<String>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(_cloudJobsRefsTable($_db));
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
     );
   }
 }
@@ -2513,6 +3298,11 @@ class $$MemosTableFilterComposer extends Composer<_$AppDatabase, $MemosTable> {
     builder: (column) => ColumnFilters(column),
   );
 
+  ColumnFilters<int> get cloudConsentAt => $composableBuilder(
+    column: $table.cloudConsentAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
   $$CassettesTableFilterComposer get cassetteId {
     final $$CassettesTableFilterComposer composer = $composerBuilder(
       composer: this,
@@ -2534,6 +3324,31 @@ class $$MemosTableFilterComposer extends Composer<_$AppDatabase, $MemosTable> {
           ),
     );
     return composer;
+  }
+
+  Expression<bool> cloudJobsRefs(
+    Expression<bool> Function($$CloudJobsTableFilterComposer f) f,
+  ) {
+    final $$CloudJobsTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.cloudJobs,
+      getReferencedColumn: (t) => t.memoId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$CloudJobsTableFilterComposer(
+            $db: $db,
+            $table: $db.cloudJobs,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
   }
 }
 
@@ -2603,6 +3418,11 @@ class $$MemosTableOrderingComposer
 
   ColumnOrderings<int> get uploadedAt => $composableBuilder(
     column: $table.uploadedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get cloudConsentAt => $composableBuilder(
+    column: $table.cloudConsentAt,
     builder: (column) => ColumnOrderings(column),
   );
 
@@ -2689,6 +3509,11 @@ class $$MemosTableAnnotationComposer
     builder: (column) => column,
   );
 
+  GeneratedColumn<int> get cloudConsentAt => $composableBuilder(
+    column: $table.cloudConsentAt,
+    builder: (column) => column,
+  );
+
   $$CassettesTableAnnotationComposer get cassetteId {
     final $$CassettesTableAnnotationComposer composer = $composerBuilder(
       composer: this,
@@ -2711,6 +3536,31 @@ class $$MemosTableAnnotationComposer
     );
     return composer;
   }
+
+  Expression<T> cloudJobsRefs<T extends Object>(
+    Expression<T> Function($$CloudJobsTableAnnotationComposer a) f,
+  ) {
+    final $$CloudJobsTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.cloudJobs,
+      getReferencedColumn: (t) => t.memoId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$CloudJobsTableAnnotationComposer(
+            $db: $db,
+            $table: $db.cloudJobs,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
 }
 
 class $$MemosTableTableManager
@@ -2726,7 +3576,7 @@ class $$MemosTableTableManager
           $$MemosTableUpdateCompanionBuilder,
           (MemoRow, $$MemosTableReferences),
           MemoRow,
-          PrefetchHooks Function({bool cassetteId})
+          PrefetchHooks Function({bool cassetteId, bool cloudJobsRefs})
         > {
   $$MemosTableTableManager(_$AppDatabase db, $MemosTable table)
     : super(
@@ -2754,6 +3604,7 @@ class $$MemosTableTableManager
                 Value<String> status = const Value.absent(),
                 Value<String?> uploadStatus = const Value.absent(),
                 Value<int?> uploadedAt = const Value.absent(),
+                Value<int?> cloudConsentAt = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => MemosCompanion(
                 id: id,
@@ -2769,6 +3620,7 @@ class $$MemosTableTableManager
                 status: status,
                 uploadStatus: uploadStatus,
                 uploadedAt: uploadedAt,
+                cloudConsentAt: cloudConsentAt,
                 rowid: rowid,
               ),
           createCompanionCallback:
@@ -2786,6 +3638,7 @@ class $$MemosTableTableManager
                 required String status,
                 Value<String?> uploadStatus = const Value.absent(),
                 Value<int?> uploadedAt = const Value.absent(),
+                Value<int?> cloudConsentAt = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => MemosCompanion.insert(
                 id: id,
@@ -2801,6 +3654,7 @@ class $$MemosTableTableManager
                 status: status,
                 uploadStatus: uploadStatus,
                 uploadedAt: uploadedAt,
+                cloudConsentAt: cloudConsentAt,
                 rowid: rowid,
               ),
           withReferenceMapper: (p0) => p0
@@ -2809,10 +3663,10 @@ class $$MemosTableTableManager
                     (e.readTable(table), $$MemosTableReferences(db, table, e)),
               )
               .toList(),
-          prefetchHooksCallback: ({cassetteId = false}) {
+          prefetchHooksCallback: ({cassetteId = false, cloudJobsRefs = false}) {
             return PrefetchHooks(
               db: db,
-              explicitlyWatchedTables: [],
+              explicitlyWatchedTables: [if (cloudJobsRefs) db.cloudJobs],
               addJoins:
                   <
                     T extends TableManagerState<
@@ -2846,7 +3700,23 @@ class $$MemosTableTableManager
                     return state;
                   },
               getPrefetchedDataCallback: (items) async {
-                return [];
+                return [
+                  if (cloudJobsRefs)
+                    await $_getPrefetchedData<
+                      MemoRow,
+                      $MemosTable,
+                      CloudJobRow
+                    >(
+                      currentTable: table,
+                      referencedTable: $$MemosTableReferences
+                          ._cloudJobsRefsTable(db),
+                      managerFromTypedResult: (p0) =>
+                          $$MemosTableReferences(db, table, p0).cloudJobsRefs,
+                      referencedItemsForCurrentItem: (item, referencedItems) =>
+                          referencedItems.where((e) => e.memoId == item.id),
+                      typedResults: items,
+                    ),
+                ];
               },
             );
           },
@@ -2866,7 +3736,7 @@ typedef $$MemosTableProcessedTableManager =
       $$MemosTableUpdateCompanionBuilder,
       (MemoRow, $$MemosTableReferences),
       MemoRow,
-      PrefetchHooks Function({bool cassetteId})
+      PrefetchHooks Function({bool cassetteId, bool cloudJobsRefs})
     >;
 typedef $$JobsTableCreateCompanionBuilder =
     JobsCompanion Function({
@@ -2877,6 +3747,8 @@ typedef $$JobsTableCreateCompanionBuilder =
       Value<int> attempts,
       required int createdAt,
       Value<int> availableAt,
+      Value<String?> ownerId,
+      Value<int> leaseUntil,
       Value<int> rowid,
     });
 typedef $$JobsTableUpdateCompanionBuilder =
@@ -2888,6 +3760,8 @@ typedef $$JobsTableUpdateCompanionBuilder =
       Value<int> attempts,
       Value<int> createdAt,
       Value<int> availableAt,
+      Value<String?> ownerId,
+      Value<int> leaseUntil,
       Value<int> rowid,
     });
 
@@ -2931,6 +3805,16 @@ class $$JobsTableFilterComposer extends Composer<_$AppDatabase, $JobsTable> {
 
   ColumnFilters<int> get availableAt => $composableBuilder(
     column: $table.availableAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get ownerId => $composableBuilder(
+    column: $table.ownerId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get leaseUntil => $composableBuilder(
+    column: $table.leaseUntil,
     builder: (column) => ColumnFilters(column),
   );
 }
@@ -2977,6 +3861,16 @@ class $$JobsTableOrderingComposer extends Composer<_$AppDatabase, $JobsTable> {
     column: $table.availableAt,
     builder: (column) => ColumnOrderings(column),
   );
+
+  ColumnOrderings<String> get ownerId => $composableBuilder(
+    column: $table.ownerId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get leaseUntil => $composableBuilder(
+    column: $table.leaseUntil,
+    builder: (column) => ColumnOrderings(column),
+  );
 }
 
 class $$JobsTableAnnotationComposer
@@ -3008,6 +3902,14 @@ class $$JobsTableAnnotationComposer
 
   GeneratedColumn<int> get availableAt => $composableBuilder(
     column: $table.availableAt,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get ownerId =>
+      $composableBuilder(column: $table.ownerId, builder: (column) => column);
+
+  GeneratedColumn<int> get leaseUntil => $composableBuilder(
+    column: $table.leaseUntil,
     builder: (column) => column,
   );
 }
@@ -3047,6 +3949,8 @@ class $$JobsTableTableManager
                 Value<int> attempts = const Value.absent(),
                 Value<int> createdAt = const Value.absent(),
                 Value<int> availableAt = const Value.absent(),
+                Value<String?> ownerId = const Value.absent(),
+                Value<int> leaseUntil = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => JobsCompanion(
                 id: id,
@@ -3056,6 +3960,8 @@ class $$JobsTableTableManager
                 attempts: attempts,
                 createdAt: createdAt,
                 availableAt: availableAt,
+                ownerId: ownerId,
+                leaseUntil: leaseUntil,
                 rowid: rowid,
               ),
           createCompanionCallback:
@@ -3067,6 +3973,8 @@ class $$JobsTableTableManager
                 Value<int> attempts = const Value.absent(),
                 required int createdAt,
                 Value<int> availableAt = const Value.absent(),
+                Value<String?> ownerId = const Value.absent(),
+                Value<int> leaseUntil = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => JobsCompanion.insert(
                 id: id,
@@ -3076,6 +3984,8 @@ class $$JobsTableTableManager
                 attempts: attempts,
                 createdAt: createdAt,
                 availableAt: availableAt,
+                ownerId: ownerId,
+                leaseUntil: leaseUntil,
                 rowid: rowid,
               ),
           withReferenceMapper: (p0) => p0
@@ -3099,6 +4009,405 @@ typedef $$JobsTableProcessedTableManager =
       (JobRow, BaseReferences<_$AppDatabase, $JobsTable, JobRow>),
       JobRow,
       PrefetchHooks Function()
+    >;
+typedef $$CloudJobsTableCreateCompanionBuilder =
+    CloudJobsCompanion Function({
+      required String memoId,
+      required String requestId,
+      required int clientRevision,
+      required String audioSha256,
+      required String state,
+      Value<String?> timingPrecision,
+      Value<String?> error,
+      required int createdAt,
+      required int updatedAt,
+      Value<int> rowid,
+    });
+typedef $$CloudJobsTableUpdateCompanionBuilder =
+    CloudJobsCompanion Function({
+      Value<String> memoId,
+      Value<String> requestId,
+      Value<int> clientRevision,
+      Value<String> audioSha256,
+      Value<String> state,
+      Value<String?> timingPrecision,
+      Value<String?> error,
+      Value<int> createdAt,
+      Value<int> updatedAt,
+      Value<int> rowid,
+    });
+
+final class $$CloudJobsTableReferences
+    extends BaseReferences<_$AppDatabase, $CloudJobsTable, CloudJobRow> {
+  $$CloudJobsTableReferences(super.$_db, super.$_table, super.$_typedResult);
+
+  static $MemosTable _memoIdTable(_$AppDatabase db) =>
+      db.memos.createAlias('cloud_jobs__memo_id__memos__id');
+
+  $$MemosTableProcessedTableManager get memoId {
+    final $_column = $_itemColumn<String>('memo_id')!;
+
+    final manager = $$MemosTableTableManager(
+      $_db,
+      $_db.memos,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_memoIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+}
+
+class $$CloudJobsTableFilterComposer
+    extends Composer<_$AppDatabase, $CloudJobsTable> {
+  $$CloudJobsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get requestId => $composableBuilder(
+    column: $table.requestId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get clientRevision => $composableBuilder(
+    column: $table.clientRevision,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get audioSha256 => $composableBuilder(
+    column: $table.audioSha256,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get state => $composableBuilder(
+    column: $table.state,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get timingPrecision => $composableBuilder(
+    column: $table.timingPrecision,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get error => $composableBuilder(
+    column: $table.error,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  $$MemosTableFilterComposer get memoId {
+    final $$MemosTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.memoId,
+      referencedTable: $db.memos,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$MemosTableFilterComposer(
+            $db: $db,
+            $table: $db.memos,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$CloudJobsTableOrderingComposer
+    extends Composer<_$AppDatabase, $CloudJobsTable> {
+  $$CloudJobsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get requestId => $composableBuilder(
+    column: $table.requestId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get clientRevision => $composableBuilder(
+    column: $table.clientRevision,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get audioSha256 => $composableBuilder(
+    column: $table.audioSha256,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get state => $composableBuilder(
+    column: $table.state,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get timingPrecision => $composableBuilder(
+    column: $table.timingPrecision,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get error => $composableBuilder(
+    column: $table.error,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  $$MemosTableOrderingComposer get memoId {
+    final $$MemosTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.memoId,
+      referencedTable: $db.memos,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$MemosTableOrderingComposer(
+            $db: $db,
+            $table: $db.memos,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$CloudJobsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $CloudJobsTable> {
+  $$CloudJobsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get requestId =>
+      $composableBuilder(column: $table.requestId, builder: (column) => column);
+
+  GeneratedColumn<int> get clientRevision => $composableBuilder(
+    column: $table.clientRevision,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get audioSha256 => $composableBuilder(
+    column: $table.audioSha256,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get state =>
+      $composableBuilder(column: $table.state, builder: (column) => column);
+
+  GeneratedColumn<String> get timingPrecision => $composableBuilder(
+    column: $table.timingPrecision,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get error =>
+      $composableBuilder(column: $table.error, builder: (column) => column);
+
+  GeneratedColumn<int> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<int> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+
+  $$MemosTableAnnotationComposer get memoId {
+    final $$MemosTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.memoId,
+      referencedTable: $db.memos,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$MemosTableAnnotationComposer(
+            $db: $db,
+            $table: $db.memos,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$CloudJobsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $CloudJobsTable,
+          CloudJobRow,
+          $$CloudJobsTableFilterComposer,
+          $$CloudJobsTableOrderingComposer,
+          $$CloudJobsTableAnnotationComposer,
+          $$CloudJobsTableCreateCompanionBuilder,
+          $$CloudJobsTableUpdateCompanionBuilder,
+          (CloudJobRow, $$CloudJobsTableReferences),
+          CloudJobRow,
+          PrefetchHooks Function({bool memoId})
+        > {
+  $$CloudJobsTableTableManager(_$AppDatabase db, $CloudJobsTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$CloudJobsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$CloudJobsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$CloudJobsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> memoId = const Value.absent(),
+                Value<String> requestId = const Value.absent(),
+                Value<int> clientRevision = const Value.absent(),
+                Value<String> audioSha256 = const Value.absent(),
+                Value<String> state = const Value.absent(),
+                Value<String?> timingPrecision = const Value.absent(),
+                Value<String?> error = const Value.absent(),
+                Value<int> createdAt = const Value.absent(),
+                Value<int> updatedAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => CloudJobsCompanion(
+                memoId: memoId,
+                requestId: requestId,
+                clientRevision: clientRevision,
+                audioSha256: audioSha256,
+                state: state,
+                timingPrecision: timingPrecision,
+                error: error,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String memoId,
+                required String requestId,
+                required int clientRevision,
+                required String audioSha256,
+                required String state,
+                Value<String?> timingPrecision = const Value.absent(),
+                Value<String?> error = const Value.absent(),
+                required int createdAt,
+                required int updatedAt,
+                Value<int> rowid = const Value.absent(),
+              }) => CloudJobsCompanion.insert(
+                memoId: memoId,
+                requestId: requestId,
+                clientRevision: clientRevision,
+                audioSha256: audioSha256,
+                state: state,
+                timingPrecision: timingPrecision,
+                error: error,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable(table),
+                  $$CloudJobsTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: ({memoId = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [],
+              addJoins:
+                  <
+                    T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic
+                    >
+                  >(state) {
+                    if (memoId) {
+                      state =
+                          state.withJoin(
+                                currentTable: table,
+                                currentColumn: table.memoId,
+                                referencedTable: $$CloudJobsTableReferences
+                                    ._memoIdTable(db),
+                                referencedColumn: $$CloudJobsTableReferences
+                                    ._memoIdTable(db)
+                                    .id,
+                              )
+                              as T;
+                    }
+
+                    return state;
+                  },
+              getPrefetchedDataCallback: (items) async {
+                return [];
+              },
+            );
+          },
+        ),
+      );
+}
+
+typedef $$CloudJobsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $CloudJobsTable,
+      CloudJobRow,
+      $$CloudJobsTableFilterComposer,
+      $$CloudJobsTableOrderingComposer,
+      $$CloudJobsTableAnnotationComposer,
+      $$CloudJobsTableCreateCompanionBuilder,
+      $$CloudJobsTableUpdateCompanionBuilder,
+      (CloudJobRow, $$CloudJobsTableReferences),
+      CloudJobRow,
+      PrefetchHooks Function({bool memoId})
     >;
 typedef $$SettingsEntriesTableCreateCompanionBuilder =
     SettingsEntriesCompanion Function({
@@ -3254,6 +4563,8 @@ class $AppDatabaseManager {
   $$MemosTableTableManager get memos =>
       $$MemosTableTableManager(_db, _db.memos);
   $$JobsTableTableManager get jobs => $$JobsTableTableManager(_db, _db.jobs);
+  $$CloudJobsTableTableManager get cloudJobs =>
+      $$CloudJobsTableTableManager(_db, _db.cloudJobs);
   $$SettingsEntriesTableTableManager get settingsEntries =>
       $$SettingsEntriesTableTableManager(_db, _db.settingsEntries);
 }

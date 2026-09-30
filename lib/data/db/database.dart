@@ -57,6 +57,11 @@ class Memos extends Table {
   /// Server-confirmed upload instant (epoch ms); null until then.
   IntColumn get uploadedAt => integer().nullable()();
 
+  /// The user explicitly approved cloud-processing this exact memo
+  /// (epoch ms); audio is content-immutable, so the grant never rebinds.
+  /// Null = never asked/never granted; phone-local mode handles it.
+  IntColumn get cloudConsentAt => integer().nullable()();
+
   @override
   Set<Column> get primaryKey => {id};
 }
@@ -75,8 +80,41 @@ class Jobs extends Table {
   /// drain loop: a deferred/requeued job parks in 'queued' until then.
   IntColumn get availableAt => integer().withDefault(const Constant(0))();
 
+  /// Claim token of the process/lane currently working the job — guards
+  /// the app process and the WorkManager headless engine from running
+  /// each other's jobs concurrently.
+  TextColumn get ownerId => text().nullable()();
+
+  /// Claim expiry (epoch ms); another lane may take over only afterwards.
+  /// NULL/0 = no lease.
+  IntColumn get leaseUntil => integer().withDefault(const Constant(0))();
+
   @override
   Set<Column> get primaryKey => {id};
+}
+
+/// One outstanding cloud-processing request per memo: upload state,
+/// resumable polling, and (after import) the returned transcript's
+/// timing precision. Deleted with the memo.
+@DataClassName('CloudJobRow')
+class CloudJobs extends Table {
+  TextColumn get memoId =>
+      text().references(Memos, #id, onDelete: KeyAction.cascade)();
+  TextColumn get requestId => text()();
+  IntColumn get clientRevision => integer()();
+  TextColumn get audioSha256 => text()();
+
+  /// pending → uploading → uploaded → complete | imported_end
+  /// (terminal 'cancelled'/'failed' survive so state reads honestly;
+  /// code resets them lazily on the next run instead of deleting).
+  TextColumn get state => text()();
+  TextColumn get timingPrecision => text().nullable()();
+  TextColumn get error => text().nullable()();
+  IntColumn get createdAt => integer()();  // epoch ms
+  IntColumn get updatedAt => integer()();  // epoch ms
+
+  @override
+  Set<Column> get primaryKey => {memoId};
 }
 
 /// Key-value settings (single conceptual row, §7.2).
@@ -89,7 +127,7 @@ class SettingsEntries extends Table {
   Set<Column> get primaryKey => {key};
 }
 
-@DriftDatabase(tables: [Cassettes, Memos, Jobs, SettingsEntries])
+@DriftDatabase(tables: [Cassettes, Memos, Jobs, CloudJobs, SettingsEntries])
 class AppDatabase extends _$AppDatabase {
   AppDatabase() : super(_openConnection());
 
@@ -97,7 +135,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase.forTesting(super.executor);
 
   @override
-  int get schemaVersion => 4;
+  int get schemaVersion => 5;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -115,6 +153,14 @@ class AppDatabase extends _$AppDatabase {
             await m.addColumn(memos, memos.uploadStatus);
             await m.addColumn(memos, memos.uploadedAt);
             await m.addColumn(jobs, jobs.availableAt);
+          }
+          if (from < 5) {
+            // Cloud transcription: per-memo consent, job lane ownership and
+            // resumable cloud requests.
+            await m.addColumn(memos, memos.cloudConsentAt);
+            await m.addColumn(jobs, jobs.ownerId);
+            await m.addColumn(jobs, jobs.leaseUntil);
+            await m.createTable(cloudJobs);
           }
         },
         beforeOpen: (details) async {

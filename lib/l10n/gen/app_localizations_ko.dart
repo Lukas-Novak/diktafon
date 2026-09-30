@@ -312,6 +312,50 @@ class AppLocalizationsKo extends AppLocalizations {
   String get backupExportDesc => '카세트를 가지고 가세요 — 오디오, 변환 텍스트, 요약 — 또는 다시 가져오세요';
 
   @override
+  String get transcriptionLocation => '전사 위치';
+
+  @override
+  String get transcriptionLocationTitle => '전사 위치';
+
+  @override
+  String get transcriptionLocationPhone => '이 휴대폰에서';
+
+  @override
+  String get transcriptionLocationCloud => '클라우드에서';
+
+  @override
+  String get transcriptionCloudNeedsConnection =>
+      '먼저 서버 주소와 토큰을 설정하세요 (서버 업로드 항목).';
+
+  @override
+  String get transcriptionCloudConfirmTitle => '전사에 서버를 사용할까요?';
+
+  @override
+  String transcriptionCloudConfirmBody(String host) {
+    return '이제부터 녹음은 자동으로 $host에 업로드되어 전사되고, 전사 결과는 다시 이곳으로 돌아옵니다. 제공자와 자격 증명은 서버에만 남습니다.';
+  }
+
+  @override
+  String get transcriptionFailedCloud => '여기서 실패 — 클라우드로 보내기';
+
+  @override
+  String get transcriptionCloudGranted => '클라우드로 전송됨 — 전사 대기 중';
+
+  @override
+  String get cloudConsentTitle => '이 녹음을 서버로 보낼까요?';
+
+  @override
+  String cloudConsentBody(String host, String duration, String size) {
+    return '녹음($duration, $size)이 전사를 위해 $host로 전송됩니다. 이 전화에서 다시 실패하면 로컬에 안전하게 보관됩니다.';
+  }
+
+  @override
+  String get cloudConsentSend => '서버로 보내기';
+
+  @override
+  String get cloudConsentScheduled => '녹음을 서버로 보냈습니다';
+
+  @override
   String get groupUpload => '서버 업로드';
 
   @override

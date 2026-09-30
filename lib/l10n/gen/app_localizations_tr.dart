@@ -325,6 +325,52 @@ class AppLocalizationsTr extends AppLocalizations {
       'Kasetlerinizi yanınıza alın — ses, transkriptler ve özetler — ya da geri getirin';
 
   @override
+  String get transcriptionLocation => 'Transkripsiyon konumu';
+
+  @override
+  String get transcriptionLocationTitle => 'TRANSKRIPSİYON KONUMU';
+
+  @override
+  String get transcriptionLocationPhone => 'Bu telefonda';
+
+  @override
+  String get transcriptionLocationCloud => 'Bulutta';
+
+  @override
+  String get transcriptionCloudNeedsConnection =>
+      'Önce sunucu adresini ve anahtarı ayarla (Sunucuya yükleme bölümünde).';
+
+  @override
+  String get transcriptionCloudConfirmTitle =>
+      'TRANSKRIPSİYON İÇİN SUNUCU KULLANILSIN MI?';
+
+  @override
+  String transcriptionCloudConfirmBody(String host) {
+    return 'Yeni kayıtlar transkripsiyon için otomatik olarak $host sunucusuna yüklenecek; transcript sonra buraya döner. Sağlayıcı ve kimlik bilgileri sunucunuzda kalır.';
+  }
+
+  @override
+  String get transcriptionFailedCloud => 'Burada başarısız — buluta gönder';
+
+  @override
+  String get transcriptionCloudGranted =>
+      'Buluta gönderildi — transkript bekleniyor';
+
+  @override
+  String get cloudConsentTitle => 'BU KAYIT SUNUCUYA GÖNDERİLSİN Mİ?';
+
+  @override
+  String cloudConsentBody(String host, String duration, String size) {
+    return 'Kayıt ($duration, $size) transkripsiyon için $host sunucusuna gönderilecek. Telefonda yeniden başarısız olursa kayıt yerelde güvende kalır.';
+  }
+
+  @override
+  String get cloudConsentSend => 'Sunucuya gönder';
+
+  @override
+  String get cloudConsentScheduled => 'Kayıt sunucuya gönderildi';
+
+  @override
   String get groupUpload => 'Sunucuya yükleme';
 
   @override

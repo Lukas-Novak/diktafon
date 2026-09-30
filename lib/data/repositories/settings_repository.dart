@@ -13,6 +13,7 @@ class AppSettings {
     this.uploadEnabled = false,
     this.uploadUrl,
     this.uploadWifiOnly = true,
+    this.transcriptionMode = 'phone',
   });
 
   /// Null → auto-detect per memo (D8), so one tape may mix languages; set →
@@ -42,6 +43,17 @@ class AppSettings {
   /// Defer uploads to unmetered (Wi-Fi/Ethernet) connectivity.
   final bool uploadWifiOnly;
 
+  /// Where transcription runs by default for *new* recordings:
+  /// 'phone' (local whisper) or 'cloud' (ingest backend; its provider and
+  /// credentials live on the backend, not here). A failed local attempt is
+  /// never sent without explicit per-memo consent regardless of this value.
+  final String transcriptionMode;
+
+  bool get cloudConfigured =>
+      transcriptionMode == 'cloud' &&
+      uploadUrl != null &&
+      uploadUrl!.isNotEmpty;
+
   static AppSettings fromRows(Map<String, String> rows) => AppSettings(
         appLanguage: rows['appLanguage'],
         chimeEnabled: rows['chimeEnabled'] != '0',
@@ -55,6 +67,7 @@ class AppSettings {
         uploadEnabled: rows['uploadEnabled'] == '1',
         uploadUrl: rows['uploadUrl'],
         uploadWifiOnly: rows['uploadWifiOnly'] != '0',
+        transcriptionMode: rows['transcriptionMode'] ?? 'phone',
       );
 }
 
@@ -97,4 +110,8 @@ class SettingsRepository {
       _set('uploadUrl', (url == null || url.trim().isEmpty) ? null : url.trim());
   Future<void> setUploadWifiOnly(bool on) =>
       _set('uploadWifiOnly', on ? '1' : '0');
+
+  /// [mode] is 'phone' or 'cloud'; persisted verbatim.
+  Future<void> setTranscriptionMode(String mode) =>
+      _set('transcriptionMode', mode);
 }

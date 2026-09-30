@@ -335,6 +335,52 @@ class AppLocalizationsUk extends AppLocalizations {
       'Заберіть касети із собою — звук, розшифровки й підсумки — або поверніть їх назад';
 
   @override
+  String get transcriptionLocation => 'Місце транскрипції';
+
+  @override
+  String get transcriptionLocationTitle => 'МІСЦЕ ТРАНСКРИПЦІЇ';
+
+  @override
+  String get transcriptionLocationPhone => 'На цьому телефоні';
+
+  @override
+  String get transcriptionLocationCloud => 'У хмарі';
+
+  @override
+  String get transcriptionCloudNeedsConnection =>
+      'Спочатку задайте адресу сервера й токен (у розділі «Завантаження на сервер»).';
+
+  @override
+  String get transcriptionCloudConfirmTitle =>
+      'ВИКОРИСТОВУВАТИ СЕРВЕР ДЛЯ ТРАНСКРИПЦІЇ?';
+
+  @override
+  String transcriptionCloudConfirmBody(String host) {
+    return 'Нові записи автоматично надсилатимуться на $host для транскрипції, а результат повертатиметься сюди. Провайдер і його облікові дані лишаються на вашому сервері.';
+  }
+
+  @override
+  String get transcriptionFailedCloud => 'Тут невдало — надіслати в хмару';
+
+  @override
+  String get transcriptionCloudGranted =>
+      'Надіслано в хмару — очікується транскрипція';
+
+  @override
+  String get cloudConsentTitle => 'НАДІСЛАТИ ЦЕЙ ЗАПИС НА СЕРВЕР?';
+
+  @override
+  String cloudConsentBody(String host, String duration, String size) {
+    return 'Запис ($duration, $size) буде надіслано на $host для транскрипції. Якщо на цьому телефоні знову не вийде, локальна копія залишиться в безпеці.';
+  }
+
+  @override
+  String get cloudConsentSend => 'Надіслати на сервер';
+
+  @override
+  String get cloudConsentScheduled => 'Запис надіслано на сервер';
+
+  @override
   String get groupUpload => 'Завантаження на сервер';
 
   @override

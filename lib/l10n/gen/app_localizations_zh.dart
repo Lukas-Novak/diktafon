@@ -309,6 +309,49 @@ class AppLocalizationsZh extends AppLocalizations {
   String get backupExportDesc => '随身带走你的卡带（音频、转写文本和摘要），或再把它们带回来';
 
   @override
+  String get transcriptionLocation => '转录位置';
+
+  @override
+  String get transcriptionLocationTitle => '转录位置';
+
+  @override
+  String get transcriptionLocationPhone => '在此手机上';
+
+  @override
+  String get transcriptionLocationCloud => '云端';
+
+  @override
+  String get transcriptionCloudNeedsConnection => '请先设置服务器地址和令牌（在“服务器上传”部分）。';
+
+  @override
+  String get transcriptionCloudConfirmTitle => '使用服务器进行转录？';
+
+  @override
+  String transcriptionCloudConfirmBody(String host) {
+    return '新的录音将自动上传到 $host 进行转录，然后转录会回到这里。提供商及其凭据保存在您的服务器上。';
+  }
+
+  @override
+  String get transcriptionFailedCloud => '此处失败 — 发送到云端';
+
+  @override
+  String get transcriptionCloudGranted => '已发送到云端 — 等待转录';
+
+  @override
+  String get cloudConsentTitle => '将此录音发送到服务器？';
+
+  @override
+  String cloudConsentBody(String host, String duration, String size) {
+    return '录音（$duration，$size）将发送到 $host 进行转录。如果在此手机上再次失败，录音会继续安全地保存在本地。';
+  }
+
+  @override
+  String get cloudConsentSend => '发送到服务器';
+
+  @override
+  String get cloudConsentScheduled => '录音已发送到服务器';
+
+  @override
   String get groupUpload => '服务器上传';
 
   @override
@@ -972,6 +1015,49 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String get backupExportDesc => '隨身帶走你的卡帶（音訊、逐字稿和摘要），或再把它們帶回來';
+
+  @override
+  String get transcriptionLocation => '轉錄位置';
+
+  @override
+  String get transcriptionLocationTitle => '轉錄位置';
+
+  @override
+  String get transcriptionLocationPhone => '在此手機上';
+
+  @override
+  String get transcriptionLocationCloud => '雲端';
+
+  @override
+  String get transcriptionCloudNeedsConnection => '請先設定伺服器網址與權杖（在「伺服器上傳」部分）。';
+
+  @override
+  String get transcriptionCloudConfirmTitle => '使用伺服器進行轉錄？';
+
+  @override
+  String transcriptionCloudConfirmBody(String host) {
+    return '新的錄音會自動上傳到 $host 以完成轉錄，之後轉錄結果會回到這裡。提供者與其憑證都保存在您的伺服器上。';
+  }
+
+  @override
+  String get transcriptionFailedCloud => '此處失敗 — 傳送到雲端';
+
+  @override
+  String get transcriptionCloudGranted => '已傳送到雲端 — 等待轉錄';
+
+  @override
+  String get cloudConsentTitle => '將這段錄音傳送到伺服器？';
+
+  @override
+  String cloudConsentBody(String host, String duration, String size) {
+    return '錄音（$duration，$size）將傳送到 $host 進行轉錄。如果在此手機上再次失敗，錄音仍會安全保存在本機。';
+  }
+
+  @override
+  String get cloudConsentSend => '傳送到伺服器';
+
+  @override
+  String get cloudConsentScheduled => '錄音已傳送到伺服器';
 
   @override
   String get groupUpload => '伺服器上傳';

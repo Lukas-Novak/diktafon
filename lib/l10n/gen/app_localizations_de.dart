@@ -331,6 +331,53 @@ class AppLocalizationsDe extends AppLocalizations {
       'Nimm deine Kassetten mit — Audio, Transkripte und Zusammenfassungen — oder hole sie zurück';
 
   @override
+  String get transcriptionLocation => 'Ort der Transkription';
+
+  @override
+  String get transcriptionLocationTitle => 'ORT DER TRANSKRIPTION';
+
+  @override
+  String get transcriptionLocationPhone => 'Auf diesem Telefon';
+
+  @override
+  String get transcriptionLocationCloud => 'In der Cloud';
+
+  @override
+  String get transcriptionCloudNeedsConnection =>
+      'Lege zuerst Server-URL und Token fest (unter Server-Upload).';
+
+  @override
+  String get transcriptionCloudConfirmTitle =>
+      'SERVER FÜR DIE TRANSKRIPTION VERWENDEN?';
+
+  @override
+  String transcriptionCloudConfirmBody(String host) {
+    return 'Neue Aufnahmen werden zur Transkription automatisch zu $host übertragen, dann kommt das Transkript hierher zurück. Anbieter und Zugangsdaten bleiben auf deinem Server.';
+  }
+
+  @override
+  String get transcriptionFailedCloud =>
+      'Hier fehlgeschlagen — in die Cloud senden';
+
+  @override
+  String get transcriptionCloudGranted =>
+      'An die Cloud gesendet — auf Transkript warten';
+
+  @override
+  String get cloudConsentTitle => 'DIESE AUFNAHME AN DEN SERVER SENDEN?';
+
+  @override
+  String cloudConsentBody(String host, String duration, String size) {
+    return 'Die Aufnahme ($duration, $size) wird zur Transkription an $host gesendet. Falls die Transkription auf diesem Telefon erneut scheitert, bleibt sie lokal gesichert.';
+  }
+
+  @override
+  String get cloudConsentSend => 'An den Server senden';
+
+  @override
+  String get cloudConsentScheduled => 'Aufnahme an den Server gesendet';
+
+  @override
   String get groupUpload => 'Server-Upload';
 
   @override

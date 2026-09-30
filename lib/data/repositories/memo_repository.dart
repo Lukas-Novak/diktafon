@@ -122,6 +122,13 @@ class MemoRepository {
         ),
       );
 
+  /// Persist an explicit per-memo cloud-processing consent ([consent] epoch
+  /// ms when granted, null to revoke). The memo's audio is content-immutable,
+  /// so the grant never needs rebinding to content.
+  Future<void> setCloudConsent(String id, int? consentAt) =>
+      (_db.update(_db.memos)..where((m) => m.id.equals(id)))
+          .write(MemosCompanion(cloudConsentAt: Value(consentAt)));
+
   Future<void> delete(String id) =>
       (_db.delete(_db.memos)..where((m) => m.id.equals(id))).go();
 

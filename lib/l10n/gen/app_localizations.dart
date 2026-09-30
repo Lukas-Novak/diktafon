@@ -637,6 +637,84 @@ abstract class AppLocalizations {
   /// **'Take your cassettes with you — audio, transcripts and summaries — or bring them back'**
   String get backupExportDesc;
 
+  /// No description provided for @transcriptionLocation.
+  ///
+  /// In en, this message translates to:
+  /// **'Transcription location'**
+  String get transcriptionLocation;
+
+  /// No description provided for @transcriptionLocationTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'TRANSCRIPTION LOCATION'**
+  String get transcriptionLocationTitle;
+
+  /// No description provided for @transcriptionLocationPhone.
+  ///
+  /// In en, this message translates to:
+  /// **'On this phone'**
+  String get transcriptionLocationPhone;
+
+  /// No description provided for @transcriptionLocationCloud.
+  ///
+  /// In en, this message translates to:
+  /// **'In cloud'**
+  String get transcriptionLocationCloud;
+
+  /// No description provided for @transcriptionCloudNeedsConnection.
+  ///
+  /// In en, this message translates to:
+  /// **'Set the server URL and token first (under Server upload).'**
+  String get transcriptionCloudNeedsConnection;
+
+  /// No description provided for @transcriptionCloudConfirmTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'USE THE SERVER FOR TRANSCRIPTION?'**
+  String get transcriptionCloudConfirmTitle;
+
+  /// No description provided for @transcriptionCloudConfirmBody.
+  ///
+  /// In en, this message translates to:
+  /// **'New recordings will be uploaded to {host} automatically for transcription, then the transcript comes back here. The provider and its credentials live on your server.'**
+  String transcriptionCloudConfirmBody(String host);
+
+  /// No description provided for @transcriptionFailedCloud.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed here — send to cloud'**
+  String get transcriptionFailedCloud;
+
+  /// No description provided for @transcriptionCloudGranted.
+  ///
+  /// In en, this message translates to:
+  /// **'Sent to cloud — waiting for the transcript'**
+  String get transcriptionCloudGranted;
+
+  /// No description provided for @cloudConsentTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'SEND THIS RECORDING TO THE SERVER?'**
+  String get cloudConsentTitle;
+
+  /// No description provided for @cloudConsentBody.
+  ///
+  /// In en, this message translates to:
+  /// **'The recording ({duration}, {size}) goes to {host} for transcription. If it fails on this phone again, it stays safe locally.'**
+  String cloudConsentBody(String host, String duration, String size);
+
+  /// No description provided for @cloudConsentSend.
+  ///
+  /// In en, this message translates to:
+  /// **'Send to server'**
+  String get cloudConsentSend;
+
+  /// No description provided for @cloudConsentScheduled.
+  ///
+  /// In en, this message translates to:
+  /// **'Recording sent to the server'**
+  String get cloudConsentScheduled;
+
   /// No description provided for @groupUpload.
   ///
   /// In en, this message translates to:

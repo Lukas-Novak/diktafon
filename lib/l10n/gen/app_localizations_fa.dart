@@ -327,6 +327,51 @@ class AppLocalizationsFa extends AppLocalizations {
       'کاست‌هایتان را با خود ببرید — صدا، رونوشت‌ها و خلاصه‌ها — یا آن‌ها را بازگردانید';
 
   @override
+  String get transcriptionLocation => 'محل رونویسی';
+
+  @override
+  String get transcriptionLocationTitle => 'محل رونویسی';
+
+  @override
+  String get transcriptionLocationPhone => 'روی همین گوشی';
+
+  @override
+  String get transcriptionLocationCloud => 'در ابر';
+
+  @override
+  String get transcriptionCloudNeedsConnection =>
+      'ابتدا نشانی سرور و توکن را تنظیم کنید (در بخش بارگذاری به سرور).';
+
+  @override
+  String get transcriptionCloudConfirmTitle =>
+      'از سرور برای رونویسی استفاده شود؟';
+
+  @override
+  String transcriptionCloudConfirmBody(String host) {
+    return 'ضبط‌های جدید به‌طور خودکار برای رونویسی به $host ارسال می‌شوند و نتیجه به اینجا بازمی‌گردد. فراهم‌کننده و اعتبارنامه‌اش روی سرور شما می‌ماند.';
+  }
+
+  @override
+  String get transcriptionFailedCloud => 'اینجا ناموفق شد — ارسال به ابر';
+
+  @override
+  String get transcriptionCloudGranted => 'به ابر ارسال شد — در انتظار متن';
+
+  @override
+  String get cloudConsentTitle => 'این ضبط به سرور ارسال شود؟';
+
+  @override
+  String cloudConsentBody(String host, String duration, String size) {
+    return 'ضبط ($duration، $size) برای رونویسی به $host ارسال می‌شود. اگر رونویسی روی این گوشی دوباره ناموفق شود، نسخه محلی امن می‌ماند.';
+  }
+
+  @override
+  String get cloudConsentSend => 'ارسال به سرور';
+
+  @override
+  String get cloudConsentScheduled => 'ضبط به سرور ارسال شد';
+
+  @override
   String get groupUpload => 'بارگذاری به سرور';
 
   @override

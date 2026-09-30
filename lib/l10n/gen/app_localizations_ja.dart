@@ -311,6 +311,50 @@ class AppLocalizationsJa extends AppLocalizations {
   String get backupExportDesc => '音声・文字起こし・要約ごとカセットを持ち出したり、戻したりできます';
 
   @override
+  String get transcriptionLocation => '文字起こしの場所';
+
+  @override
+  String get transcriptionLocationTitle => '文字起こしの場所';
+
+  @override
+  String get transcriptionLocationPhone => 'この端末上';
+
+  @override
+  String get transcriptionLocationCloud => 'クラウドで';
+
+  @override
+  String get transcriptionCloudNeedsConnection =>
+      '先にサーバーURLとトークンを設定してください（サーバーアップロード欄）。';
+
+  @override
+  String get transcriptionCloudConfirmTitle => '文字起こしにサーバーを使いますか？';
+
+  @override
+  String transcriptionCloudConfirmBody(String host) {
+    return '新しい録音は自動で $host にアップロードされて文字起こしされ、その結果はここに戻ります。プロバイダと認証情報はあなたのサーバー側にのみ残ります。';
+  }
+
+  @override
+  String get transcriptionFailedCloud => 'ここで失敗 — クラウドへ送信';
+
+  @override
+  String get transcriptionCloudGranted => 'クラウドへ送信済み — 転写を待機中';
+
+  @override
+  String get cloudConsentTitle => 'この録音をサーバーに送信しますか？';
+
+  @override
+  String cloudConsentBody(String host, String duration, String size) {
+    return '録音（$duration、$size）を転写のために $host に送信します。この端末で再び失敗しても、ローカルの録音はそのまま残ります。';
+  }
+
+  @override
+  String get cloudConsentSend => 'サーバーに送信';
+
+  @override
+  String get cloudConsentScheduled => '録音をサーバーに送信しました';
+
+  @override
   String get groupUpload => 'サーバーアップロード';
 
   @override

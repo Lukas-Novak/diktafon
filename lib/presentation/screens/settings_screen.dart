@@ -94,6 +94,14 @@ class SettingsScreen extends ConsumerWidget {
           ]),
           SettingsGroup(title: l10n.groupIntelligence, rows: [
             SettingsRow(
+              title: l10n.transcriptionLocation,
+              value: settings.transcriptionMode == 'cloud'
+                  ? l10n.transcriptionLocationCloud
+                  : l10n.transcriptionLocationPhone,
+              onTap: () => _pickTranscriptionLocation(
+                  context, ref, settings),
+            ),
+            SettingsRow(
               title: l10n.transcriptionModel,
               value: _whisperRowValue(context, ref, settings),
               onTap: () => _pickModel(context, const ModelPickerDialog()),
@@ -300,6 +308,67 @@ class SettingsScreen extends ConsumerWidget {
     if (choice != null) {
       await repo.setAppLanguage(choice == 'auto' ? null : choice);
     }
+  }
+
+  /// Transcription-location chooser (§ cloud): switching ON the backend
+  /// requires an understood backend connection and an explicit "recordings
+  /// will go to your server automatically" confirmation – no silent opt-in.
+  Future<void> _pickTranscriptionLocation(
+      BuildContext context, WidgetRef ref, AppSettings settings) async {
+    final l10n = context.l10n;
+    final repo = ref.read(settingsRepositoryProvider);
+    final choice = await showDialog<String>(
+      context: context,
+      builder: (dialogContext) => SimpleDialog(
+        title: Text(l10n.transcriptionLocationTitle),
+        children: [
+          _dialogOption(dialogContext,
+              label: l10n.transcriptionLocationPhone,
+              selected: settings.transcriptionMode != 'cloud',
+              result: 'phone'),
+          _dialogOption(dialogContext,
+              label: l10n.transcriptionLocationCloud,
+              selected: settings.transcriptionMode == 'cloud',
+              result: 'cloud'),
+          if (settings.uploadUrl == null || settings.uploadUrl!.isEmpty)
+            Padding(
+              padding: const EdgeInsets.fromLTRB(24, 4, 24, 8),
+              child: Text(
+                l10n.transcriptionCloudNeedsConnection,
+                style: TextStyle(fontSize: 11, color: context.tape.ink2),
+              ),
+            ),
+        ],
+      ),
+    );
+    if (choice == null || choice == settings.transcriptionMode) return;
+    if (choice == 'cloud') {
+      if (settings.uploadUrl == null || settings.uploadUrl!.isEmpty) {
+        if (!context.mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text(l10n.transcriptionCloudNeedsConnection)));
+        return;
+      }
+      if (!context.mounted) return;
+      final confirmed = await showDialog<bool>(
+        context: context,
+        builder: (dialogContext) => AlertDialog(
+          title: Text(l10n.transcriptionCloudConfirmTitle),
+          content: Text(l10n.transcriptionCloudConfirmBody(
+              Uri.tryParse(settings.uploadUrl ?? '')?.host ?? '')),
+          actions: [
+            TextButton(
+                onPressed: () => Navigator.pop(dialogContext, false),
+                child: Text(l10n.cancel)),
+            TextButton(
+                onPressed: () => Navigator.pop(dialogContext, true),
+                child: Text(l10n.cloudConsentSend)),
+          ],
+        ),
+      );
+      if (confirmed != true) return;
+    }
+    await repo.setTranscriptionMode(choice);
   }
 
   Future<void> _pickTheme(

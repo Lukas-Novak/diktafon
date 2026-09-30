@@ -329,6 +329,52 @@ class AppLocalizationsPt extends AppLocalizations {
       'Leve suas cassetes com você — áudio, transcrições e resumos — ou traga-as de volta';
 
   @override
+  String get transcriptionLocation => 'Local da transcrição';
+
+  @override
+  String get transcriptionLocationTitle => 'LOCAL DA TRANSCRIÇÃO';
+
+  @override
+  String get transcriptionLocationPhone => 'Neste telefone';
+
+  @override
+  String get transcriptionLocationCloud => 'Na nuvem';
+
+  @override
+  String get transcriptionCloudNeedsConnection =>
+      'Configure primeiro a URL do servidor e o token (em Envio ao servidor).';
+
+  @override
+  String get transcriptionCloudConfirmTitle =>
+      'USAR O SERVIDOR PARA A TRANSCRIÇÃO?';
+
+  @override
+  String transcriptionCloudConfirmBody(String host) {
+    return 'Novas gravações serão enviadas automaticamente para $host para transcrição e o resultado voltará para aqui. O provedor e as credenciais ficam no seu servidor.';
+  }
+
+  @override
+  String get transcriptionFailedCloud => 'Falhou aqui — enviar para a nuvem';
+
+  @override
+  String get transcriptionCloudGranted =>
+      'Enviado para a nuvem — a aguardar a transcrição';
+
+  @override
+  String get cloudConsentTitle => 'ENVIAR ESTA GRAVAÇÃO PARA O SERVIDOR?';
+
+  @override
+  String cloudConsentBody(String host, String duration, String size) {
+    return 'A gravação ($duration, $size) será enviada para $host para transcrição. Se a transcrição falhar de novo neste telefone, fica guardada localmente.';
+  }
+
+  @override
+  String get cloudConsentSend => 'Enviar para o servidor';
+
+  @override
+  String get cloudConsentScheduled => 'Gravação enviada para o servidor';
+
+  @override
   String get groupUpload => 'Envio ao servidor';
 
   @override

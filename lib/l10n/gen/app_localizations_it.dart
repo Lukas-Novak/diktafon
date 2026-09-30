@@ -329,6 +329,52 @@ class AppLocalizationsIt extends AppLocalizations {
       'Porta con te le tue cassette — audio, trascrizioni e riassunti — o riportale indietro';
 
   @override
+  String get transcriptionLocation => 'Posizione della trascrizione';
+
+  @override
+  String get transcriptionLocationTitle => 'POSIZIONE DELLA TRASCRIZIONE';
+
+  @override
+  String get transcriptionLocationPhone => 'Su questo telefono';
+
+  @override
+  String get transcriptionLocationCloud => 'Nel cloud';
+
+  @override
+  String get transcriptionCloudNeedsConnection =>
+      'Configura prima URL del server e token (in Caricamento sul server).';
+
+  @override
+  String get transcriptionCloudConfirmTitle =>
+      'USARE IL SERVER PER LA TRASCRIZIONE?';
+
+  @override
+  String transcriptionCloudConfirmBody(String host) {
+    return 'Le nuove registrazioni saranno caricate automaticamente su $host per la trascrizione, poi la trascrizione tornerà qui. Il fornitore e le sue credenziali vivono sul tuo server.';
+  }
+
+  @override
+  String get transcriptionFailedCloud => 'Fallito qui — invia al cloud';
+
+  @override
+  String get transcriptionCloudGranted =>
+      'Inviato al cloud — in attesa della trascrizione';
+
+  @override
+  String get cloudConsentTitle => 'INVIARE QUESTA REGISTRAZIONE AL SERVER?';
+
+  @override
+  String cloudConsentBody(String host, String duration, String size) {
+    return 'La registrazione ($duration, $size) sarà inviata a $host per la trascrizione. Se la trascrizione fallisce di nuovo su questo telefono, resta al sicuro in locale.';
+  }
+
+  @override
+  String get cloudConsentSend => 'Invia al server';
+
+  @override
+  String get cloudConsentScheduled => 'Registrazione inviata al server';
+
+  @override
   String get groupUpload => 'Caricamento sul server';
 
   @override

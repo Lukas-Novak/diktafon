@@ -267,6 +267,11 @@ class _CassetteScreenState extends ConsumerState<CassetteScreen>
                       onRetryUpload: (memoId) => ref
                           .read(jobQueueProvider)
                           .retryUpload(memoId),
+                      cloudConsentVisible: (ref.watch(settingsProvider).value ??
+                              const AppSettings())
+                          .transcriptionMode !=
+                          'cloud',
+                      onSendToCloud: _sendMemoToCloud,
                     ),
                   ),
           ),
@@ -535,6 +540,63 @@ class _CassetteScreenState extends ConsumerState<CassetteScreen>
   /// plainText form, the corrected words are re-timed onto the engine's
   /// grid, and the memo re-enters the pipeline at the summary stage.
   /// Unchanged or emptied text saves nothing.
+  /// Explicit consent (§ cloud): after an honest failure the user may send
+  /// THIS recording to the configured backend — with all details surfaced —
+  /// then everything resumes automatically with no further tap.
+  Future<void> _sendMemoToCloud(Memo memo) async {
+    final settings =
+        ref.read(settingsProvider).value ?? const AppSettings();
+    if (settings.uploadUrl == null || settings.uploadUrl!.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text(context.l10n.transcriptionCloudNeedsConnection)));
+      return;
+    }
+    final l10n = context.l10n;
+    final audioLength = await File(memo.filePath).length();
+    if (!mounted) return;
+    final host = Uri.tryParse(settings.uploadUrl ?? '')?.host ?? '';
+    final confirmed = await showDialog<bool>(
+          context: context,
+          builder: (dialogContext) => AlertDialog(
+            title: Text(l10n.cloudConsentTitle),
+            content: Text(l10n.cloudConsentBody(
+                host,
+                _formatDuration(memo.durationMs),
+                _formatSize(audioLength))),
+            actions: [
+              TextButton(
+                  onPressed: () => Navigator.pop(dialogContext, false),
+                  child: Text(l10n.cancel)),
+              TextButton(
+                  onPressed: () => Navigator.pop(dialogContext, true),
+                  child: Text(l10n.cloudConsentSend)),
+            ],
+          ),
+        ) ??
+        false;
+    if (!confirmed) return;
+    await ref.read(jobQueueProvider).sendMemoToCloud(memo.id);
+    if (!mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(l10n.cloudConsentScheduled)));
+  }
+
+  static String _formatDuration(int ms) {
+    final total = (ms + 500) ~/ 1000;
+    return '${total ~/ 60}:${(total % 60).toString().padLeft(2, '0')}';
+  }
+
+  static String _formatSize(int bytes) {
+    const units = ['B', 'kB', 'MB', 'GB'];
+    var size = bytes.toDouble();
+    var unit = 0;
+    while (size >= 1024 && unit < units.length - 1) {
+      size /= 1024;
+      unit++;
+    }
+    return '${size.toStringAsFixed(size >= 10 ? 0 : 1)} ${units[unit]}';
+  }
+
   Future<void> _editTranscript(Memo memo) async {
     final transcript = memo.transcript;
     if (transcript == null) return;

@@ -81,6 +81,7 @@ class Memo {
     this.memoSummary,
     this.uploadStatus,
     this.uploadedAt,
+    this.cloudConsentAt,
   });
 
   final String id;
@@ -105,6 +106,11 @@ class Memo {
 
   /// When the server confirmed the upload; null until then.
   final DateTime? uploadedAt;
+
+  /// Whether the user explicitly approved this memo for cloud processing
+  /// (per-memo consent, epoch ms; audio is immutable so the consent cannot
+  /// silently extend to different content). Null = never asked/denied.
+  final DateTime? cloudConsentAt;
 }
 
 /// Structured transcription output (§6.3) — engine-agnostic.

@@ -23,6 +23,7 @@ import '../services/audio/capture_recovery.dart';
 import '../services/audio/pcm_decoder.dart';
 import '../services/audio/recorder_service.dart';
 import '../services/audio/tape_player_service.dart';
+import '../services/cloud/cloud_client.dart';
 import '../services/import/cassette_importer.dart';
 import '../services/processing/job_queue.dart';
 import '../services/providers/llm/llama_bindings.dart';
@@ -130,6 +131,11 @@ final uploadServiceProvider = Provider<UploadService>((ref) =>
 final uploadPerformerProvider =
     Provider<UploadPerformer>((ref) => ref.read(uploadServiceProvider));
 
+/// The cloud-transcription path's HTTP seams. Shared with the archival
+/// upload on purpose — there is exactly one backend connection, and one
+/// credential store (§ cloud).
+final cloudClientProvider = Provider<CloudClient>((ref) => CloudClient());
+
 final uploadSchedulerProvider =
     Provider<UploadBackgroundScheduler>((ref) => UploadBackgroundScheduler());
 
@@ -166,6 +172,7 @@ final jobQueueProvider = Provider<JobQueue>((ref) => JobQueue(
       hasConnectivity: () => ref.read(connectivityProbeProvider).hasConnectivity(),
       isUnmetered: () => ref.read(connectivityProbeProvider).isUnmetered(),
       appVersionProvider: appVersionString,
+      cloudClientFactory: () => ref.read(cloudClientProvider),
       onUploadScheduled: () {
         final wifiOnly =
             (ref.read(settingsProvider).value ?? const AppSettings())
