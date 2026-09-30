@@ -2,10 +2,14 @@
   <img src="media/icon.png" height="40" align="top" alt=""> Diktafon
 </h1>
 
-> **This fork** — adds one thing on top of upstream
-> [jaromiru/diktafon](https://github.com/jaromiru/diktafon): opt-in automatic
-> upload of finished memos (audio + local transcript + metadata) to **your own
-> server**, with durable retry. Off by default; everything else is unchanged.
+> **This fork** — adds two things on top of upstream
+> [jaromiru/diktafon](https://github.com/jaromiru/diktafon):
+> **(a)** opt-in automatic upload of finished memos (audio + local Whisper
+> transcript + metadata) to **your own server** with durable retry, and
+> **(b)** opt-in **cloud transcription** — transcripts can be produced by your
+> configured backend and come back to the tape, automatically for new
+> recordings after one switch, or per explicit consent after a failed local
+> attempt. Off by default; nothing leaves the device until you opt in.
 > APKs live on the [Releases page](../../releases); the matching self-hosted
 > receiver is [diktafon-ingest](https://github.com/Lukas-Novak/diktafon-ingest).
 

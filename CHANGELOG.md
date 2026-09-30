@@ -3,6 +3,37 @@
 All notable changes to Diktafon are documented in this file. Versions
 correspond to git tags (`v*`); dates are tag dates.
 
+## [1.1.1] — 2026-09-30 (fork: cloud transcription)
+
+### Added
+- **Transcription location: phone or cloud** (Settings → Intelligence).
+  Choose "In cloud" to have new finalized recordings transcribed by your
+  configured `diktafon-ingest` backend automatically; the structured
+  transcript is downloaded back, displayed on the tape, and can feed the
+  usual local summary. No per-memo prompt needed in this mode.
+- **Explicit cloud fallback after a failed local transcription.** A memo
+  whose transcription fails on the phone additionally offers "Send to
+  cloud…" — with a confirmation dialog that names the destination, duration
+  and file size. Nothing is sent for server transcription before you approve
+  that memo. Consent is recorded per memo, never auto-extended.
+- Results from the backend keep the Diktafon segment/word timing model
+  when the provider (e.g. e-INFRA `whisper-large-v3`) reports timestamps;
+  the reveal of available precision (word / segment / none) is preserved
+  end-to-end rather than faked.
+- Durable cloud requests on-device: upload once by request-id, resumable
+  polling with availableAt backoff in *every* lane (fixes ML-lane ignoring
+  parked retries), and uploaded-confirmed bookkeeping that survives both the
+  app being killed and a phone reboot (WorkManager with a settings-aware
+  engine gate).
+- Server-side `diktafon-ingest` v1 processing protocol:
+  SQLite-backed jobs & retention policy (`storage.keep_audio_on_server`,
+  default **false** — delete after a validated result, never before), jobs
+  claim leases across containers, atomic result publication plus an
+  Alfred-targeted notify event with `Idempotency-Key`.
+- New localizations for all of the above in all 20 supported languages;
+  PRIVACY.md amended: where data goes when cloud mode or per-memo consent
+  is used.
+
 ## [1.1.0] — 2026-09-10 (fork: server upload)
 
 ### Added
