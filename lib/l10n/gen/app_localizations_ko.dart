@@ -325,7 +325,7 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get transcriptionCloudNeedsConnection =>
-      '먼저 서버 주소와 토큰을 설정하세요 (서버 업로드 항목).';
+      '먼저 서버 주소와 토큰을 설정하세요 (클라우드 백업 항목).';
 
   @override
   String get transcriptionCloudConfirmTitle => '전사에 서버를 사용할까요?';
@@ -356,13 +356,13 @@ class AppLocalizationsKo extends AppLocalizations {
   String get cloudConsentScheduled => '녹음을 서버로 보냈습니다';
 
   @override
-  String get groupUpload => '서버 업로드';
+  String get groupUpload => '클라우드 백업';
 
   @override
-  String get uploadToggle => '자동 업로드';
+  String get uploadToggle => '자동 백업';
 
   @override
-  String get uploadToggleDesc => '전사가 끝난 메모를 내 서버로 보냅니다';
+  String get uploadToggleDesc => '녹음, 변환 텍스트, 요약을 내 서버에 백업합니다';
 
   @override
   String get uploadUrlRow => '서버 주소';
@@ -389,7 +389,7 @@ class AppLocalizationsKo extends AppLocalizations {
   String get uploadWifiOnly => 'Wi-Fi에서만';
 
   @override
-  String get uploadWifiOnlyDesc => '무제한 연결에서만 업로드';
+  String get uploadWifiOnlyDesc => '무제한 연결에서만 백업';
 
   @override
   String get uploadTestConnection => '연결 테스트';
@@ -404,29 +404,29 @@ class AppLocalizationsKo extends AppLocalizations {
   String get uploadTestFailed => '서버에 연결할 수 없음 — 주소와 토큰을 확인하세요';
 
   @override
-  String get uploadStateQueued => '업로드 대기 중';
+  String get uploadStateQueued => '백업 대기 중';
 
   @override
-  String get uploadStateUploading => '업로드 중…';
+  String get uploadStateUploading => '백업 중…';
 
   @override
-  String get uploadStateUploaded => '업로드 완료';
+  String get uploadStateUploaded => '백업 완료';
 
   @override
-  String get uploadStateFailed => '업로드 실패 — 다시 시도';
+  String get uploadStateFailed => '백업 실패 — 다시 시도';
 
   @override
   String get aboutPrivacy => '정보 및 개인정보';
 
   @override
-  String get aboutPrivacyDesc => '오디오는 이 기기를 절대 벗어나지 않습니다';
+  String get aboutPrivacyDesc => '오디오는 동의 없이 이 기기를 절대 벗어나지 않습니다';
 
   @override
   String get aboutTitle => '정보 및 개인정보';
 
   @override
   String get aboutBody =>
-      'Diktafon은 휴대폰 안에서 바로 듣고, 적고, 요약합니다.\n\n녹음, 변환 텍스트, 요약은 기기를 절대 벗어나지 않습니다. 계정도, 클라우드도, 분석 도구도 없습니다. 데이터가 나가는 유일한 길은 직접 시작한 백업이나 내보내기뿐입니다.';
+      'Diktafon은 휴대폰 안에서 바로 듣고, 적고, 요약합니다.\n\n동의 없이 녹음, 변환 텍스트, 요약은 기기를 절대 벗어나지 않습니다. 계정은 필요 없고, 클라우드는 선택 사항이며, 분석 도구도 없습니다. 데이터가 나가는 방법은 직접 시작한 백업, 내보내기, 내 서버로 보내기뿐입니다.';
 
   @override
   String get aboutOpenSource => 'Diktafon은 무료 오픈 소스입니다:';
@@ -493,7 +493,7 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get firstRunIntro =>
-      '휴대폰 안에서 바로 듣고, 적고, 요약합니다. 녹음, 변환 텍스트, 요약은 **이 기기를 절대 벗어나지 않습니다**. 계정도 클라우드도 없습니다.';
+      '휴대폰 안에서 바로 듣고, 적고, 요약합니다. 동의 없이 녹음, 변환 텍스트, 요약은 **이 기기를 절대 벗어나지 않습니다**. 계정은 필요 없고 클라우드는 선택 사항입니다.';
 
   @override
   String get firstRunSetupHeader => '처음 설정';
@@ -548,7 +548,7 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get backupIntro =>
-      '기기 자체 백업이 카세트 목록, 변환 텍스트, 요약을 자동으로 보관합니다. 녹음 파일은 용량이 큽니다 — 직접 챙기세요: 내보내기는 카세트의 오디오, 변환 텍스트, 요약을 .zip 아카이브 하나로 묶고, 아카이브를 가져오면 다시 복원됩니다. Diktafon은 아무것도 업로드하지 않습니다.';
+      '기기 자체 백업이 카세트 목록, 변환 텍스트, 요약을 자동으로 보관합니다. 녹음 파일은 용량이 큽니다 — 직접 챙기세요: 내보내기는 카세트의 오디오, 변환 텍스트, 요약을 .zip 아카이브 하나로 묶고, 아카이브를 가져오면 다시 복원됩니다. Diktafon은 동의 없이 아무것도 업로드하지 않습니다.';
 
   @override
   String get groupExport => '내보내기';

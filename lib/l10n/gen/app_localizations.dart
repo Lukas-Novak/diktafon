@@ -664,7 +664,7 @@ abstract class AppLocalizations {
   /// No description provided for @transcriptionCloudNeedsConnection.
   ///
   /// In en, this message translates to:
-  /// **'Set the server URL and token first (under Server upload).'**
+  /// **'Set the server URL and token first (under Cloud backup).'**
   String get transcriptionCloudNeedsConnection;
 
   /// No description provided for @transcriptionCloudConfirmTitle.
@@ -718,19 +718,19 @@ abstract class AppLocalizations {
   /// No description provided for @groupUpload.
   ///
   /// In en, this message translates to:
-  /// **'Server upload'**
+  /// **'Cloud backup'**
   String get groupUpload;
 
   /// No description provided for @uploadToggle.
   ///
   /// In en, this message translates to:
-  /// **'Automatic upload'**
+  /// **'Automatic backup'**
   String get uploadToggle;
 
   /// No description provided for @uploadToggleDesc.
   ///
   /// In en, this message translates to:
-  /// **'Send finished memos to your server after transcription'**
+  /// **'Back up recordings, transcripts and summaries to your server'**
   String get uploadToggleDesc;
 
   /// No description provided for @uploadUrlRow.
@@ -784,7 +784,7 @@ abstract class AppLocalizations {
   /// No description provided for @uploadWifiOnlyDesc.
   ///
   /// In en, this message translates to:
-  /// **'Upload only on unmetered connections'**
+  /// **'Back up only on unmetered connections'**
   String get uploadWifiOnlyDesc;
 
   /// No description provided for @uploadTestConnection.
@@ -814,25 +814,25 @@ abstract class AppLocalizations {
   /// No description provided for @uploadStateQueued.
   ///
   /// In en, this message translates to:
-  /// **'Waiting for upload'**
+  /// **'Waiting for backup'**
   String get uploadStateQueued;
 
   /// No description provided for @uploadStateUploading.
   ///
   /// In en, this message translates to:
-  /// **'Uploading…'**
+  /// **'Backing up…'**
   String get uploadStateUploading;
 
   /// No description provided for @uploadStateUploaded.
   ///
   /// In en, this message translates to:
-  /// **'Uploaded'**
+  /// **'Backed up'**
   String get uploadStateUploaded;
 
   /// No description provided for @uploadStateFailed.
   ///
   /// In en, this message translates to:
-  /// **'Upload failed — retry'**
+  /// **'Backup failed — retry'**
   String get uploadStateFailed;
 
   /// No description provided for @aboutPrivacy.
@@ -844,7 +844,7 @@ abstract class AppLocalizations {
   /// No description provided for @aboutPrivacyDesc.
   ///
   /// In en, this message translates to:
-  /// **'Audio never leaves this device'**
+  /// **'Audio never leaves this device without your consent'**
   String get aboutPrivacyDesc;
 
   /// No description provided for @aboutTitle.
@@ -856,7 +856,7 @@ abstract class AppLocalizations {
   /// No description provided for @aboutBody.
   ///
   /// In en, this message translates to:
-  /// **'Diktafon listens, writes and summarises right here on your phone.\n\nRecordings, transcripts and summaries never leave the device. There is no account, no cloud and no analytics. The only way data leaves is a backup or export you start yourself.'**
+  /// **'Diktafon listens, writes and summarises right here on your phone.\n\nWithout your consent, recordings, transcripts and summaries never leave the device. No account is required, the cloud is optional, and there is no analytics. Data leaves only in a way you start yourself — a backup, an export, or sending to your own server.'**
   String get aboutBody;
 
   /// No description provided for @aboutOpenSource.
@@ -952,7 +952,7 @@ abstract class AppLocalizations {
   /// The **…** span is rendered bold; keep exactly one such span.
   ///
   /// In en, this message translates to:
-  /// **'It listens, writes and summarises right here on your phone. Recordings, transcripts and summaries **never leave this device**. There is no account and no cloud.'**
+  /// **'It listens, writes and summarises right here on your phone. Without your consent, recordings, transcripts and summaries **never leave this device**. No account is required and the cloud is optional.'**
   String get firstRunIntro;
 
   /// No description provided for @firstRunSetupHeader.
@@ -1048,7 +1048,7 @@ abstract class AppLocalizations {
   /// No description provided for @backupIntro.
   ///
   /// In en, this message translates to:
-  /// **'Your device\'s own backup covers the cassette list, transcripts and summaries automatically. Audio recordings are large — take them with you explicitly: an export packs the audio, transcripts and summaries of a cassette into one .zip archive, and importing an archive brings them back. Nothing is uploaded by Diktafon.'**
+  /// **'Your device\'s own backup covers the cassette list, transcripts and summaries automatically. Audio recordings are large — take them with you explicitly: an export packs the audio, transcripts and summaries of a cassette into one .zip archive, and importing an archive brings them back. Diktafon uploads nothing without your consent.'**
   String get backupIntro;
 
   /// No description provided for @groupExport.

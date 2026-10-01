@@ -348,7 +348,7 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get transcriptionCloudNeedsConnection =>
-      'Najpierw ustaw adres serwera i token (w sekcji Wysyłanie na serwer).';
+      'Najpierw ustaw adres serwera i token (w sekcji Kopia zapasowa w chmurze).';
 
   @override
   String get transcriptionCloudConfirmTitle => 'UŻYĆ SERWERA DO TRANSKRYPCJI?';
@@ -381,14 +381,14 @@ class AppLocalizationsPl extends AppLocalizations {
   String get cloudConsentScheduled => 'Nagranie wysłane na serwer';
 
   @override
-  String get groupUpload => 'Wysyłanie na serwer';
+  String get groupUpload => 'Kopia zapasowa w chmurze';
 
   @override
-  String get uploadToggle => 'Automatyczne wysyłanie';
+  String get uploadToggle => 'Automatyczna kopia zapasowa';
 
   @override
   String get uploadToggleDesc =>
-      'Wysyłaj gotowe notatki na Twój serwer po transkrypcji';
+      'Twórz kopie nagrań, transkrypcji i podsumowań na Twoim serwerze';
 
   @override
   String get uploadUrlRow => 'Adres serwera';
@@ -417,7 +417,7 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get uploadWifiOnlyDesc =>
-      'Wysyłaj tylko przez połączenia nielimitowane';
+      'Kopiuj tylko przez połączenia nielimitowane';
 
   @override
   String get uploadTestConnection => 'Testuj połączenie';
@@ -432,30 +432,30 @@ class AppLocalizationsPl extends AppLocalizations {
   String get uploadTestFailed => 'Serwer nieosiągalny — sprawdź adres i token';
 
   @override
-  String get uploadStateQueued => 'Oczekuje na wysłanie';
+  String get uploadStateQueued => 'Oczekuje na kopię zapasową';
 
   @override
-  String get uploadStateUploading => 'Wysyłanie…';
+  String get uploadStateUploading => 'Tworzenie kopii…';
 
   @override
-  String get uploadStateUploaded => 'Wysłano';
+  String get uploadStateUploaded => 'Kopia wykonana';
 
   @override
-  String get uploadStateFailed =>
-      'Wysyłanie nie powiodło się — spróbuj ponownie';
+  String get uploadStateFailed => 'Kopia nie powiodła się — spróbuj ponownie';
 
   @override
   String get aboutPrivacy => 'O aplikacji i prywatność';
 
   @override
-  String get aboutPrivacyDesc => 'Dźwięk nigdy nie opuszcza tego urządzenia';
+  String get aboutPrivacyDesc =>
+      'Dźwięk nigdy nie opuszcza tego urządzenia bez Twojej zgody';
 
   @override
   String get aboutTitle => 'O APLIKACJI I PRYWATNOŚĆ';
 
   @override
   String get aboutBody =>
-      'Diktafon słucha, zapisuje i podsumowuje prosto w Twoim telefonie.\n\nNagrania, transkrypcje i podsumowania nigdy nie opuszczają urządzenia. Nie ma konta, chmury ani analityki. Dane wychodzą tylko przez kopię lub eksport, które uruchamiasz samodzielnie.';
+      'Diktafon słucha, zapisuje i podsumowuje prosto w Twoim telefonie.\n\nBez Twojej zgody nagrania, transkrypcje i podsumowania nigdy nie opuszczają urządzenia. Konto nie jest wymagane, chmura jest opcjonalna i nie ma analityki. Dane wychodzą tylko w sposób, który sam uruchomisz — jako kopia zapasowa, eksport albo wysłanie na własny serwer.';
 
   @override
   String get aboutOpenSource =>
@@ -523,7 +523,7 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get firstRunIntro =>
-      'Słucha, zapisuje i podsumowuje prosto w Twoim telefonie. Nagrania, transkrypcje i podsumowania **nigdy nie opuszczają tego urządzenia**. Nie ma konta ani chmury.';
+      'Słucha, zapisuje i podsumowuje prosto w Twoim telefonie. Bez Twojej zgody nagrania, transkrypcje i podsumowania **nigdy nie opuszczają tego urządzenia**. Konto nie jest wymagane, a chmura jest opcjonalna.';
 
   @override
   String get firstRunSetupHeader => 'Konfiguracja początkowa';
@@ -579,7 +579,7 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get backupIntro =>
-      'Kopia zapasowa urządzenia sama obejmuje listę kaset, transkrypcje i podsumowania. Nagrania audio są duże — zabierz je jawnie: eksport pakuje dźwięk, transkrypcje i podsumowania kasety do jednego archiwum .zip, a import archiwum przywraca je z powrotem. Diktafon niczego nie wysyła.';
+      'Kopia zapasowa urządzenia sama obejmuje listę kaset, transkrypcje i podsumowania. Nagrania audio są duże — zabierz je jawnie: eksport pakuje dźwięk, transkrypcje i podsumowania kasety do jednego archiwum .zip, a import archiwum przywraca je z powrotem. Diktafon niczego nie wysyła bez Twojej zgody.';
 
   @override
   String get groupExport => 'Eksport';

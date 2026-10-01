@@ -8,6 +8,9 @@ import 'package:diktafon/data/repositories/settings_repository.dart';
 import 'package:diktafon/domain/models.dart';
 import 'package:diktafon/services/cloud/cloud_client.dart';
 import 'package:diktafon/services/processing/job_queue.dart';
+import 'package:diktafon/services/providers/transcription_provider.dart'
+    show ModelStatus;
+import 'package:drift/drift.dart' show Value;
 import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -300,6 +303,32 @@ void main() {
       expect(row.status, MemoStatus.ready.name);
       expect(llm.memoCalls, 0);
     });
+
+    test('cloud transcribe drains in the foreground with no local model',
+        () async {
+      await configureServer(cloud: true);
+      // No whisper on the device at all; the cloud lane must not gate on it.
+      engine.status = ModelStatus.notInstalled;
+      final memo = await seedMemo('m1');
+      final sha = await CloudClient.sha256OfFile(File(memo.filePath));
+      cloud.statusScript = [
+        CloudStatus(
+            state: 'complete', errorCode: null, attempts: 1, clientRevision: 1),
+      ];
+      cloud.resultPayload = FakeCloudClient.resultFor(
+          memoId: 'm1',
+          audioSha: sha,
+          text: 'přepis bez modelu v telefonu ' * 30,
+          durationMs: memo.durationMs);
+
+      await queue.retryEnrichment('m1');
+      await queue.drain();
+
+      expect((await memoRow('m1')).status, MemoStatus.ready.name);
+      expect(cloud.uploads, hasLength(1),
+          reason: 'mode cloud drains the transcribe job even without whisper');
+      expect((await cloudRow('m1'))!.state, 'imported_end');
+    });
   });
 
   group('error lanes', () {
@@ -340,6 +369,41 @@ void main() {
       expect((await memoRow('m1')).status, MemoStatus.stored.name);
       final cloudjob = await cloudRow('m1');
       expect(cloudjob!.error, contains('network flame'));
+    });
+
+    test('retry after accept resumes the request without re-uploading',
+        () async {
+      await configureServer();
+      final memo = await seedMemo('m1');
+      await memos.setCloudConsent('m1', 1);
+      final sha = await CloudClient.sha256OfFile(File(memo.filePath));
+      // First attempt: upload accepted, the very first poll wobbles —
+      // CloudTransient parks the job with the row in `uploaded`.
+      cloud.statusScript = [CloudRetryableError('wobble')];
+      cloud.resultPayload = FakeCloudClient.resultFor(
+          memoId: 'm1', audioSha: sha, durationMs: memo.durationMs);
+
+      await queue.retryEnrichment('m1');
+      await queue.drain();
+
+      expect(cloud.uploads, hasLength(1),
+          reason: 'the multipart upload ran exactly once before parking');
+      final firstRequestId = cloud.uploads.single.split(':')[1];
+
+      // Warp the parked job to "due now" and drain again: the § cloud
+      // resume must poll the durable request, not spin a new one.
+      await (db.update(db.jobs)..where((j) => j.targetId.equals('m1')))
+          .write(const JobsCompanion(availableAt: Value(0)));
+      await queue.drain();
+
+      expect(cloud.uploads, hasLength(1),
+          reason: 'an accepted request is polled to the end, never re-posted');
+      final flow = await cloudRow('m1');
+      expect(flow!.requestId, firstRequestId,
+          reason: 'the same durable request id survives across attempts');
+      expect(flow.clientRevision, 1);
+      expect(flow.state, 'imported_end');
+      expect((await memoRow('m1')).status, MemoStatus.ready.name);
     });
 
     test('conflict spins a fresh request id and bumps client revision',

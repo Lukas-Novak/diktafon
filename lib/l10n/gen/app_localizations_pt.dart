@@ -342,7 +342,7 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get transcriptionCloudNeedsConnection =>
-      'Configure primeiro a URL do servidor e o token (em Envio ao servidor).';
+      'Configure primeiro a URL do servidor e o token (em Backup na nuvem).';
 
   @override
   String get transcriptionCloudConfirmTitle =>
@@ -375,14 +375,14 @@ class AppLocalizationsPt extends AppLocalizations {
   String get cloudConsentScheduled => 'Gravação enviada para o servidor';
 
   @override
-  String get groupUpload => 'Envio ao servidor';
+  String get groupUpload => 'Backup na nuvem';
 
   @override
-  String get uploadToggle => 'Envio automático';
+  String get uploadToggle => 'Backup automático';
 
   @override
   String get uploadToggleDesc =>
-      'Enviar notas concluídas para o seu servidor após a transcrição';
+      'Guardar gravações, transcrições e resumos no seu servidor';
 
   @override
   String get uploadUrlRow => 'URL do servidor';
@@ -411,7 +411,7 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get uploadWifiOnlyDesc =>
-      'Enviar apenas em conexões sem limite de dados';
+      'Backup apenas em conexões sem limite de dados';
 
   @override
   String get uploadTestConnection => 'Testar conexão';
@@ -427,29 +427,30 @@ class AppLocalizationsPt extends AppLocalizations {
       'Servidor inacessível — verifique a URL e o token';
 
   @override
-  String get uploadStateQueued => 'Aguardando envio';
+  String get uploadStateQueued => 'Aguardando o backup';
 
   @override
-  String get uploadStateUploading => 'Enviando…';
+  String get uploadStateUploading => 'Fazendo backup…';
 
   @override
-  String get uploadStateUploaded => 'Enviado';
+  String get uploadStateUploaded => 'Backup concluído';
 
   @override
-  String get uploadStateFailed => 'Falha no envio — tentar novamente';
+  String get uploadStateFailed => 'Falha no backup — tentar novamente';
 
   @override
   String get aboutPrivacy => 'Sobre e privacidade';
 
   @override
-  String get aboutPrivacyDesc => 'O áudio nunca sai deste dispositivo';
+  String get aboutPrivacyDesc =>
+      'O áudio nunca sai deste dispositivo sem a sua autorização';
 
   @override
   String get aboutTitle => 'SOBRE E PRIVACIDADE';
 
   @override
   String get aboutBody =>
-      'O Diktafon escuta, escreve e resume aqui mesmo, no seu telefone.\n\nGravações, transcrições e resumos nunca saem do dispositivo. Não há conta, nem nuvem, nem análises. Os dados só saem por um backup ou exportação que você mesmo inicia.';
+      'O Diktafon escuta, escreve e resume aqui mesmo, no seu telefone.\n\nSem a sua autorização, gravações, transcrições e resumos nunca saem do dispositivo. Não é preciso conta, a nuvem é opcional e não há análises. Os dados só saem de uma forma que você mesmo inicia — um backup, uma exportação ou o envio para o seu próprio servidor.';
 
   @override
   String get aboutOpenSource => 'O Diktafon é gratuito e de código aberto:';
@@ -516,7 +517,7 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get firstRunIntro =>
-      'Ele escuta, escreve e resume aqui mesmo, no seu telefone. Gravações, transcrições e resumos **nunca saem deste dispositivo**. Não há conta nem nuvem.';
+      'Ele escuta, escreve e resume aqui mesmo, no seu telefone. Sem a sua autorização, gravações, transcrições e resumos **nunca saem deste dispositivo**. Não é preciso conta e a nuvem é opcional.';
 
   @override
   String get firstRunSetupHeader => 'Configuração inicial';
@@ -573,7 +574,7 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get backupIntro =>
-      'O backup do seu dispositivo cobre automaticamente a lista de cassetes, as transcrições e os resumos. O áudio é pesado — leve-o explicitamente: a exportação empacota o áudio, as transcrições e os resumos de uma cassete em um único arquivo .zip, e a importação os traz de volta. O Diktafon não envia nada.';
+      'O backup do seu dispositivo cobre automaticamente a lista de cassetes, as transcrições e os resumos. O áudio é pesado — leve-o explicitamente: a exportação empacota o áudio, as transcrições e os resumos de uma cassete em um único arquivo .zip, e a importação os traz de volta. O Diktafon não envia nada sem a sua autorização.';
 
   @override
   String get groupExport => 'Exportar';

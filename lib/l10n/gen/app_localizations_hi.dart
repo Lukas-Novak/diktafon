@@ -340,7 +340,7 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get transcriptionCloudNeedsConnection =>
-      'पहले सर्वर का URL और टोकन सेट करें (सर्वर अपलोड खंड में)।';
+      'पहले सर्वर का URL और टोकन सेट करें (क्लाउड बैकअप खंड में)।';
 
   @override
   String get transcriptionCloudConfirmTitle =>
@@ -373,14 +373,14 @@ class AppLocalizationsHi extends AppLocalizations {
   String get cloudConsentScheduled => 'रिकॉर्डिंग सर्वर पर भेजी गई';
 
   @override
-  String get groupUpload => 'सर्वर अपलोड';
+  String get groupUpload => 'क्लाउड बैकअप';
 
   @override
-  String get uploadToggle => 'स्वचालित अपलोड';
+  String get uploadToggle => 'स्वचालित बैकअप';
 
   @override
   String get uploadToggleDesc =>
-      'ट्रांसक्रिप्शन पूरा होने पर तैयार नोट्स आपके सर्वर पर भेजता है';
+      'रिकॉर्डिंग, ट्रांसक्रिप्ट और सारांश का बैकअप आपके सर्वर पर लें';
 
   @override
   String get uploadUrlRow => 'सर्वर पता';
@@ -408,7 +408,7 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get uploadWifiOnlyDesc =>
-      'केवल बिना डेटा-सीमा वाले कनेक्शन पर अपलोड करें';
+      'केवल बिना डेटा-सीमा वाले कनेक्शन पर बैकअप करें';
 
   @override
   String get uploadTestConnection => 'कनेक्शन जांचें';
@@ -423,29 +423,30 @@ class AppLocalizationsHi extends AppLocalizations {
   String get uploadTestFailed => 'सर्वर उपलब्ध नहीं — पता और टोकन जांचें';
 
   @override
-  String get uploadStateQueued => 'अपलोड की प्रतीक्षा में';
+  String get uploadStateQueued => 'बैकअप की प्रतीक्षा में';
 
   @override
-  String get uploadStateUploading => 'अपलोड हो रहा है…';
+  String get uploadStateUploading => 'बैकअप हो रहा है…';
 
   @override
-  String get uploadStateUploaded => 'अपलोड हुआ';
+  String get uploadStateUploaded => 'बैकअप हुआ';
 
   @override
-  String get uploadStateFailed => 'अपलोड विफल — पुनः प्रयास करें';
+  String get uploadStateFailed => 'बैकअप विफल — पुनः प्रयास करें';
 
   @override
   String get aboutPrivacy => 'ऐप की जानकारी और निजता';
 
   @override
-  String get aboutPrivacyDesc => 'ऑडियो कभी इस डिवाइस से बाहर नहीं जाता';
+  String get aboutPrivacyDesc =>
+      'ऑडियो आपकी सहमति के बिना कभी इस डिवाइस से बाहर नहीं जाता';
 
   @override
   String get aboutTitle => 'ऐप की जानकारी और निजता';
 
   @override
   String get aboutBody =>
-      'Diktafon आपके फ़ोन पर ही सुनता, लिखता और सारांश बनाता है।\n\nरिकॉर्डिंग, ट्रांसक्रिप्ट और सारांश कभी डिवाइस से बाहर नहीं जाते। न कोई खाता है, न क्लाउड, न कोई एनालिटिक्स। डेटा सिर्फ़ तभी बाहर जाता है जब आप खुद बैकअप या निर्यात करते हैं।';
+      'Diktafon आपके फ़ोन पर ही सुनता, लिखता और सारांश बनाता है।\n\nआपकी सहमति के बिना रिकॉर्डिंग, ट्रांसक्रिप्ट और सारांश कभी डिवाइस से बाहर नहीं जाते। कोई खाता ज़रूरी नहीं है, क्लाउड वैकल्पिक है और कोई एनालिटिक्स नहीं है। डेटा सिर्फ़ उसी तरीके से बाहर जाता है जो आप खुद शुरू करते हैं — बैकअप, निर्यात या अपने सर्वर पर भेजना।';
 
   @override
   String get aboutOpenSource => 'Diktafon मुफ़्त और ओपन सोर्स है:';
@@ -512,7 +513,7 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get firstRunIntro =>
-      'यह आपके फ़ोन पर ही सुनता, लिखता और सारांश बनाता है। रिकॉर्डिंग, ट्रांसक्रिप्ट और सारांश **कभी इस डिवाइस से बाहर नहीं जाते**। न कोई खाता, न कोई क्लाउड।';
+      'यह आपके फ़ोन पर ही सुनता, लिखता और सारांश बनाता है। आपकी सहमति के बिना रिकॉर्डिंग, ट्रांसक्रिप्ट और सारांश **कभी इस डिवाइस से बाहर नहीं जाते**। कोई खाता ज़रूरी नहीं है और क्लाउड वैकल्पिक है।';
 
   @override
   String get firstRunSetupHeader => 'पहली बार का सेटअप';
@@ -569,7 +570,7 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get backupIntro =>
-      'आपके डिवाइस का अपना बैकअप कैसेट सूची, ट्रांसक्रिप्ट और सारांश अपने-आप सहेज लेता है। ऑडियो रिकॉर्डिंग बड़ी होती हैं — उन्हें खुद साथ ले जाएं: निर्यात एक कैसेट का ऑडियो, ट्रांसक्रिप्ट और सारांश एक .zip आर्काइव में समेट देता है, और आर्काइव का आयात उन्हें वापस ले आता है। Diktafon कुछ भी अपलोड नहीं करता।';
+      'आपके डिवाइस का अपना बैकअप कैसेट सूची, ट्रांसक्रिप्ट और सारांश अपने-आप सहेज लेता है। ऑडियो रिकॉर्डिंग बड़ी होती हैं — उन्हें खुद साथ ले जाएं: निर्यात एक कैसेट का ऑडियो, ट्रांसक्रिप्ट और सारांश एक .zip आर्काइव में समेट देता है, और आर्काइव का आयात उन्हें वापस ले आता है। Diktafon आपकी सहमति के बिना कुछ भी अपलोड नहीं करता।';
 
   @override
   String get groupExport => 'निर्यात';

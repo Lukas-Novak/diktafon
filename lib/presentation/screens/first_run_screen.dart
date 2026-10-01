@@ -137,7 +137,8 @@ class _FirstRunScreenState extends ConsumerState<FirstRunScreen> {
   }
 
   /// The intro + privacy promise as one paragraph; the ARB marks the
-  /// "never leave this device" span with `**…**` — rendered bold.
+  /// "never leave this device" span with `**…**` — rendered bold. The
+  /// promise is conditioned on the user's consent (cloud is opt-in).
   Widget _intro(TapeColors tape, String text) {
     final parts = text.split('**');
     return Text.rich(

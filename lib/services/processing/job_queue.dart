@@ -383,7 +383,7 @@ class JobQueue {
       }
 
       final now = DateTime.now().millisecondsSinceEpoch;
-      final job = await (_db.select(_db.jobs)
+      var job = await (_db.select(_db.jobs)
             ..where((j) =>
                 j.status.equals('queued') &
                 j.type.isIn(runnable) &
@@ -393,9 +393,38 @@ class JobQueue {
             ..orderBy([(j) => OrderingTerm.asc(j.createdAt)])
             ..limit(1))
           .getSingleOrNull();
+      // Cloud-lane transcribe rows need no on-device model at all — mode
+      // "cloud" routes every memo off-device, and a memo's explicit consent
+      // routes that one recording too. Without this fallback they awaited a
+      // whisper download that may never come.
+      try {
+        job ??= await _nextCloudTranscribe(now,
+            cloudLane: settings.transcriptionMode == 'cloud');
+      } on StateError {
+        // The drain is fire-and-forget in several flows; a database that
+        // closed mid-iteration (app teardown) just means "stop".
+        return;
+      }
       if (job == null) return;
       await _run(job);
     }
+  }
+
+  /// Due queued transcribe rows routed to the cloud (mode "cloud", or a
+  /// memo's explicit consent), join against memos for the consent bit.
+  Future<JobRow?> _nextCloudTranscribe(int now, {required bool cloudLane}) {
+    final query = _db.select(_db.jobs).join([
+      innerJoin(_db.memos, _db.memos.id.equalsExp(_db.jobs.targetId)),
+    ])
+      ..where(_db.jobs.status.equals('queued') &
+          _db.jobs.type.equals(JobType.transcribe.name) &
+          _db.jobs.availableAt.isSmallerOrEqualValue(now) &
+          (cloudLane
+              ? const Constant<bool>(true)
+              : _db.memos.cloudConsentAt.isNotNull()))
+      ..orderBy([OrderingTerm.asc(_db.jobs.createdAt)])
+      ..limit(1);
+    return query.map((row) => row.readTable(_db.jobs)).getSingleOrNull();
   }
 
   Future<void> _run(JobRow job) async {
@@ -676,7 +705,6 @@ class JobQueue {
 
     final client = _cloudClient();
     final config = CloudConfig(url: url, token: token);
-    await _cloudStore.markUploading(memoId);
 
     final audioFile = File(row.filePath);
     if (!await audioFile.exists()) {
@@ -684,8 +712,20 @@ class JobQueue {
     }
     final audioSha = await CloudClient.sha256OfFile(audioFile);
 
-    var rowStoreId = _uuid.v4();
-    var accepted = false;
+    // § cloud "upload once": a durable row for this exact audio resumes —
+    // pending rows keep their request_id (the re-POST replays through the
+    // server's idempotency), accepted rows skip the upload entirely and go
+    // straight to polling. Only a changed recording supersedes (revision+1
+    // via a fresh id below).
+    final existing = await _cloudStore.current(memoId);
+    final sameAudio = existing != null && existing.audioSha256 == audioSha;
+    final alreadyAccepted = sameAudio &&
+        (existing.state == CloudJobStore.uploadedState ||
+            existing.state == CloudJobStore.completeState);
+    var rowStoreId = sameAudio ? existing.requestId : _uuid.v4();
+
+    var accepted = alreadyAccepted;
+    if (!alreadyAccepted) await _cloudStore.markUploading(memoId);
     while (!accepted) {
       final flow = await _cloudStore.ensure(
           memoId: memoId, requestId: rowStoreId, audioSha256: audioSha);
@@ -715,7 +755,7 @@ class JobQueue {
           throw CloudTransient('unexpected_outcome');
       }
     }
-    await _cloudStore.markUploaded(memoId);
+    if (!alreadyAccepted) await _cloudStore.markUploaded(memoId);
 
     for (var step = 0; step < _cloudPollRounds; step++) {
       if (cancel.isCancelled) {

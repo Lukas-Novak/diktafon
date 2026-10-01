@@ -346,7 +346,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get transcriptionCloudNeedsConnection =>
-      'عيّن أولاً عنوان الخادم والرمز المميز (ضمن الرفع إلى الخادم).';
+      'عيّن أولاً عنوان الخادم والرمز المميز (ضمن النسخ الاحتياطي السحابي).';
 
   @override
   String get transcriptionCloudConfirmTitle => 'استخدام الخادم للتفريغ؟';
@@ -378,14 +378,14 @@ class AppLocalizationsAr extends AppLocalizations {
   String get cloudConsentScheduled => 'تم إرسال التسجيل إلى الخادم';
 
   @override
-  String get groupUpload => 'الرفع إلى الخادم';
+  String get groupUpload => 'النسخ الاحتياطي السحابي';
 
   @override
-  String get uploadToggle => 'الرفع التلقائي';
+  String get uploadToggle => 'نسخ احتياطي تلقائي';
 
   @override
   String get uploadToggleDesc =>
-      'إرسال المذكرات المكتملة إلى خادمك بعد التفريغ';
+      'انسخ التسجيلات والنصوص والملخصات احتياطيًا على خادمك';
 
   @override
   String get uploadUrlRow => 'عنوان الخادم';
@@ -412,7 +412,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get uploadWifiOnly => 'عبر Wi-Fi فقط';
 
   @override
-  String get uploadWifiOnlyDesc => 'الرفع فقط عبر اتصالات غير محدودة';
+  String get uploadWifiOnlyDesc => 'النسخ الاحتياطي فقط عبر اتصالات غير محدودة';
 
   @override
   String get uploadTestConnection => 'اختبار الاتصال';
@@ -427,29 +427,29 @@ class AppLocalizationsAr extends AppLocalizations {
   String get uploadTestFailed => 'الخادم غير متاح — تحقق من العنوان والرمز';
 
   @override
-  String get uploadStateQueued => 'بانتظار الرفع';
+  String get uploadStateQueued => 'بانتظار النسخ الاحتياطي';
 
   @override
-  String get uploadStateUploading => 'جارٍ الرفع…';
+  String get uploadStateUploading => 'جارٍ النسخ الاحتياطي…';
 
   @override
-  String get uploadStateUploaded => 'تم الرفع';
+  String get uploadStateUploaded => 'تم النسخ الاحتياطي';
 
   @override
-  String get uploadStateFailed => 'فشل الرفع — إعادة المحاولة';
+  String get uploadStateFailed => 'فشل النسخ الاحتياطي — إعادة المحاولة';
 
   @override
   String get aboutPrivacy => 'حول التطبيق والخصوصية';
 
   @override
-  String get aboutPrivacyDesc => 'الصوت لا يغادر هذا الجهاز أبدًا';
+  String get aboutPrivacyDesc => 'لا يغادر الصوت هذا الجهاز أبدًا دون موافقتك';
 
   @override
   String get aboutTitle => 'حول التطبيق والخصوصية';
 
   @override
   String get aboutBody =>
-      'Diktafon يستمع ويكتب ويلخّص هنا على هاتفك مباشرة.\n\nالتسجيلات والنصوص والملخصات لا تغادر الجهاز أبدًا. لا حساب ولا سحابة ولا تحليلات استخدام. الطريقة الوحيدة لخروج البيانات هي نسخة احتياطية أو تصدير تبدأه بنفسك.';
+      'Diktafon يستمع ويكتب ويلخّص هنا على هاتفك مباشرة.\n\nدون موافقتك، لا تغادر التسجيلات والنصوص والملخصات الجهاز أبدًا. لا يلزم حساب، والسحابة اختيارية، ولا توجد تحليلات استخدام. لا تخرج البيانات إلا بطريقة تبدأها بنفسك — نسخة احتياطية أو تصدير أو إرسال إلى خادمك الخاص.';
 
   @override
   String get aboutOpenSource => 'Diktafon مجاني ومفتوح المصدر:';
@@ -516,7 +516,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get firstRunIntro =>
-      'يستمع ويكتب ويلخّص هنا على هاتفك مباشرة. التسجيلات والنصوص والملخصات **لا تغادر هذا الجهاز أبدًا**. لا حساب ولا سحابة.';
+      'يستمع ويكتب ويلخّص هنا على هاتفك مباشرة. دون موافقتك، لا تغادر التسجيلات والنصوص والملخصات **هذا الجهاز أبدًا**. لا يلزم حساب والسحابة اختيارية.';
 
   @override
   String get firstRunSetupHeader => 'الإعداد الأولي';
@@ -572,7 +572,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get backupIntro =>
-      'يشمل النسخ الاحتياطي الخاص بجهازك قائمة الكاسيتات والنصوص والملخصات تلقائيًا. أما التسجيلات الصوتية فحجمها كبير — خذها معك بنفسك: يجمع التصدير صوت الكاسيت ونصوصه وملخصاته في أرشيف zip واحد، ويعيدها استيراد الأرشيف. لا يرفع Diktafon أي شيء.';
+      'يشمل النسخ الاحتياطي الخاص بجهازك قائمة الكاسيتات والنصوص والملخصات تلقائيًا. أما التسجيلات الصوتية فحجمها كبير — خذها معك بنفسك: يجمع التصدير صوت الكاسيت ونصوصه وملخصاته في أرشيف zip واحد، ويعيدها استيراد الأرشيف. لا يرفع Diktafon أي شيء دون موافقتك.';
 
   @override
   String get groupExport => 'التصدير';

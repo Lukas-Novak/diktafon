@@ -335,7 +335,7 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get transcriptionCloudNeedsConnection =>
-      'Hãy đặt URL máy chủ và mã token trước (trong phần Tải lên máy chủ).';
+      'Hãy đặt URL máy chủ và mã token trước (trong phần Sao lưu lên cloud).';
 
   @override
   String get transcriptionCloudConfirmTitle => 'DÙNG MÁY CHỦ ĐỂ PHIÊN ÂM?';
@@ -367,14 +367,14 @@ class AppLocalizationsVi extends AppLocalizations {
   String get cloudConsentScheduled => 'Đã gửi bản ghi lên máy chủ';
 
   @override
-  String get groupUpload => 'Tải lên máy chủ';
+  String get groupUpload => 'Sao lưu lên cloud';
 
   @override
-  String get uploadToggle => 'Tự động tải lên';
+  String get uploadToggle => 'Sao lưu tự động';
 
   @override
   String get uploadToggleDesc =>
-      'Gửi ghi chú đã hoàn tất lên máy chủ của bạn sau khi phiên âm';
+      'Sao lưu bản thu, bản chép lời và tóm tắt vào máy chủ của bạn';
 
   @override
   String get uploadUrlRow => 'URL máy chủ';
@@ -402,7 +402,7 @@ class AppLocalizationsVi extends AppLocalizations {
   String get uploadWifiOnly => 'Chỉ qua Wi-Fi';
 
   @override
-  String get uploadWifiOnlyDesc => 'Chỉ tải lên qua kết nối không giới hạn';
+  String get uploadWifiOnlyDesc => 'Chỉ sao lưu qua kết nối không giới hạn';
 
   @override
   String get uploadTestConnection => 'Kiểm tra kết nối';
@@ -418,29 +418,30 @@ class AppLocalizationsVi extends AppLocalizations {
       'Không kết nối được máy chủ — kiểm tra URL và mã';
 
   @override
-  String get uploadStateQueued => 'Đang chờ tải lên';
+  String get uploadStateQueued => 'Đang chờ sao lưu';
 
   @override
-  String get uploadStateUploading => 'Đang tải lên…';
+  String get uploadStateUploading => 'Đang sao lưu…';
 
   @override
-  String get uploadStateUploaded => 'Đã tải lên';
+  String get uploadStateUploaded => 'Đã sao lưu';
 
   @override
-  String get uploadStateFailed => 'Tải lên thất bại — thử lại';
+  String get uploadStateFailed => 'Sao lưu thất bại — thử lại';
 
   @override
   String get aboutPrivacy => 'Giới thiệu & quyền riêng tư';
 
   @override
-  String get aboutPrivacyDesc => 'Âm thanh không bao giờ rời khỏi thiết bị này';
+  String get aboutPrivacyDesc =>
+      'Âm thanh không bao giờ rời khỏi thiết bị này khi chưa có sự đồng ý của bạn';
 
   @override
   String get aboutTitle => 'GIỚI THIỆU & QUYỀN RIÊNG TƯ';
 
   @override
   String get aboutBody =>
-      'Diktafon nghe, ghi chép và tóm tắt ngay trên điện thoại của bạn.\n\nBản thu, bản chép lời và tóm tắt không bao giờ rời khỏi thiết bị. Không có tài khoản, không đám mây và không phân tích dữ liệu. Dữ liệu chỉ rời khỏi thiết bị khi chính bạn sao lưu hoặc xuất.';
+      'Diktafon nghe, ghi chép và tóm tắt ngay trên điện thoại của bạn.\n\nKhi chưa có sự đồng ý của bạn, bản thu, bản chép lời và tóm tắt không bao giờ rời khỏi thiết bị. Không cần tài khoản, đám mây là tùy chọn và không có phân tích dữ liệu. Dữ liệu chỉ rời đi theo cách chính bạn khởi động — sao lưu, xuất hoặc gửi đến máy chủ của riêng bạn.';
 
   @override
   String get aboutOpenSource => 'Diktafon miễn phí và mã nguồn mở:';
@@ -507,7 +508,7 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get firstRunIntro =>
-      'Ứng dụng nghe, ghi chép và tóm tắt ngay trên điện thoại của bạn. Bản thu, bản chép lời và tóm tắt **không bao giờ rời khỏi thiết bị này**. Không có tài khoản và không có đám mây.';
+      'Ứng dụng nghe, ghi chép và tóm tắt ngay trên điện thoại của bạn. Khi chưa có sự đồng ý của bạn, bản thu, bản chép lời và tóm tắt **không bao giờ rời khỏi thiết bị này**. Không cần tài khoản và đám mây là tùy chọn.';
 
   @override
   String get firstRunSetupHeader => 'Thiết lập lần đầu';
@@ -564,7 +565,7 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get backupIntro =>
-      'Sao lưu của chính thiết bị đã tự động bao gồm danh sách băng cassette, bản chép lời và tóm tắt. Bản thu âm thanh khá nặng — hãy chủ động mang theo: thao tác xuất đóng gói âm thanh, bản chép lời và tóm tắt của một băng cassette vào một tệp .zip, và nhập tệp đó sẽ đưa chúng trở lại. Diktafon không tải gì lên mạng.';
+      'Sao lưu của chính thiết bị đã tự động bao gồm danh sách băng cassette, bản chép lời và tóm tắt. Bản thu âm thanh khá nặng — hãy chủ động mang theo: thao tác xuất đóng gói âm thanh, bản chép lời và tóm tắt của một băng cassette vào một tệp .zip, và nhập tệp đó sẽ đưa chúng trở lại. Diktafon không tải gì lên mạng khi chưa có sự đồng ý của bạn.';
 
   @override
   String get groupExport => 'Xuất';

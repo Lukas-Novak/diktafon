@@ -324,7 +324,7 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get transcriptionCloudNeedsConnection =>
-      '先にサーバーURLとトークンを設定してください（サーバーアップロード欄）。';
+      '先にサーバーURLとトークンを設定してください（クラウドバックアップ欄）。';
 
   @override
   String get transcriptionCloudConfirmTitle => '文字起こしにサーバーを使いますか？';
@@ -355,13 +355,13 @@ class AppLocalizationsJa extends AppLocalizations {
   String get cloudConsentScheduled => '録音をサーバーに送信しました';
 
   @override
-  String get groupUpload => 'サーバーアップロード';
+  String get groupUpload => 'クラウドバックアップ';
 
   @override
-  String get uploadToggle => '自動アップロード';
+  String get uploadToggle => '自動バックアップ';
 
   @override
-  String get uploadToggleDesc => '文字起こし後に完成したメモをサーバーへ送信します';
+  String get uploadToggleDesc => '録音・文字起こし・要約をお使いのサーバーにバックアップします';
 
   @override
   String get uploadUrlRow => 'サーバーURL';
@@ -388,7 +388,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String get uploadWifiOnly => 'Wi-Fiのみ';
 
   @override
-  String get uploadWifiOnlyDesc => '従量制でない接続でのみアップロード';
+  String get uploadWifiOnlyDesc => '従量制でない接続でのみバックアップ';
 
   @override
   String get uploadTestConnection => '接続をテスト';
@@ -403,29 +403,29 @@ class AppLocalizationsJa extends AppLocalizations {
   String get uploadTestFailed => 'サーバーに接続できません — URLとトークンを確認してください';
 
   @override
-  String get uploadStateQueued => 'アップロード待ち';
+  String get uploadStateQueued => 'バックアップ待ち';
 
   @override
-  String get uploadStateUploading => 'アップロード中…';
+  String get uploadStateUploading => 'バックアップ中…';
 
   @override
-  String get uploadStateUploaded => 'アップロード済み';
+  String get uploadStateUploaded => 'バックアップ済み';
 
   @override
-  String get uploadStateFailed => 'アップロード失敗 — 再試行';
+  String get uploadStateFailed => 'バックアップ失敗 — 再試行';
 
   @override
   String get aboutPrivacy => 'アプリ情報とプライバシー';
 
   @override
-  String get aboutPrivacyDesc => '音声がこの端末の外に出ることはありません';
+  String get aboutPrivacyDesc => '音声はあなたの同意なくこの端末の外に出ることはありません';
 
   @override
   String get aboutTitle => 'アプリ情報とプライバシー';
 
   @override
   String get aboutBody =>
-      'Diktafon は、聞き取りも、書き起こしも、要約も、すべてお使いのスマートフォンの中で行います。\n\n録音・文字起こし・要約が端末の外に出ることはありません。アカウントも、クラウドも、分析ツールもありません。データが外に出るのは、ご自身で行うバックアップやエクスポートだけです。';
+      'Diktafon は、聞き取りも、書き起こしも、要約も、すべてお使いのスマートフォンの中で行います。\n\nあなたの同意なく、録音・文字起こし・要約が端末の外に出ることはありません。アカウントは不要、クラウドは任意、分析ツールもありません。データが外に出るのは、ご自身で開始したバックアップ、エクスポート、ご自身のサーバーへの送信だけです。';
 
   @override
   String get aboutOpenSource => 'Diktafon は無料のオープンソースソフトウェアです：';
@@ -492,7 +492,7 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get firstRunIntro =>
-      '聞き取りも、書き起こしも、要約も、すべてお使いのスマートフォンの中で行われます。録音・文字起こし・要約が**この端末の外に出ることはありません**。アカウントもクラウドもありません。';
+      '聞き取りも、書き起こしも、要約も、すべてお使いのスマートフォンの中で行われます。あなたの同意なく、録音・文字起こし・要約が**この端末の外に出ることはありません**。アカウントは不要で、クラウドは任意です。';
 
   @override
   String get firstRunSetupHeader => '初回セットアップ';
@@ -548,7 +548,7 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get backupIntro =>
-      'カセットの一覧・文字起こし・要約は、端末標準のバックアップで自動的に保護されます。録音音声はサイズが大きいため、明示的に持ち出します。エクスポートすると、カセットの音声・文字起こし・要約が 1 つの .zip アーカイブにまとまり、そのアーカイブをインポートすれば元に戻せます。Diktafon が何かをアップロードすることはありません。';
+      'カセットの一覧・文字起こし・要約は、端末標準のバックアップで自動的に保護されます。録音音声はサイズが大きいため、明示的に持ち出します。エクスポートすると、カセットの音声・文字起こし・要約が 1 つの .zip アーカイブにまとまり、そのアーカイブをインポートすれば元に戻せます。Diktafon があなたの同意なく何かをアップロードすることはありません。';
 
   @override
   String get groupExport => 'エクスポート';

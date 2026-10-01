@@ -341,7 +341,7 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get transcriptionCloudNeedsConnection =>
-      'Nejdřív nastavte adresu serveru a token (v části Nahrávání na server).';
+      'Nejdřív nastavte adresu serveru a token (v části Zálohování do cloudu).';
 
   @override
   String get transcriptionCloudConfirmTitle => 'POUŽÍT K PŘEPISU SERVER?';
@@ -373,14 +373,14 @@ class AppLocalizationsCs extends AppLocalizations {
   String get cloudConsentScheduled => 'Záznam odeslán na server';
 
   @override
-  String get groupUpload => 'Nahrávání na server';
+  String get groupUpload => 'Zálohování do cloudu';
 
   @override
-  String get uploadToggle => 'Automatické nahrávání';
+  String get uploadToggle => 'Automatická záloha';
 
   @override
   String get uploadToggleDesc =>
-      'Po přepisu odesílat hotové poznámky na váš server';
+      'Zálohovat vaše nahrávky, přepisy a souhrny na váš server';
 
   @override
   String get uploadUrlRow => 'Adresa serveru';
@@ -407,7 +407,7 @@ class AppLocalizationsCs extends AppLocalizations {
   String get uploadWifiOnly => 'Pouze přes Wi-Fi';
 
   @override
-  String get uploadWifiOnlyDesc => 'Nahrávat jen přes neomezené připojení';
+  String get uploadWifiOnlyDesc => 'Zálohovat jen přes neomezené připojení';
 
   @override
   String get uploadTestConnection => 'Vyzkoušet připojení';
@@ -423,29 +423,30 @@ class AppLocalizationsCs extends AppLocalizations {
       'Server nedostupný — zkontrolujte adresu a token';
 
   @override
-  String get uploadStateQueued => 'Čeká na nahrání';
+  String get uploadStateQueued => 'Čeká na zálohu';
 
   @override
-  String get uploadStateUploading => 'Nahrávám…';
+  String get uploadStateUploading => 'Zálohuji…';
 
   @override
-  String get uploadStateUploaded => 'Nahráno';
+  String get uploadStateUploaded => 'Zálohováno';
 
   @override
-  String get uploadStateFailed => 'Nahrání selhalo — zkusit znovu';
+  String get uploadStateFailed => 'Záloha selhala — zkusit znovu';
 
   @override
   String get aboutPrivacy => 'O aplikaci a soukromí';
 
   @override
-  String get aboutPrivacyDesc => 'Zvuk nikdy neopustí toto zařízení';
+  String get aboutPrivacyDesc =>
+      'Bez vašeho souhlasu zvuk nikdy neopustí toto zařízení';
 
   @override
   String get aboutTitle => 'O APLIKACI A SOUKROMÍ';
 
   @override
   String get aboutBody =>
-      'Diktafon poslouchá, zapisuje a shrnuje přímo ve vašem telefonu.\n\nNahrávky, přepisy ani souhrny nikdy neopustí zařízení. Žádný účet, žádný cloud, žádná analytika. Data odcházejí jen zálohou nebo exportem, který spustíte sami.';
+      'Diktafon poslouchá, zapisuje a shrnuje přímo ve vašem telefonu.\n\nBez vašeho souhlasu nahrávky, přepisy ani souhrny nikdy neopustí zařízení. Žádný povinný účet, žádný povinný cloud, žádná analytika. Data odcházejí jen způsobem, který sami spustíte — zálohou, exportem nebo odesláním na váš vlastní server.';
 
   @override
   String get aboutOpenSource =>
@@ -513,7 +514,7 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get firstRunIntro =>
-      'Poslouchá, zapisuje a shrnuje přímo ve vašem telefonu. Nahrávky, přepisy a souhrny **nikdy neopustí toto zařízení**. Žádný účet, žádný cloud.';
+      'Poslouchá, zapisuje a shrnuje přímo ve vašem telefonu. Bez vašeho souhlasu nahrávky, přepisy a souhrny **nikdy neopustí toto zařízení**. Žádný povinný účet, cloud jen s vaším svolením.';
 
   @override
   String get firstRunSetupHeader => 'Počáteční nastavení';
@@ -569,7 +570,7 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get backupIntro =>
-      'Záloha vašeho zařízení se o seznam kazet, přepisy a souhrny postará automaticky. Nahrávky jsou velké — vezměte si je výslovně: export zabalí zvuk, přepisy a souhrny kazety do jednoho archivu .zip a import archivu je vrátí zpět. Diktafon nic nikam nenahrává.';
+      'Záloha vašeho zařízení se o seznam kazet, přepisy a souhrny postará automaticky. Nahrávky jsou velké — vezměte si je výslovně: export zabalí zvuk, přepisy a souhrny kazety do jednoho archivu .zip a import archivu je vrátí zpět. Diktafon nic nikam neodešle bez vašeho souhlasu.';
 
   @override
   String get groupExport => 'Export';

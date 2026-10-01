@@ -344,7 +344,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get transcriptionCloudNeedsConnection =>
-      'Lege zuerst Server-URL und Token fest (unter Server-Upload).';
+      'Lege zuerst Server-URL und Token fest (unter Cloud-Sicherung).';
 
   @override
   String get transcriptionCloudConfirmTitle =>
@@ -378,14 +378,14 @@ class AppLocalizationsDe extends AppLocalizations {
   String get cloudConsentScheduled => 'Aufnahme an den Server gesendet';
 
   @override
-  String get groupUpload => 'Server-Upload';
+  String get groupUpload => 'Cloud-Sicherung';
 
   @override
-  String get uploadToggle => 'Automatischer Upload';
+  String get uploadToggle => 'Automatische Sicherung';
 
   @override
   String get uploadToggleDesc =>
-      'Fertige Memos nach der Transkription an deinen Server senden';
+      'Aufnahmen, Transkripte und Zusammenfassungen auf deinem Server sichern';
 
   @override
   String get uploadUrlRow => 'Server-URL';
@@ -413,8 +413,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get uploadWifiOnly => 'Nur WLAN';
 
   @override
-  String get uploadWifiOnlyDesc =>
-      'Nur bei unbegrenzten Verbindungen hochladen';
+  String get uploadWifiOnlyDesc => 'Nur bei unbegrenzten Verbindungen sichern';
 
   @override
   String get uploadTestConnection => 'Verbindung testen';
@@ -430,29 +429,30 @@ class AppLocalizationsDe extends AppLocalizations {
       'Server nicht erreichbar — URL und Token prüfen';
 
   @override
-  String get uploadStateQueued => 'Warten auf Upload';
+  String get uploadStateQueued => 'Wartet auf Sicherung';
 
   @override
-  String get uploadStateUploading => 'Wird hochgeladen…';
+  String get uploadStateUploading => 'Sichern läuft…';
 
   @override
-  String get uploadStateUploaded => 'Hochgeladen';
+  String get uploadStateUploaded => 'Gesichert';
 
   @override
-  String get uploadStateFailed => 'Upload fehlgeschlagen — erneut versuchen';
+  String get uploadStateFailed => 'Sicherung fehlgeschlagen — erneut versuchen';
 
   @override
   String get aboutPrivacy => 'Über & Datenschutz';
 
   @override
-  String get aboutPrivacyDesc => 'Audio verlässt dieses Gerät nie';
+  String get aboutPrivacyDesc =>
+      'Audio verlässt dieses Gerät nicht ohne deine Zustimmung';
 
   @override
   String get aboutTitle => 'ÜBER & DATENSCHUTZ';
 
   @override
   String get aboutBody =>
-      'Diktafon hört zu, schreibt mit und fasst zusammen — direkt auf deinem Telefon.\n\nAufnahmen, Transkripte und Zusammenfassungen verlassen das Gerät nie. Es gibt kein Konto, keine Cloud und keine Analyse. Daten verlassen das Gerät nur über eine Sicherung oder einen Export, den du selbst startest.';
+      'Diktafon hört zu, schreibt mit und fasst zusammen — direkt auf deinem Telefon.\n\nOhne deine Zustimmung verlassen Aufnahmen, Transkripte und Zusammenfassungen das Gerät nie. Kein Konto nötig, die Cloud ist optional und es gibt keine Analyse. Daten verlassen das Gerät nur auf einem Weg, den du selbst startest — als Sicherung, Export oder Senden an deinen eigenen Server.';
 
   @override
   String get aboutOpenSource => 'Diktafon ist kostenlos und quelloffen:';
@@ -519,7 +519,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get firstRunIntro =>
-      'Es hört zu, schreibt mit und fasst zusammen — direkt auf deinem Telefon. Aufnahmen, Transkripte und Zusammenfassungen **verlassen dieses Gerät nie**. Es gibt kein Konto und keine Cloud.';
+      'Es hört zu, schreibt mit und fasst zusammen — direkt auf deinem Telefon. Ohne deine Zustimmung verlassen Aufnahmen, Transkripte und Zusammenfassungen **dieses Gerät nie**. Kein Konto nötig und die Cloud ist optional.';
 
   @override
   String get firstRunSetupHeader => 'Ersteinrichtung';
@@ -577,7 +577,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get backupIntro =>
-      'Die Sicherung deines Geräts erfasst Kassettenliste, Transkripte und Zusammenfassungen automatisch. Audioaufnahmen sind groß — nimm sie ausdrücklich mit: ein Export packt Audio, Transkripte und Zusammenfassungen einer Kassette in ein .zip-Archiv, und ein Import bringt sie zurück. Diktafon lädt nichts hoch.';
+      'Die Sicherung deines Geräts erfasst Kassettenliste, Transkripte und Zusammenfassungen automatisch. Audioaufnahmen sind groß — nimm sie ausdrücklich mit: ein Export packt Audio, Transkripte und Zusammenfassungen einer Kassette in ein .zip-Archiv, und ein Import bringt sie zurück. Diktafon lädt ohne deine Zustimmung nichts hoch.';
 
   @override
   String get groupExport => 'Export';

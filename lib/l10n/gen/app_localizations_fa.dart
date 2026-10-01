@@ -340,7 +340,7 @@ class AppLocalizationsFa extends AppLocalizations {
 
   @override
   String get transcriptionCloudNeedsConnection =>
-      'ابتدا نشانی سرور و توکن را تنظیم کنید (در بخش بارگذاری به سرور).';
+      'ابتدا نشانی سرور و توکن را تنظیم کنید (در بخش پشتیبان‌گیری ابری).';
 
   @override
   String get transcriptionCloudConfirmTitle =>
@@ -372,14 +372,14 @@ class AppLocalizationsFa extends AppLocalizations {
   String get cloudConsentScheduled => 'ضبط به سرور ارسال شد';
 
   @override
-  String get groupUpload => 'بارگذاری به سرور';
+  String get groupUpload => 'پشتیبان‌گیری ابری';
 
   @override
-  String get uploadToggle => 'بارگذاری خودکار';
+  String get uploadToggle => 'پشتیبان‌گیری خودکار';
 
   @override
   String get uploadToggleDesc =>
-      'پس از رونویسی، یادداشت‌های تکمیل‌شده به سرور شما ارسال می‌شود';
+      'ضبط‌ها، رونوشت‌ها و خلاصه‌ها روی سرور شما پشتیبان ذخیره می‌شود';
 
   @override
   String get uploadUrlRow => 'نشانی سرور';
@@ -406,7 +406,7 @@ class AppLocalizationsFa extends AppLocalizations {
   String get uploadWifiOnly => 'فقط Wi-Fi';
 
   @override
-  String get uploadWifiOnlyDesc => 'فقط از اتصال‌های نامحدود بارگذاری شود';
+  String get uploadWifiOnlyDesc => 'فقط از اتصال‌های نامحدود پشتیبان گرفته شود';
 
   @override
   String get uploadTestConnection => 'آزمایش اتصال';
@@ -422,29 +422,30 @@ class AppLocalizationsFa extends AppLocalizations {
       'سرور در دسترس نیست — نشانی و توکن را بررسی کنید';
 
   @override
-  String get uploadStateQueued => 'در انتظار بارگذاری';
+  String get uploadStateQueued => 'در انتظار پشتیبان‌گیری';
 
   @override
-  String get uploadStateUploading => 'در حال بارگذاری…';
+  String get uploadStateUploading => 'در حال پشتیبان‌گیری…';
 
   @override
-  String get uploadStateUploaded => 'بارگذاری شد';
+  String get uploadStateUploaded => 'پشتیبان گرفته شد';
 
   @override
-  String get uploadStateFailed => 'بارگذاری ناموفق — تلاش دوباره';
+  String get uploadStateFailed => 'پشتیبان‌گیری ناموفق — تلاش دوباره';
 
   @override
   String get aboutPrivacy => 'درباره و حریم خصوصی';
 
   @override
-  String get aboutPrivacyDesc => 'صدا هرگز از این دستگاه خارج نمی‌شود';
+  String get aboutPrivacyDesc =>
+      'صدا بدون رضایت شما هرگز از این دستگاه خارج نمی‌شود';
 
   @override
   String get aboutTitle => 'درباره و حریم خصوصی';
 
   @override
   String get aboutBody =>
-      'Diktafon همین‌جا روی گوشی شما گوش می‌دهد، می‌نویسد و خلاصه می‌کند.\n\nضبط‌ها، رونوشت‌ها و خلاصه‌ها هرگز از دستگاه خارج نمی‌شوند. حساب کاربری، فضای ابری و ابزار تحلیلی در کار نیست. داده‌ها تنها زمانی از دستگاه خارج می‌شوند که خودتان پشتیبان‌گیری یا برون‌بری را آغاز کنید.';
+      'Diktafon همین‌جا روی گوشی شما گوش می‌دهد، می‌نویسد و خلاصه می‌کند.\n\nبدون رضایت شما، ضبط‌ها، رونوشت‌ها و خلاصه‌ها هرگز از دستگاه خارج نمی‌شوند. حساب کاربری لازم نیست، فضای ابری اختیاری است و ابزار تحلیلی در کار نیست. داده‌ها فقط به روشی خارج می‌شوند که خودتان آغاز می‌کنید — پشتیبان‌گیری، برون‌بری یا ارسال به سرور خودتان.';
 
   @override
   String get aboutOpenSource => 'Diktafon رایگان و متن‌باز است:';
@@ -511,7 +512,7 @@ class AppLocalizationsFa extends AppLocalizations {
 
   @override
   String get firstRunIntro =>
-      'همین‌جا روی گوشی شما گوش می‌دهد، می‌نویسد و خلاصه می‌کند. ضبط‌ها، رونوشت‌ها و خلاصه‌ها **هرگز از این دستگاه خارج نمی‌شوند**. نه حساب کاربری در کار است و نه فضای ابری.';
+      'همین‌جا روی گوشی شما گوش می‌دهد، می‌نویسد و خلاصه می‌کند. بدون رضایت شما، ضبط‌ها، رونوشت‌ها و خلاصه‌ها **هرگز از این دستگاه خارج نمی‌شوند**. حساب کاربری لازم نیست و فضای ابری اختیاری است.';
 
   @override
   String get firstRunSetupHeader => 'راه‌اندازی اولیه';
@@ -568,7 +569,7 @@ class AppLocalizationsFa extends AppLocalizations {
 
   @override
   String get backupIntro =>
-      'پشتیبان‌گیری خود دستگاه، فهرست کاست‌ها، رونوشت‌ها و خلاصه‌ها را به‌طور خودکار پوشش می‌دهد. فایل‌های صوتی حجیم‌اند — آن‌ها را خودتان با خود ببرید: برون‌بری، صدا، رونوشت‌ها و خلاصه‌های یک کاست را در یک فایل .zip بسته‌بندی می‌کند و درون‌ریزی آن فایل همه را بازمی‌گرداند. Diktafon هیچ چیزی را آپلود نمی‌کند.';
+      'پشتیبان‌گیری خود دستگاه، فهرست کاست‌ها، رونوشت‌ها و خلاصه‌ها را به‌طور خودکار پوشش می‌دهد. فایل‌های صوتی حجیم‌اند — آن‌ها را خودتان با خود ببرید: برون‌بری، صدا، رونوشت‌ها و خلاصه‌های یک کاست را در یک فایل .zip بسته‌بندی می‌کند و درون‌ریزی آن فایل همه را بازمی‌گرداند. Diktafon بدون رضایت شما هیچ چیزی آپلود نمی‌کند.';
 
   @override
   String get groupExport => 'برون‌بری';

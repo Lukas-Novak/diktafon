@@ -121,7 +121,7 @@ class CloudClient {
 
     final client = _newHttpClient();
     try {
-      final base = _processingBase(config.url);
+      final base = v1Uri(config.url, '/processing');
       final request = await client.postUrl(base);
       final boundary = 'dk-${_uuid.v4().replaceAll('-', '')}';
       request.headers
@@ -180,41 +180,40 @@ class CloudClient {
   }
 
   Future<CloudOutcome> jobStatus(CloudConfig config, String requestId) async {
-    final out = await _jsonCall(config, 'GET', '/diktafon/v1/jobs/$requestId');
+    final out = await _jsonCall(config, 'GET', '/jobs/$requestId');
     if (out is CloudStatus) return out;
     return out;
   }
 
   Future<CloudOutcome> jobResult(CloudConfig config, String requestId) async {
-    return _jsonCall(config, 'GET', '/diktafon/v1/jobs/$requestId/result');
+    return _jsonCall(config, 'GET', '/jobs/$requestId/result');
   }
 
   Future<CloudOutcome> cancelJob(CloudConfig config, String requestId) async {
-    return _jsonCall(config, 'POST', '/diktafon/v1/jobs/$requestId/cancel');
+    return _jsonCall(config, 'POST', '/jobs/$requestId/cancel');
   }
 
   Future<CloudOutcome> retryJob(CloudConfig config, String requestId) async {
-    return _jsonCall(config, 'POST', '/diktafon/v1/jobs/$requestId/retry');
+    return _jsonCall(config, 'POST', '/jobs/$requestId/retry');
   }
 
-  Uri _processingBase(String uploadUrl) {
+  /// The ingest v1 root hangs off the upload endpoint's parent: strip a
+  /// trailing `/upload` from the configured endpoint, then append
+  /// `/v1$suffix`. Callers pass suffixes relative to the v1 root
+  /// (`/jobs/…`, `/processing`) — full `/diktafon/v1/…` paths would double
+  /// the prefix.
+  static Uri v1Uri(String uploadUrl, String suffix) {
     final uri = Uri.parse(uploadUrl);
-    final path = uri.path.endsWith('/upload')
+    final root = uri.path.endsWith('/upload')
         ? uri.path.substring(0, uri.path.length - '/upload'.length)
         : uri.path;
-    return uri.replace(path: '$path/v1/processing');
-  }
-
-  Uri _join(CloudConfig config, String suffix) {
-    final base = _processingBase(config.url).resolve('');
-    final path = base.path.substring(0, base.path.length - '/processing'.length);
-    return base.replace(path: path + suffix);
+    return uri.replace(path: '$root/v1$suffix');
   }
 
   Future<CloudOutcome> _jsonCall(CloudConfig config, String verb, String suffix) async {
     final client = _newHttpClient();
     try {
-      final uri = _join(config, suffix);
+      final uri = v1Uri(config.url, suffix);
       final request = await (switch (verb) {
         'GET' => client.getUrl(uri),
         'POST' => client.postUrl(uri),

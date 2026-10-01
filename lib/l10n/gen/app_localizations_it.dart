@@ -342,7 +342,7 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get transcriptionCloudNeedsConnection =>
-      'Configura prima URL del server e token (in Caricamento sul server).';
+      'Configura prima URL del server e token (in Backup su cloud).';
 
   @override
   String get transcriptionCloudConfirmTitle =>
@@ -375,14 +375,14 @@ class AppLocalizationsIt extends AppLocalizations {
   String get cloudConsentScheduled => 'Registrazione inviata al server';
 
   @override
-  String get groupUpload => 'Caricamento sul server';
+  String get groupUpload => 'Backup su cloud';
 
   @override
-  String get uploadToggle => 'Caricamento automatico';
+  String get uploadToggle => 'Backup automatico';
 
   @override
   String get uploadToggleDesc =>
-      'Invia i memo completati al tuo server dopo la trascrizione';
+      'Backup di registrazioni, trascrizioni e riassunti sul tuo server';
 
   @override
   String get uploadUrlRow => 'URL del server';
@@ -409,7 +409,7 @@ class AppLocalizationsIt extends AppLocalizations {
   String get uploadWifiOnly => 'Solo Wi-Fi';
 
   @override
-  String get uploadWifiOnlyDesc => 'Carica solo su connessioni senza limiti';
+  String get uploadWifiOnlyDesc => 'Backup solo su connessioni senza limiti';
 
   @override
   String get uploadTestConnection => 'Prova connessione';
@@ -425,29 +425,30 @@ class AppLocalizationsIt extends AppLocalizations {
       'Server irraggiungibile — controlla URL e token';
 
   @override
-  String get uploadStateQueued => 'In attesa di caricamento';
+  String get uploadStateQueued => 'In attesa del backup';
 
   @override
-  String get uploadStateUploading => 'Caricamento…';
+  String get uploadStateUploading => 'Backup in corso…';
 
   @override
-  String get uploadStateUploaded => 'Caricato';
+  String get uploadStateUploaded => 'Backup eseguito';
 
   @override
-  String get uploadStateFailed => 'Caricamento fallito — riprova';
+  String get uploadStateFailed => 'Backup non riuscito — riprova';
 
   @override
   String get aboutPrivacy => 'Informazioni e privacy';
 
   @override
-  String get aboutPrivacyDesc => 'L\'audio non lascia mai questo dispositivo';
+  String get aboutPrivacyDesc =>
+      'L\'audio non lascia mai questo dispositivo senza il tuo consenso';
 
   @override
   String get aboutTitle => 'INFORMAZIONI E PRIVACY';
 
   @override
   String get aboutBody =>
-      'Diktafon ascolta, scrive e riassume direttamente sul tuo telefono.\n\nRegistrazioni, trascrizioni e riassunti non lasciano mai il dispositivo. Niente account, niente cloud e niente analytics. I dati escono solo con un backup o un\'esportazione che avvii tu.';
+      'Diktafon ascolta, scrive e riassume direttamente sul tuo telefono.\n\nSenza il tuo consenso, registrazioni, trascrizioni e riassunti non lasciano mai il dispositivo. Nessun account obbligatorio, il cloud è facoltativo e niente analytics. I dati escono solo in un modo che avvii tu: un backup, un\'esportazione o l\'invio al tuo server.';
 
   @override
   String get aboutOpenSource => 'Diktafon è gratuito e open source:';
@@ -514,7 +515,7 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get firstRunIntro =>
-      'Ascolta, scrive e riassume direttamente sul tuo telefono. Registrazioni, trascrizioni e riassunti **non lasciano mai questo dispositivo**. Niente account e niente cloud.';
+      'Ascolta, scrive e riassume direttamente sul tuo telefono. Senza il tuo consenso, registrazioni, trascrizioni e riassunti **non lasciano mai questo dispositivo**. Nessun account obbligatorio e il cloud è facoltativo.';
 
   @override
   String get firstRunSetupHeader => 'Configurazione iniziale';
@@ -571,7 +572,7 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get backupIntro =>
-      'Il backup del dispositivo copre già in automatico l\'elenco delle cassette, le trascrizioni e i riassunti. Le registrazioni audio invece sono pesanti — portale con te esplicitamente: l\'esportazione raccoglie audio, trascrizioni e riassunti di una cassetta in un unico archivio .zip, e importando l\'archivio li riporti indietro. Diktafon non carica nulla online.';
+      'Il backup del dispositivo copre già in automatico l\'elenco delle cassette, le trascrizioni e i riassunti. Le registrazioni audio invece sono pesanti — portale con te esplicitamente: l\'esportazione raccoglie audio, trascrizioni e riassunti di una cassetta in un unico archivio .zip, e importando l\'archivio li riporti indietro. Diktafon non carica nulla online senza il tuo consenso.';
 
   @override
   String get groupExport => 'Esporta';

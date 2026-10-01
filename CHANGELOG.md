@@ -5,6 +5,39 @@ correspond to git tags (`v*`); dates are tag dates.
 
 ## [1.1.1] — 2026-09-30 (fork: cloud transcription)
 
+### Fixed
+- **Cloud transcripts never came back to the tape on devices.** Three bugs
+  compounded, found by the first real-device run:
+  - every `jobs/{id}` verb URL carried the `/diktafon/v1` prefix twice
+    (server 404);
+  - *every* queue attempt re-POSTed the full audio with a fresh
+    `request_id` instead of resuming the durable request — the phone
+    retried every ~30 min forever, the server transcribed the same
+    recording N times, and downstream got notified per duplicate;
+  - the foreground drain gated transcribe jobs on a **local** whisper model
+    being provisioned even in cloud mode, so a cloud-only install (no
+    models downloaded) stalled at "waiting for the transcription model"
+    until a background WorkManager run happened to pass.
+  Now: single v1 prefix, `request_id` resumes across attempts,
+  already-accepted uploads are never re-streamed, and due cloud-lane
+  transcribe rows run without a local model (mode switch or per-memo
+  consent). Regression tests cover the URL join, resume-without-reupload,
+  and the model-less foreground drain.
+
+### Changed
+- **Renamed the upload feature to match what it does: *Cloud backup***
+  (Czech *Zálohování do cloudu*) — section, toggle, per-memo upload states,
+  the connection hint in the cloud-transcription picker, and the export
+  explainer's closing claim, in all 20 locales. The toggle description now
+  says what the goal is — back up recordings, transcripts and summaries to
+  your server. Behaviour unchanged; deeper backup semantics (summary
+  re-uploads, cassette artifacts, retention) land in a later release.
+- Privacy copy, Play listing and the iOS microphone prompt now make the
+  "never leaves this device" promise conditional on your consent instead of
+  absolute (all 20 locales, About screen, first-run intro, `PRIVACY.md` —
+  effective date bumped). The claim only ever broke if you opt in, and the
+  cloud remains strictly opt-in.
+
 ### Added
 - **Transcription location: phone or cloud** (Settings → Intelligence).
   Choose "In cloud" to have new finalized recordings transcribed by your

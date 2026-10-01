@@ -338,7 +338,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get transcriptionCloudNeedsConnection =>
-      'Önce sunucu adresini ve anahtarı ayarla (Sunucuya yükleme bölümünde).';
+      'Önce sunucu adresini ve anahtarı ayarla (Buluta yedekleme bölümünde).';
 
   @override
   String get transcriptionCloudConfirmTitle =>
@@ -371,14 +371,14 @@ class AppLocalizationsTr extends AppLocalizations {
   String get cloudConsentScheduled => 'Kayıt sunucuya gönderildi';
 
   @override
-  String get groupUpload => 'Sunucuya yükleme';
+  String get groupUpload => 'Buluta yedekleme';
 
   @override
-  String get uploadToggle => 'Otomatik yükleme';
+  String get uploadToggle => 'Otomatik yedekleme';
 
   @override
   String get uploadToggleDesc =>
-      'Biten notları transkripsiyon sonrası sunucunuza gönderin';
+      'Kayıt, transkript ve özetleri sunucunuza yedekleyin';
 
   @override
   String get uploadUrlRow => 'Sunucu adresi';
@@ -405,7 +405,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get uploadWifiOnly => 'Yalnızca Wi-Fi';
 
   @override
-  String get uploadWifiOnlyDesc => 'Yalnızca ölçüsüz bağlantılarda yükle';
+  String get uploadWifiOnlyDesc => 'Yalnızca ölçüsüz bağlantılarda yedekle';
 
   @override
   String get uploadTestConnection => 'Bağlantıyı sına';
@@ -421,29 +421,30 @@ class AppLocalizationsTr extends AppLocalizations {
       'Sunucuya ulaşılamadı — adresi ve anahtarı kontrol edin';
 
   @override
-  String get uploadStateQueued => 'Yüklemeyi bekliyor';
+  String get uploadStateQueued => 'Yedekleme bekleniyor';
 
   @override
-  String get uploadStateUploading => 'Yükleniyor…';
+  String get uploadStateUploading => 'Yedekleniyor…';
 
   @override
-  String get uploadStateUploaded => 'Yüklendi';
+  String get uploadStateUploaded => 'Yedeklendi';
 
   @override
-  String get uploadStateFailed => 'Yükleme başarısız — yeniden dene';
+  String get uploadStateFailed => 'Yedekleme başarısız — yeniden dene';
 
   @override
   String get aboutPrivacy => 'Hakkında ve gizlilik';
 
   @override
-  String get aboutPrivacyDesc => 'Ses asla bu cihazdan çıkmaz';
+  String get aboutPrivacyDesc =>
+      'Ses, onayınız olmadan asla bu cihazdan çıkmaz';
 
   @override
   String get aboutTitle => 'HAKKINDA VE GİZLİLİK';
 
   @override
   String get aboutBody =>
-      'Diktafon doğrudan telefonunuzda dinler, yazar ve özetler.\n\nKayıtlar, transkriptler ve özetler cihazdan asla çıkmaz. Hesap yok, bulut yok, analitik yok. Veriler yalnızca sizin başlattığınız bir yedekleme veya dışa aktarmayla cihazdan ayrılır.';
+      'Diktafon doğrudan telefonunuzda dinler, yazar ve özetler.\n\nOnayınız olmadan kayıtlar, transkriptler ve özetler cihazdan asla çıkmaz. Hesap gerekmez, bulut isteğe bağlıdır ve analitik yoktur. Veriler yalnızca sizin başlattığınız bir yolla cihazdan ayrılır — yedekleme, dışa aktarma veya kendi sunucunuza gönderme.';
 
   @override
   String get aboutOpenSource => 'Diktafon ücretsiz ve açık kaynaklıdır:';
@@ -510,7 +511,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get firstRunIntro =>
-      'Doğrudan telefonunuzda dinler, yazar ve özetler. Kayıtlar, transkriptler ve özetler **bu cihazdan asla çıkmaz**. Hesap yok, bulut yok.';
+      'Doğrudan telefonunuzda dinler, yazar ve özetler. Onayınız olmadan kayıtlar, transkriptler ve özetler **bu cihazdan asla çıkmaz**. Hesap gerekmez ve bulut isteğe bağlıdır.';
 
   @override
   String get firstRunSetupHeader => 'İlk kurulum';
@@ -567,7 +568,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get backupIntro =>
-      'Cihazınızın kendi yedeği kaset listesini, transkriptleri ve özetleri otomatik olarak kapsar. Ses kayıtları büyüktür — onları açıkça yanınıza alın: dışa aktarma, bir kasetin sesini, transkriptlerini ve özetlerini tek bir .zip arşivine paketler; arşivi içe aktarmak onları geri getirir. Diktafon hiçbir şeyi hiçbir yere yüklemez.';
+      'Cihazınızın kendi yedeği kaset listesini, transkriptleri ve özetleri otomatik olarak kapsar. Ses kayıtları büyüktür — onları açıkça yanınıza alın: dışa aktarma, bir kasetin sesini, transkriptlerini ve özetlerini tek bir .zip arşivine paketler; arşivi içe aktarmak onları geri getirir. Diktafon onayınız olmadan hiçbir şeyi hiçbir yere yüklemez.';
 
   @override
   String get groupExport => 'Dışa aktarma';

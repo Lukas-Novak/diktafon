@@ -335,7 +335,7 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get transcriptionCloudNeedsConnection =>
-      'Atur dulu URL server dan token (di bagian Unggahan server).';
+      'Atur dulu URL server dan token (di bagian Cadangan cloud).';
 
   @override
   String get transcriptionCloudConfirmTitle =>
@@ -368,14 +368,14 @@ class AppLocalizationsId extends AppLocalizations {
   String get cloudConsentScheduled => 'Rekaman dikirim ke server';
 
   @override
-  String get groupUpload => 'Unggahan server';
+  String get groupUpload => 'Cadangan cloud';
 
   @override
-  String get uploadToggle => 'Unggahan otomatis';
+  String get uploadToggle => 'Cadangan otomatis';
 
   @override
   String get uploadToggleDesc =>
-      'Kirim memo selesai ke server Anda setelah transkripsi';
+      'Cadangkan rekaman, transkrip, dan ringkasan ke server Anda';
 
   @override
   String get uploadUrlRow => 'URL server';
@@ -403,7 +403,7 @@ class AppLocalizationsId extends AppLocalizations {
   String get uploadWifiOnly => 'Hanya Wi-Fi';
 
   @override
-  String get uploadWifiOnlyDesc => 'Unggah hanya lewat koneksi tanpa kuota';
+  String get uploadWifiOnlyDesc => 'Cadangkan hanya lewat koneksi tanpa kuota';
 
   @override
   String get uploadTestConnection => 'Uji koneksi';
@@ -419,30 +419,30 @@ class AppLocalizationsId extends AppLocalizations {
       'Server tidak dapat dijangkau — periksa URL dan token';
 
   @override
-  String get uploadStateQueued => 'Menunggu unggahan';
+  String get uploadStateQueued => 'Menunggu pencadangan';
 
   @override
-  String get uploadStateUploading => 'Mengunggah…';
+  String get uploadStateUploading => 'Mencadangkan…';
 
   @override
-  String get uploadStateUploaded => 'Terunggah';
+  String get uploadStateUploaded => 'Tercadang';
 
   @override
-  String get uploadStateFailed => 'Unggahan gagal — coba lagi';
+  String get uploadStateFailed => 'Pencadangan gagal — coba lagi';
 
   @override
   String get aboutPrivacy => 'Tentang & privasi';
 
   @override
   String get aboutPrivacyDesc =>
-      'Audio tidak pernah meninggalkan perangkat ini';
+      'Audio tidak pernah meninggalkan perangkat ini tanpa persetujuan Anda';
 
   @override
   String get aboutTitle => 'TENTANG & PRIVASI';
 
   @override
   String get aboutBody =>
-      'Diktafon mendengarkan, menulis, dan meringkas langsung di ponsel Anda.\n\nRekaman, transkrip, dan ringkasan tidak pernah meninggalkan perangkat. Tidak ada akun, tidak ada cloud, dan tidak ada analitik. Data hanya keluar lewat pencadangan atau ekspor yang Anda lakukan sendiri.';
+      'Diktafon mendengarkan, menulis, dan meringkas langsung di ponsel Anda.\n\nTanpa persetujuan Anda, rekaman, transkrip, dan ringkasan tidak pernah meninggalkan perangkat. Tidak perlu akun, cloud bersifat opsional, dan tidak ada analitik. Data hanya keluar lewat cara yang Anda mulai sendiri — pencadangan, ekspor, atau pengiriman ke server Anda sendiri.';
 
   @override
   String get aboutOpenSource => 'Diktafon gratis dan bersumber terbuka:';
@@ -509,7 +509,7 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get firstRunIntro =>
-      'Aplikasi ini mendengarkan, menulis, dan meringkas langsung di ponsel Anda. Rekaman, transkrip, dan ringkasan **tidak pernah meninggalkan perangkat ini**. Tidak ada akun dan tidak ada cloud.';
+      'Aplikasi ini mendengarkan, menulis, dan meringkas langsung di ponsel Anda. Tanpa persetujuan Anda, rekaman, transkrip, dan ringkasan **tidak pernah meninggalkan perangkat ini**. Tidak perlu akun dan cloud bersifat opsional.';
 
   @override
   String get firstRunSetupHeader => 'Penyiapan awal';
@@ -566,7 +566,7 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get backupIntro =>
-      'Pencadangan bawaan perangkat sudah otomatis mencakup daftar kaset, transkrip, dan ringkasan. Rekaman audio berukuran besar — bawalah secara eksplisit: ekspor mengemas audio, transkrip, dan ringkasan sebuah kaset ke dalam satu arsip .zip, dan mengimpor arsip akan mengembalikannya. Diktafon tidak mengunggah apa pun.';
+      'Pencadangan bawaan perangkat sudah otomatis mencakup daftar kaset, transkrip, dan ringkasan. Rekaman audio berukuran besar — bawalah secara eksplisit: ekspor mengemas audio, transkrip, dan ringkasan sebuah kaset ke dalam satu arsip .zip, dan mengimpor arsip akan mengembalikannya. Diktafon tidak mengunggah apa pun tanpa persetujuan Anda.';
 
   @override
   String get groupExport => 'Ekspor';

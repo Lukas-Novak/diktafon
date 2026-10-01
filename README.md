@@ -4,8 +4,9 @@
 
 > **This fork** — adds two things on top of upstream
 > [jaromiru/diktafon](https://github.com/jaromiru/diktafon):
-> **(a)** opt-in automatic upload of finished memos (audio + local Whisper
-> transcript + metadata) to **your own server** with durable retry, and
+> **(a)** opt-in **cloud backup** — automatic upload of finished memos
+> (audio + local Whisper transcript + metadata) to **your own server** with
+> durable retry, and
 > **(b)** opt-in **cloud transcription** — transcripts can be produced by your
 > configured backend and come back to the tape, automatically for new
 > recordings after one switch, or per explicit consent after a failed local
@@ -20,7 +21,7 @@
 </p>
 
 <p align="center">
- <b>Voice memos on cassette tapes — transcribed and summarised entirely on your device.</b>
+ <b>Voice memos on cassette tapes — transcribed and summarised on your device; your own cloud strictly optional.</b>
 </p>
 
 <p align="center">
@@ -43,7 +44,8 @@ recordings.
 - 🚀 **Modern** — Automatic transcriptions and summaries: every memo
   transcribed, every cassette summarised and titled.
 - 🔒 **Completely private** — Transcription and summaries are computed on
-  your device; no accounts, no cloud, no analytics — nothing ever leaves it.
+  your device; no accounts, no ads, no analytics — without your consent,
+  nothing ever leaves it. Sending to your own server is strictly opt-in.
 - 🌍 **Built for you** — Speaks your language, in recordings, summaries, and
   the app itself.
 - ⓪ **Free & open-source** — No cost, no ads, no lock-in; MIT-licensed —

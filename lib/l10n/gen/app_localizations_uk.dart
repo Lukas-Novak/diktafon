@@ -348,7 +348,7 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get transcriptionCloudNeedsConnection =>
-      'Спочатку задайте адресу сервера й токен (у розділі «Завантаження на сервер»).';
+      'Спочатку задайте адресу сервера й токен (у розділі «Резервна копія в хмарі»).';
 
   @override
   String get transcriptionCloudConfirmTitle =>
@@ -381,14 +381,14 @@ class AppLocalizationsUk extends AppLocalizations {
   String get cloudConsentScheduled => 'Запис надіслано на сервер';
 
   @override
-  String get groupUpload => 'Завантаження на сервер';
+  String get groupUpload => 'Резервна копія в хмарі';
 
   @override
-  String get uploadToggle => 'Автоматичне завантаження';
+  String get uploadToggle => 'Автоматична резервна копія';
 
   @override
   String get uploadToggleDesc =>
-      'Надсилати готові нотатки на ваш сервер після транскрипції';
+      'Зберігати записи, розшифровки й підсумки на вашому сервері';
 
   @override
   String get uploadUrlRow => 'Адреса сервера';
@@ -416,8 +416,7 @@ class AppLocalizationsUk extends AppLocalizations {
   String get uploadWifiOnly => 'Лише через Wi-Fi';
 
   @override
-  String get uploadWifiOnlyDesc =>
-      'Завантажувати лише через безлімітне з\'єднання';
+  String get uploadWifiOnlyDesc => 'Копіювати лише через безлімітне з\'єднання';
 
   @override
   String get uploadTestConnection => 'Перевірити з\'єднання';
@@ -433,29 +432,30 @@ class AppLocalizationsUk extends AppLocalizations {
       'Сервер недоступний — перевірте адресу та токен';
 
   @override
-  String get uploadStateQueued => 'Очікує завантаження';
+  String get uploadStateQueued => 'Очікує збереження';
 
   @override
-  String get uploadStateUploading => 'Завантажується…';
+  String get uploadStateUploading => 'Збереження копії…';
 
   @override
-  String get uploadStateUploaded => 'Завантажено';
+  String get uploadStateUploaded => 'Копію збережено';
 
   @override
-  String get uploadStateFailed => 'Помилка завантаження — повторити';
+  String get uploadStateFailed => 'Не вдалося зберегти копію — повторити';
 
   @override
   String get aboutPrivacy => 'Про застосунок і приватність';
 
   @override
-  String get aboutPrivacyDesc => 'Звук ніколи не покидає цей пристрій';
+  String get aboutPrivacyDesc =>
+      'Звук ніколи не покидає цей пристрій без вашої згоди';
 
   @override
   String get aboutTitle => 'ПРО ЗАСТОСУНОК І ПРИВАТНІСТЬ';
 
   @override
   String get aboutBody =>
-      'Диктафон слухає, записує й підсумовує просто у вашому телефоні.\n\nЗаписи, розшифровки та підсумки ніколи не покидають пристрій. Немає ні акаунта, ні хмари, ні аналітики. Дані покидають пристрій лише через резервну копію або експорт, які ви запускаєте самі.';
+      'Диктафон слухає, записує й підсумовує просто у вашому телефоні.\n\nБез вашої згоди записи, розшифровки та підсумки ніколи не покидають пристрій. Акаунт не потрібен, хмара необов\'язкова, аналітики немає. Дані покидають пристрій лише так, як запустите ви самі, — резервна копія, експорт або надсилання на власний сервер.';
 
   @override
   String get aboutOpenSource =>
@@ -523,7 +523,7 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get firstRunIntro =>
-      'Він слухає, записує й підсумовує просто у вашому телефоні. Записи, розшифровки та підсумки **ніколи не покидають цей пристрій**. Ні акаунта, ні хмари.';
+      'Він слухає, записує й підсумовує просто у вашому телефоні. Без вашої згоди записи, розшифровки та підсумки **ніколи не покидають цей пристрій**. Акаунт не потрібен, а хмара необов\'язкова.';
 
   @override
   String get firstRunSetupHeader => 'Початкове налаштування';
@@ -580,7 +580,7 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get backupIntro =>
-      'Резервна копія вашого пристрою сама охоплює список касет, розшифровки та підсумки. Аудіозаписи великі — заберіть їх явно: експорт запаковує звук, розшифровки й підсумки касети в один архів .zip, а імпорт архіву повертає їх назад. Диктафон нічого нікуди не надсилає.';
+      'Резервна копія вашого пристрою сама охоплює список касет, розшифровки та підсумки. Аудіозаписи великі — заберіть їх явно: експорт запаковує звук, розшифровки й підсумки касети в один архів .zip, а імпорт архіву повертає їх назад. Диктафон нічого нікуди не надсилає без вашої згоди.';
 
   @override
   String get groupExport => 'Експорт';

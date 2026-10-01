@@ -338,7 +338,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get transcriptionCloudNeedsConnection =>
-      'Set the server URL and token first (under Server upload).';
+      'Set the server URL and token first (under Cloud backup).';
 
   @override
   String get transcriptionCloudConfirmTitle =>
@@ -371,14 +371,14 @@ class AppLocalizationsEn extends AppLocalizations {
   String get cloudConsentScheduled => 'Recording sent to the server';
 
   @override
-  String get groupUpload => 'Server upload';
+  String get groupUpload => 'Cloud backup';
 
   @override
-  String get uploadToggle => 'Automatic upload';
+  String get uploadToggle => 'Automatic backup';
 
   @override
   String get uploadToggleDesc =>
-      'Send finished memos to your server after transcription';
+      'Back up recordings, transcripts and summaries to your server';
 
   @override
   String get uploadUrlRow => 'Server URL';
@@ -405,7 +405,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get uploadWifiOnly => 'Wi-Fi only';
 
   @override
-  String get uploadWifiOnlyDesc => 'Upload only on unmetered connections';
+  String get uploadWifiOnlyDesc => 'Back up only on unmetered connections';
 
   @override
   String get uploadTestConnection => 'Test connection';
@@ -420,29 +420,30 @@ class AppLocalizationsEn extends AppLocalizations {
   String get uploadTestFailed => 'Server unreachable — check URL and token';
 
   @override
-  String get uploadStateQueued => 'Waiting for upload';
+  String get uploadStateQueued => 'Waiting for backup';
 
   @override
-  String get uploadStateUploading => 'Uploading…';
+  String get uploadStateUploading => 'Backing up…';
 
   @override
-  String get uploadStateUploaded => 'Uploaded';
+  String get uploadStateUploaded => 'Backed up';
 
   @override
-  String get uploadStateFailed => 'Upload failed — retry';
+  String get uploadStateFailed => 'Backup failed — retry';
 
   @override
   String get aboutPrivacy => 'About & privacy';
 
   @override
-  String get aboutPrivacyDesc => 'Audio never leaves this device';
+  String get aboutPrivacyDesc =>
+      'Audio never leaves this device without your consent';
 
   @override
   String get aboutTitle => 'ABOUT & PRIVACY';
 
   @override
   String get aboutBody =>
-      'Diktafon listens, writes and summarises right here on your phone.\n\nRecordings, transcripts and summaries never leave the device. There is no account, no cloud and no analytics. The only way data leaves is a backup or export you start yourself.';
+      'Diktafon listens, writes and summarises right here on your phone.\n\nWithout your consent, recordings, transcripts and summaries never leave the device. No account is required, the cloud is optional, and there is no analytics. Data leaves only in a way you start yourself — a backup, an export, or sending to your own server.';
 
   @override
   String get aboutOpenSource => 'Diktafon is free and open source:';
@@ -509,7 +510,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get firstRunIntro =>
-      'It listens, writes and summarises right here on your phone. Recordings, transcripts and summaries **never leave this device**. There is no account and no cloud.';
+      'It listens, writes and summarises right here on your phone. Without your consent, recordings, transcripts and summaries **never leave this device**. No account is required and the cloud is optional.';
 
   @override
   String get firstRunSetupHeader => 'First-time setup';
@@ -566,7 +567,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get backupIntro =>
-      'Your device\'s own backup covers the cassette list, transcripts and summaries automatically. Audio recordings are large — take them with you explicitly: an export packs the audio, transcripts and summaries of a cassette into one .zip archive, and importing an archive brings them back. Nothing is uploaded by Diktafon.';
+      'Your device\'s own backup covers the cassette list, transcripts and summaries automatically. Audio recordings are large — take them with you explicitly: an export packs the audio, transcripts and summaries of a cassette into one .zip archive, and importing an archive brings them back. Diktafon uploads nothing without your consent.';
 
   @override
   String get groupExport => 'Export';

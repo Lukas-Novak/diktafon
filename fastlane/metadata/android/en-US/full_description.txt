@@ -9,7 +9,7 @@ Controls you already know, inspired by real tape recorders. Open a cassette, pre
 Automatic transcriptions and summaries: every memo is transcribed, every cassette summarised and titled. Tap any word in a transcript and the tape jumps right there.
 
 <b>COMPLETELY PRIVATE</b>
-Everything is computed on your device. No accounts, no cloud, no ads, no analytics — your voice never leaves your phone. The only network use is a one-time download of the on-device models (Wi-Fi recommended; about 2 GB for the default models, up to 3 GB for the largest — or just 0.2 GB if you skip summaries).
+Everything is computed on your device. No accounts, no ads, no analytics — without your consent, your voice never leaves your phone. Optional and off by default: back up finished memos to a server you run yourself, or let your own cloud backend transcribe them. The only other network use is a one-time download of the on-device models (Wi-Fi recommended; about 2 GB for the default models, up to 3 GB for the largest — or just 0.2 GB if you skip summaries).
 
 <b>SPEAKS YOUR LANGUAGE</b>
 Twenty languages: Arabic, Chinese (Simplified and Traditional), Czech, English, French, German, Hindi, Indonesian, Italian, Japanese, Korean, Persian, Polish, Portuguese, Russian, Spanish, Turkish, Ukrainian and Vietnamese — in recordings, summaries and the app itself. The spoken language is detected for each memo, so one tape can freely mix languages.

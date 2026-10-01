@@ -321,7 +321,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get transcriptionLocationCloud => '云端';
 
   @override
-  String get transcriptionCloudNeedsConnection => '请先设置服务器地址和令牌（在“服务器上传”部分）。';
+  String get transcriptionCloudNeedsConnection => '请先设置服务器地址和令牌（在“云端备份”部分）。';
 
   @override
   String get transcriptionCloudConfirmTitle => '使用服务器进行转录？';
@@ -352,13 +352,13 @@ class AppLocalizationsZh extends AppLocalizations {
   String get cloudConsentScheduled => '录音已发送到服务器';
 
   @override
-  String get groupUpload => '服务器上传';
+  String get groupUpload => '云端备份';
 
   @override
-  String get uploadToggle => '自动上传';
+  String get uploadToggle => '自动备份';
 
   @override
-  String get uploadToggleDesc => '转录完成后将备忘发送到您的服务器';
+  String get uploadToggleDesc => '将录音、转写文本和摘要备份到您的服务器';
 
   @override
   String get uploadUrlRow => '服务器地址';
@@ -385,7 +385,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get uploadWifiOnly => '仅 Wi-Fi';
 
   @override
-  String get uploadWifiOnlyDesc => '仅在非计费连接下上传';
+  String get uploadWifiOnlyDesc => '仅在非计费连接下备份';
 
   @override
   String get uploadTestConnection => '测试连接';
@@ -400,29 +400,29 @@ class AppLocalizationsZh extends AppLocalizations {
   String get uploadTestFailed => '无法连接服务器 — 请检查地址和令牌';
 
   @override
-  String get uploadStateQueued => '等待上传';
+  String get uploadStateQueued => '等待备份';
 
   @override
-  String get uploadStateUploading => '上传中…';
+  String get uploadStateUploading => '备份中…';
 
   @override
-  String get uploadStateUploaded => '已上传';
+  String get uploadStateUploaded => '已备份';
 
   @override
-  String get uploadStateFailed => '上传失败 — 重试';
+  String get uploadStateFailed => '备份失败 — 重试';
 
   @override
   String get aboutPrivacy => '关于与隐私';
 
   @override
-  String get aboutPrivacyDesc => '音频绝不离开此设备';
+  String get aboutPrivacyDesc => '未经你同意，音频绝不离开此设备';
 
   @override
   String get aboutTitle => '关于与隐私';
 
   @override
   String get aboutBody =>
-      'Diktafon 的聆听、转写和摘要全都在你的手机上完成。\n\n录音、转写文本和摘要绝不离开设备。没有账户，没有云端，也没有任何分析追踪。数据离开的唯一途径，是你自己发起的备份或导出。';
+      'Diktafon 的聆听、转写和摘要全都在你的手机上完成。\n\n未经你同意，录音、转写文本和摘要绝不离开设备。无需账户，云端完全可选，也没有任何分析追踪。数据只能通过你自己发起的方式离开——备份、导出，或发送到你自己的服务器。';
 
   @override
   String get aboutOpenSource => 'Diktafon 是自由开源软件：';
@@ -489,7 +489,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get firstRunIntro =>
-      '聆听、转写和摘要全都在你的手机上完成。录音、转写文本和摘要**绝不离开此设备**。没有账户，也没有云端。';
+      '聆听、转写和摘要全都在你的手机上完成。未经你同意，录音、转写文本和摘要**绝不离开此设备**。无需账户，云端完全可选。';
 
   @override
   String get firstRunSetupHeader => '首次设置';
@@ -544,7 +544,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get backupIntro =>
-      '设备自身的备份会自动包含卡带列表、转写文本和摘要。录音文件较大，需要你主动带走：导出会把一盘卡带的音频、转写文本和摘要打包成一个 .zip 压缩包，导入压缩包即可恢复。Diktafon 不会上传任何内容。';
+      '设备自身的备份会自动包含卡带列表、转写文本和摘要。录音文件较大，需要你主动带走：导出会把一盘卡带的音频、转写文本和摘要打包成一个 .zip 压缩包，导入压缩包即可恢复。未经你同意，Diktafon 不会上传任何内容。';
 
   @override
   String get groupExport => '导出';
@@ -1029,7 +1029,7 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
   String get transcriptionLocationCloud => '雲端';
 
   @override
-  String get transcriptionCloudNeedsConnection => '請先設定伺服器網址與權杖（在「伺服器上傳」部分）。';
+  String get transcriptionCloudNeedsConnection => '請先設定伺服器網址與權杖（在「雲端備份」部分）。';
 
   @override
   String get transcriptionCloudConfirmTitle => '使用伺服器進行轉錄？';
@@ -1060,13 +1060,13 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
   String get cloudConsentScheduled => '錄音已傳送到伺服器';
 
   @override
-  String get groupUpload => '伺服器上傳';
+  String get groupUpload => '雲端備份';
 
   @override
-  String get uploadToggle => '自動上傳';
+  String get uploadToggle => '自動備份';
 
   @override
-  String get uploadToggleDesc => '轉錄完成後將備忘傳送到您的伺服器';
+  String get uploadToggleDesc => '將錄音、逐字稿和摘要備份到您的伺服器';
 
   @override
   String get uploadUrlRow => '伺服器網址';
@@ -1093,7 +1093,7 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
   String get uploadWifiOnly => '僅 Wi-Fi';
 
   @override
-  String get uploadWifiOnlyDesc => '僅在非計量連線時上傳';
+  String get uploadWifiOnlyDesc => '僅在非計量連線時備份';
 
   @override
   String get uploadTestConnection => '測試連線';
@@ -1108,29 +1108,29 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
   String get uploadTestFailed => '無法連線伺服器 — 請檢查網址與權杖';
 
   @override
-  String get uploadStateQueued => '等待上傳';
+  String get uploadStateQueued => '等待備份';
 
   @override
-  String get uploadStateUploading => '上傳中…';
+  String get uploadStateUploading => '備份中…';
 
   @override
-  String get uploadStateUploaded => '已上傳';
+  String get uploadStateUploaded => '已備份';
 
   @override
-  String get uploadStateFailed => '上傳失敗 — 重試';
+  String get uploadStateFailed => '備份失敗 — 重試';
 
   @override
   String get aboutPrivacy => '關於與隱私';
 
   @override
-  String get aboutPrivacyDesc => '音訊絕不會離開這部裝置';
+  String get aboutPrivacyDesc => '未經你同意，音訊絕不會離開這部裝置';
 
   @override
   String get aboutTitle => '關於與隱私';
 
   @override
   String get aboutBody =>
-      'Diktafon 的聆聽、轉錄和摘要全都在你的手機上完成。\n\n錄音、逐字稿和摘要絕不會離開裝置。沒有帳號，沒有雲端，也沒有任何分析追蹤。資料離開的唯一途徑，是你自己啟動的備份或匯出。';
+      'Diktafon 的聆聽、轉錄和摘要全都在你的手機上完成。\n\n未經你同意，錄音、逐字稿和摘要絕不會離開裝置。無需帳號，雲端完全可選，也沒有任何分析追蹤。資料只能透過你自己啟動的方式離開——備份、匯出，或傳送到你自己的伺服器。';
 
   @override
   String get aboutOpenSource => 'Diktafon 是自由開源軟體：';
@@ -1197,7 +1197,7 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String get firstRunIntro =>
-      '聆聽、轉錄和摘要全都在你的手機上完成。錄音、逐字稿和摘要**絕不會離開這部裝置**。沒有帳號，也沒有雲端。';
+      '聆聽、轉錄和摘要全都在你的手機上完成。未經你同意，錄音、逐字稿和摘要**絕不會離開這部裝置**。無需帳號，雲端完全可選。';
 
   @override
   String get firstRunSetupHeader => '首次設定';
@@ -1252,7 +1252,7 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String get backupIntro =>
-      '裝置本身的備份會自動涵蓋卡帶清單、逐字稿和摘要。錄音檔較大，需要你自己帶走：匯出會把一捲卡帶的音訊、逐字稿和摘要打包成一個 .zip 壓縮檔，匯入壓縮檔即可還原。Diktafon 不會上傳任何內容。';
+      '裝置本身的備份會自動涵蓋卡帶清單、逐字稿和摘要。錄音檔較大，需要你自己帶走：匯出會把一捲卡帶的音訊、逐字稿和摘要打包成一個 .zip 壓縮檔，匯入壓縮檔即可還原。未經你同意，Diktafon 不會上傳任何內容。';
 
   @override
   String get groupExport => '匯出';
